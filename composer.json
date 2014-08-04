@@ -1,0 +1,29 @@
+{
+    "name": "light/objectservice",
+    "description": "Light Objectservice",
+    "homepage": "https://github.com/szymanp/light-objectservice",
+    "type": "library",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Piotr Szymanski",
+            "email": "szyman@magres.net"
+        }
+    ],
+    "require": {
+	"light/light": "dev-master",
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/szymanp/light"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Light\\ObjectService\\": "src/ObjectService/" }
+    }
+}
