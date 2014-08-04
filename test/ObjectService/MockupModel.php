@@ -37,14 +37,29 @@ class Database
 		$model->post_id = 141;
 	}
 	
-	public static function load()
+	public static function load($filename)
 	{
-		// TODO
+		if (file_exists($filename))
+		{
+			$data = unserialize(file_get_contents($filename));
+			self::$posts = $data->posts;
+			self::$comments = $data->comments;
+			self::$authors = $data->authors;
+		}
+		else
+		{
+			self::initialize();
+		}
 	}
 	
-	public static function save()
+	public static function save($filename)
 	{
-		// TODO
+		$data = new \stdClass;
+		$data->posts = self::$posts;
+		$data->comments = self::$comments;
+		$data->authors = self::$authors;
+		
+		file_put_contents($filename, serialize($data));
 	}
 }
 

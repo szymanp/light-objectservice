@@ -13,9 +13,13 @@ use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\Comment;
 use Light\ObjectService\Mockup\TypeFactory;
 use Light\ObjectService\Mockup\CommentCollectionType;
+use Light\ObjectService\Mockup\Database;
 
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../MockupModel.php';
+
+// Load database
+Database::load($dbfile = "../database.serialize");
 
 // Setup published objects and types
 $registry = new ObjectRegistry();
@@ -39,3 +43,6 @@ $jsonResponse = new JsonResponse($httpResponse);
 
 $invocation = new Invocation($params, $jsonRequest, $jsonResponse);
 $invocation->invoke();
+
+// Save database
+Database::save($dbfile);
