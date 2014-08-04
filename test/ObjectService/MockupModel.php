@@ -10,6 +10,44 @@ use Light\ObjectService\Model\ComplexType;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Model\CollectionType;
 
+class Database
+{
+	public static $posts = array();
+	public static $comments = array();
+	public static $authors = array();
+	
+	public static function initialize()
+	{
+		// Posts
+		self::$posts = array(); 
+
+		self::$posts[] = $model = new Post(141, "This is my first post");
+		$model->tags = array("post", "interesting");
+		
+		self::$posts[] = $model = new Post(142, "Object service in practice");
+		$model->tags = array("post", "story");
+		
+		// Comments
+		self::$comments = array();
+		
+		self::$comments[] = $model = new Comment(101, "John Doe", "This looks good");
+		$model->post_id = 141;
+
+		self::$comments[] = $model = new Comment(102, "Mary Jane", "I concur");
+		$model->post_id = 141;
+	}
+	
+	public static function load()
+	{
+		// TODO
+	}
+	
+	public static function save()
+	{
+		// TODO
+	}
+}
+
 class Post
 {
 	const CLASSNAME = __CLASS__;
@@ -43,10 +81,22 @@ class Comment
 	}
 }
 
+class Author
+{
+	const CLASSNAME = __CLASS__;
+	
+	public $id;
+	public $name;
+	
+	public function __construct($id, $name)
+	{
+		$this->id = $id;
+		$this->name = $name;
+	}
+}
+
 class PostCollectionModel extends ObjectProvider
 {
-	public $models = array();
-	
 	public function __construct()
 	{
 		parent::__construct(new PostModel());
@@ -55,18 +105,11 @@ class PostCollectionModel extends ObjectProvider
 			 ->field("id")->type("int")->criterion()->done()
 			 ->field("title")->type("string")->criterion()->done();
 			 
-		$model = new Post(141, "This is my first post");
-		$model->tags = array("post", "interesting");
-		$this->models[] = $model;
-		
-		$model = new Post(142, "Object service in practice");
-		$model->tags = array("post", "story");
-		$this->models[] = $model;
 	}
 	
 	public function find(WhereExpression $expr, FindContext $context)
 	{
-		$models = $this->models;
+		$models = Database::$posts;
 	
 		if ($context->getContextObject())
 		{
@@ -95,8 +138,6 @@ class PostCollectionModel extends ObjectProvider
 
 class CommentCollectionType extends ObjectProvider
 {
-	public $models = array();
-	
 	public function __construct()
 	{
 		parent::__construct(TypeFactory::getCommentType());
@@ -104,15 +145,11 @@ class CommentCollectionType extends ObjectProvider
 		$this->getSpecification()
 			 ->field("id")->criterion();
 	
-		$this->models[] = $model = new Comment(101, "John Doe", "This looks good");
-		$model->post_id = 141;
-		$this->models[] = $model = new Comment(102, "Mary Jane", "I concur");
-		$model->post_id = 141;
 	}
 	
 	public function find(WhereExpression $expr, FindContext $context)
 	{
-		$models = $this->models;
+		$models = Database::$comments;
 	
 		if ($context->getContextObject())
 		{

@@ -14,6 +14,7 @@ use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Mockup\Database;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';
@@ -30,6 +31,8 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		parent::setUp();
+		
+		Database::initialize();
 		
 		$this->registry = new ObjectRegistry();
 		$this->registry->addType($postModel = new PostModel());
@@ -48,7 +51,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 		$result = $this->getReader($path)->read();
 		
 		$this->assertTrue(is_array($result->getValue()));
-		$this->assertEquals($postModel->models, $result->getValue());
+		$this->assertEquals(Database::$posts, $result->getValue());
 	}
 	
 	public function testFindByKey()
@@ -60,7 +63,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	
 		$result = $this->getReader($path)->read();
 	
-		$this->assertEquals($postModel->models[1], $result->getValue());
+		$this->assertEquals(Database::$posts[1], $result->getValue());
 	}
 	
     /**
