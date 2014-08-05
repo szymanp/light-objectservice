@@ -1,5 +1,4 @@
 <?php
-
 namespace Light\ObjectService\Service\Request;
 
 use Light\ObjectService\Expression\PathExpression;

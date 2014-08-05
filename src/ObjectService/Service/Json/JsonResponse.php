@@ -14,9 +14,20 @@ class JsonResponse implements Response
 	 */
 	private $httpResponse;
 	
-	public function __construct(HTTPResponse $response)
+	/**
+	 * @var \Light\ObjectService\Service\Json\JsonResponseParameters
+	 */
+	private $responseParameters;
+	
+	public function __construct(HTTPResponse $response, JsonResponseParameters $params = null)
 	{
 		$this->httpResponse = $response;
+		
+		if (!$params)
+		{
+			$params = new JsonResponseParameters();
+		}
+		$this->responseParameters = $params;
 	}
 	
 	public function sendEntity(DataEntity $entity)
@@ -82,7 +93,18 @@ class JsonResponse implements Response
 	
 	public function sendInternalError(\Exception $e)
 	{
-		throw new NotImplementedException();
+		$this->httpResponse->sendStatus(500);
+		
+		
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Light\ObjectService\Service\Response\Response::getContentType()
+	 */
+	public function getContentType()
+	{
+		return "application/json";
 	}
 	
 	/**

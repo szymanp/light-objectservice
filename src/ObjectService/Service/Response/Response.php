@@ -12,4 +12,10 @@ interface Response
 	function sendBadRequest();
 	
 	function sendInternalError(\Exception $e);
+	
+	/**
+	 * Returns the content type produced by this Response object.
+	 * @return string
+	 */
+	function getContentType();
 }

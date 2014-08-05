@@ -5,11 +5,12 @@ use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Exceptions\InvalidRequestException;
 use Light\ObjectService\Service\Request\Request;
 use Light\ObjectService\Service\Request\RequestObject;
+use Light\ObjectService\Service\Request\RequestReader;
 use Light\Util\HTTP\Request as HTTPRequest;
 use Light\Exception\Exception;
 use Light\Exception\NotImplementedException;
 
-class JsonRequestReader
+class JsonRequestReader implements RequestReader
 {
 	private static $validMethods = array("GET", "POST", "PUT", "DELETE", "ACTION", "TRANSACTION");
 	
@@ -19,11 +20,10 @@ class JsonRequestReader
 	{
 		$this->basePath = $basePath;
 	}
-	
+
 	/**
-	 * Returns true if the HTTP Request can be processed by this Request Reader.
-	 * @param HTTPRequest $httpRequest
-	 * @return boolean
+	 * (non-PHPdoc)
+	 * @see \Light\ObjectService\Service\Request\RequestReader::isAcceptable()
 	 */
 	public function isAcceptable(HTTPRequest $httpRequest)
 	{
@@ -36,17 +36,24 @@ class JsonRequestReader
 		if (in_array($method, self::$validMethods, true))
 		{
 			$ct = $httpRequest->getHeader("content-type");
-			return ($ct == "application/json");
+			return in_array($ct, $this->getAcceptableContentTypes());
 		}
 		
 		return false;
 	}
 	
 	/**
-	 * Parse a HTTP Request and return a Service Request object. 
-	 * @param HTTPRequest $httpRequest
-	 * @throws InvalidRequestException
-	 * @return \Light\ObjectService\Service\Request\Request
+	 * (non-PHPdoc)
+	 * @see \Light\ObjectService\Service\Request\RequestReader::getAcceptableContentTypes()
+	 */
+	public function getAcceptableContentTypes()
+	{
+		return array("application/json");
+	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see \Light\ObjectService\Service\Request\RequestReader::read()
 	 */
 	public function read(HTTPRequest $httpRequest)
 	{
