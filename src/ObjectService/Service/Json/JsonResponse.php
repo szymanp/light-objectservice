@@ -94,7 +94,7 @@ class JsonResponse implements Response
 	public function sendInternalError(\Exception $e)
 	{
 		$this->httpResponse->sendStatus(500);
-		
+		$this->sendException($e);
 		
 	}
 	
@@ -116,5 +116,28 @@ class JsonResponse implements Response
 		$serializer = new JsonDataEntitySerializer();
 		$rawObject = $serializer->serialize($entity);
 		return json_encode($rawObject);
+	}
+	
+	private function sendException(\Exception $e)
+	{
+		$this->httpResponse->setHeader("Content-type", "application/json", true);
+		$this->httpResponse->sendBody(json_encode($this->serializeException($e)));
+	}
+	
+	private function serializeException(\Exception $e)
+	{
+		$data = new \stdClass();
+		$data->code 	= $e->getCode();
+		$data->message	= $e->getMessage();
+		$data->class	= get_class($e);
+		$data->file		= $e->getFile();
+		$data->line		= $e->getLine();
+		$data->trace	= $e->getTrace();
+		if ($e->getPrevious())
+		{
+			$data->previous = $this->serializeException($e->getPrevious());
+		}
+		
+		return $data;
 	}
 }

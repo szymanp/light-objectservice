@@ -93,7 +93,10 @@ class JsonRequestReader implements RequestReader
 		$requestObject = new RequestObject();
 		$requestObject->setResourcePath($this->readPath($httpRequest, $body));
 
-		$operationReader = JsonOperationReader::createRoot($method, $requestObject->getResourcePath());
+		$operationReader = JsonOperationReader::createRoot($method,
+														   $requestObject->getResourcePath(), 
+														   $body && $body->data ? $body->data : null, 
+														   $body && $body->meta ? $body->meta : null);
 		$requestObject->setOperation($operationReader->read());
 		
 		if ($body && $body->select)
