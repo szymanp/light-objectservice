@@ -2,6 +2,9 @@
 namespace Light\ObjectService\Service\Request;
 
 use Light\Exception\InvalidParameterType;
+use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Model\ModelWriter;
 
 class UpdateOperation extends Operation
 {
@@ -50,6 +53,24 @@ class UpdateOperation extends Operation
 			$this->setResource($this->readResource($params));
 		}
 		
-		// TODO
+		$type = $this->getResource()->getType();
+		if (!($type instanceof ComplexType))
+		{
+			throw new TypeException("Only complex-type resources can be updated");
+		}
+		
+		$writer = new ModelWriter($params->getTransaction(), $type, $this->getResource()->getValue());
+		
+		foreach($this->fields as $fieldName => $value)
+		{
+			if ($value instanceof Operation)
+			{
+				$value->execute($params);
+			}
+			else
+			{
+				$writer->setProperty($fieldName, $value);
+			}
+		}
 	}
 }

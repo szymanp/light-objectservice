@@ -14,6 +14,7 @@ use Light\ObjectService\Mockup\TypeFactory;
 use Light\ObjectService\Mockup\CommentCollectionType;
 use Light\ObjectService\Mockup\Database;
 use Light\ObjectService\Service;
+use Light\ObjectService\Transaction\Transaction;
 
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../MockupModel.php';
@@ -31,6 +32,7 @@ $registry->getNameRegistry()->addTypeBaseUri("Light\\ObjectService\\Mockup", "//
 // Configure the service
 $params = new InvocationParametersObject();
 $params->setObjectRegistry($registry);
+$params->setTransaction(new Transaction());
 
 $basePath = $_SERVER['SCRIPT_NAME'] . "/";
 

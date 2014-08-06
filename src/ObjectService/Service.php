@@ -30,11 +30,14 @@ class Service
 	/** @var array<string, \Light\ObjectService\Service\Response\Response[]> */
 	private $outputTypes = array();
 	
+	private static $errorExceptionConfigured = false;
+	
 	public function __construct(InvocationParameters $parameters, HTTPRequest $request = null, HTTPResponse $response = null)
 	{
 		$this->invocationParameters = $parameters;
 		$this->httpRequest  = $request ? $request : new HTTPRequest();
 		$this->httpResponse = $response ? $response : new HTTPResponse();
+		$this->setupErrorException();
 	}
 	
 	/**
@@ -94,10 +97,26 @@ class Service
 	
 	private function invokeRequest(RequestReader $requestReader, Response $response)
 	{
-		$request = $requestReader->read($this->httpRequest);
+		try
+		{
+			$request = $requestReader->read($this->httpRequest);
+		}
+		catch (\Exception $e)
+		{
+			$response->sendInternalError($e);
+			return;
+		}
 		
-		$invocation = new Invocation($this->invocationParameters, $request, $response);
-		$invocation->invoke();
+		try
+		{
+			$invocation = new Invocation($this->invocationParameters, $request, $response);
+			$invocation->invoke();
+		}
+		catch (\Exception $e)
+		{
+			$response->sendInternalError($e);
+			return;
+		}
 	}
 	
 	/**
@@ -184,5 +203,20 @@ class Service
 		
 		$this->httpResponse->sendStatus(415);
 		$this->httpResponse->sendBody($body);
+	}
+	
+	private function setupErrorException()
+	{
+		if (self::$errorExceptionConfigured) return;
+		
+		set_error_handler(function ($errno, $errstr, $errfile, $errline)
+		{
+			if ($errno == E_USER_ERROR || $errno == E_RECOVERABLE_ERROR)
+			{
+				throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+			}
+		});
+		
+		self::$errorExceptionConfigured = true;
 	}
 }
