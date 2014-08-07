@@ -21,7 +21,7 @@ class RemoteJsonTest extends \PHPUnit_Framework_TestCase
 		}
 	}	
 	
-	public function testReadPostViaID()
+	public function testReadPostViaId()
 	{
 		$result = $this->client->get("/post/141");
 		
@@ -33,6 +33,21 @@ class RemoteJsonTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(isset($data['title']));
 		$this->assertTrue(isset($data['comments']));
 		$this->assertTrue(isset($data['compact_title']));
+	}
+	
+	public function testUpdatePostViaId()
+	{
+		$title = "This is my " . rand(1, 200) . ". post";
+		
+		$body = [ "data" => [ "title" => $title ]];
+		$result = $this->client->put("/post/141", $body);
+		
+		$data = $result['data'];
+		$meta = $result['meta'];
+
+		$this->assertEquals("//mockup/Post#complex", $meta['rel']);
+		$this->assertEquals(141, $data['id']);
+		$this->assertEquals($title, $data['title']);
 	}
 }
 

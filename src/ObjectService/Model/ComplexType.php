@@ -128,7 +128,26 @@ class ComplexType extends Type
 	 */
 	final public function writeProperty($object, $propertyName, $value, Transaction $transaction)
 	{
-		// TODO
+		$fieldSpec = $this->spec->getFieldOrThrow($propertyName);
+		
+		if (!$this->spec->canWrite($propertyName))
+		{
+			throw new ResolutionException("Field %1::%2 is not writable", $this->getName(), $propertyName);
+		}
+		
+		if (!$transaction->isOpen())
+		{
+			$transaction->begin();
+		}
+		
+		if (!is_null($setter = $fieldSpec->getSetter()))
+		{
+			call_user_func($setter, $object, $value, $transaction);
+		}
+		else
+		{
+			$this->writePropertyInternal($object, $propertyName, $value, $transaction);
+		}
 	}
 
 	/**
@@ -177,6 +196,14 @@ class ComplexType extends Type
 	 */
 	protected function writePropertyInternal($object, $propertyName, $value, Transaction $tx)
 	{
-		// TODO
+		try
+		{
+			$wrapped = Helper::wrap($object);
+			$wrapped->setValue($propertyName, $value);
+		}
+		catch (\Exception $e)
+		{
+			throw new ResolutionException("Field %1::%2 cannot be written: %3", $this->getName(), $propertyName, $e->getMessage(), $e);
+		}
 	}
 }
