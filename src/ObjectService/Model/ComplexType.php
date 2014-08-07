@@ -6,6 +6,9 @@ use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
 use Light\Exception\Exception;
+use Light\ObjectService\Exceptions\ResolutionException;
+use Light\ObjectService\Transaction\Transaction;
+use Light\Data\Helper;
 
 /**
  * A description of an object type.
@@ -81,6 +84,54 @@ class ComplexType extends Type
 	}
 	
 	/**
+	 * Reads a value from the named property on the specified object.
+	 * 
+	 * This method will read the property using a getter defined on the field builder, if any;
+	 * otherwise it will attempt to read the property directly from the object.
+	 * 
+	 * @param object	$object
+	 * @param string	$propertyName
+	 * @see readPropertyInternal()
+	 * @throws ResolutionException	If the property doesn't exist or cannot be read.
+	 * @return mixed	the property value
+	 */
+	final public function readProperty($object, $propertyName)
+	{
+		$fieldSpec = $this->spec->getFieldOrThrow($propertyName);
+		
+		if (!$this->spec->canRead($propertyName))
+		{
+			throw new ResolutionException("Field %1::%2 is not readable", $this->getName(), $propertyName);
+		}
+		
+		if (!is_null($getter = $fieldSpec->getGetter()))
+		{
+			return call_user_func($getter, $object);
+		}
+		else
+		{
+			return $this->readPropertyInternal($object, $propertyName);
+		}
+	}
+
+	/**
+	 * Sets the value for the named property on the specified object.
+	 * 
+	 * This method will set the property using a setter defined on the field builder, if any;
+	 * otherwise it will attempt to set the property directly on the object.
+	 * 
+	 * @param object		$object
+	 * @param string		$propertyName
+	 * @param mixed			$value
+	 * @param Transaction	$transaction
+	 * @see writePropertyInternal()
+	 */
+	final public function writeProperty($object, $propertyName, $value, Transaction $transaction)
+	{
+		// TODO
+	}
+
+	/**
 	 * Returns the PHP class name of the objects supported by this complex type.
 	 * @return string
 	 */
@@ -92,29 +143,39 @@ class ComplexType extends Type
 	/**
 	 * Reads a value from the named property on the specified object.
 	 * 
-	 * This method can be overriden in subclasses to provide a custom "getterr" implementation
+	 * This method can be overriden in subclasses to provide a custom "getter" implementation
 	 * for objects of belonging to this complex type.
-
+	 * 
 	 * @param object	$object
 	 * @param string	$propertyName
-	 * @return mixed
+	 * @throws ResolutionException	If the property doesn't exist or cannot be read.
+	 * @return mixed the property value
 	 */
-	public function readProperty($object, $propertyName)
+	protected function readPropertyInternal($object, $propertyName)
 	{
-		// TODO
+		try
+		{
+			$wrapped = Helper::wrap($object);
+			return $wrapped->getValue($propertyName);
+		}
+		catch (\Exception $e)
+		{
+			throw new ResolutionException("Field %1::%2 cannot be read: %3", $this->getName(), $propertyName, $e->getMessage(), $e);
+		}
 	}
-
+	
 	/**
-	 * Sets the value for the named property on the specified object.
-	 * 
+	 * Sets a value of the named property on the specified object.
+	 *
 	 * This method can be overriden in subclasses to provide a custom "setter" implementation
-	 * for objects of belonging to this complex type.
+	 * for objects belonging to this complex type.
 	 * 
-	 * @param object	$object
-	 * @param string	$propertyName
-	 * @param mixed		$value
+	 * @param object		$object
+	 * @param string		$propertyName
+	 * @param mixed			$value
+	 * @param Transaction	$tx
 	 */
-	public function writeProperty($object, $propertyName, $value)
+	protected function writePropertyInternal($object, $propertyName, $value, Transaction $tx)
 	{
 		// TODO
 	}

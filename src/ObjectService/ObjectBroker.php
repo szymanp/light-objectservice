@@ -6,7 +6,6 @@ use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Model\ObjectProvider;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\ParsedPathExpression;
-use Light\ObjectService\Model\ModelReader;
 use Light\ObjectService\Model\ComplexType;
 use Light\ObjectService\Model\PathReader;
 

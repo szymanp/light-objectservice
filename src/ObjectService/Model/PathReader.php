@@ -146,8 +146,7 @@ class PathReader
 			}
 			else
 			{
-				$reader = new ModelReader($currentObject->type, $currentObject->value);
-				$newObject = $reader->readProperty($element);
+				$newObject = $currentObject->type->readProperty($currentObject->value, $element);
 				$type = $fieldSpec?$this->typeHelper->getTypeForField($fieldSpec) : null;
 				$this->pushNewValue($newObject, $type);
 			}

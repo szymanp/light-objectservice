@@ -7,7 +7,6 @@ use Light\ObjectService\Model\Type;
 use Light\ObjectService\Model\SimpleType;
 use Light\ObjectService\Model\ComplexType;
 use Light\ObjectService\Model\CollectionType;
-use Light\ObjectService\Model\ModelReader;
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Model\TypeHelper;
 use Light\ObjectService\Expression\WhereExpression;
@@ -97,7 +96,6 @@ final class Projector_Complex extends Projector
 		$result = new DataObject($this->type);
 		$data	= $result->getData();
 		$fields = $select->getFields();
-		$reader = new ModelReader($this->type, $object);
 		
 		foreach($fields as $field)
 		{
@@ -112,7 +110,7 @@ final class Projector_Complex extends Projector
 			}
 			else
 			{
-				$value 	= $reader->readProperty($field);
+				$value 	= $this->type->readProperty($object, $field);
 			}
 			
 			$fieldtype = $this->typeHelper->getTypeForField($fieldspec);
