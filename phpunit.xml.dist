@@ -9,5 +9,8 @@
 	</testsuites>
 	<php>
 		<includePath>test</includePath>
+		<!--
+		<var name="test.url" value="http://localhost/light-objectservice-github/test/" />
+		-->
 	</php>
 </phpunit>
