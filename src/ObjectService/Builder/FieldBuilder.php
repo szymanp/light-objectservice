@@ -17,10 +17,6 @@ class FieldBuilder extends BaseFieldBuilder
 	
 	/** @var callback */
 	private $setter;
-	/** @var callback */
-	private $appender;
-	/** @var callback */
-	private $remover;
 	
 	public function __construct(ComplexSpecBuilder $parent, $name)
 	{
@@ -114,30 +110,6 @@ class FieldBuilder extends BaseFieldBuilder
 	}
 
 	/**
-	 * Sets an appender for adding a new value to this collection field.
-	 * @param array|Closure $callback
-	 * @return \Light\ObjectService\Builder\FieldBuilder
-	 */
-	public function appender($callback)
-	{
-		if (!$this->isCollection) throw new Exception("This field is not a collection");
-		$this->appender = $callback;
-		return $this;
-	}
-
-	/**
-	 * Sets a remover for removing a value from this collection field.
-	 * @param array|Closure $callback
-	 * @return \Light\ObjectService\Builder\FieldBuilder
-	 */
-	public function remover($callback)
-	{
-		if (!$this->isCollection) throw new Exception("This field is not a collection");
-		$this->remover = $callback;
-		return $this;
-	}
-
-	/**
 	 * @return ComplexSpecBuilder
 	 */
 	public function done()
@@ -155,16 +127,6 @@ class FieldBuilder extends BaseFieldBuilder
 	public function getSetter()
 	{
 		return $this->setter;
-	}
-	
-	public function getAppender()
-	{
-		return $this->appender;
-	}
-
-	public function getRemover()
-	{
-		return $this->remover;
 	}
 	
 	public function isReadable()

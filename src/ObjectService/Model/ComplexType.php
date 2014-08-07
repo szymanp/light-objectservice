@@ -1,12 +1,11 @@
 <?php
-
 namespace Light\ObjectService\Model;
 
 use Light\ObjectService\Builder\ComplexSpecBuilder;
-use Light\Exception\Exception;
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
+use Light\Exception\Exception;
 
 /**
  * A description of an object type.
@@ -88,5 +87,35 @@ class ComplexType extends Type
 	public function getClassName()
 	{
 		return $this->spec->getClassname();
+	}
+	
+	/**
+	 * Reads a value from the named property on the specified object.
+	 * 
+	 * This method can be overriden in subclasses to provide a custom "getterr" implementation
+	 * for objects of belonging to this complex type.
+
+	 * @param object	$object
+	 * @param string	$propertyName
+	 * @return mixed
+	 */
+	public function readProperty($object, $propertyName)
+	{
+		// TODO
+	}
+
+	/**
+	 * Sets the value for the named property on the specified object.
+	 * 
+	 * This method can be overriden in subclasses to provide a custom "setter" implementation
+	 * for objects of belonging to this complex type.
+	 * 
+	 * @param object	$object
+	 * @param string	$propertyName
+	 * @param mixed		$value
+	 */
+	public function writeProperty($object, $propertyName, $value)
+	{
+		// TODO
 	}
 }
