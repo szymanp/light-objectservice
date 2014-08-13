@@ -39,7 +39,7 @@ class RemoteJsonTest extends \PHPUnit_Framework_TestCase
 	{
 		$title = "This is my " . rand(1, 200) . ". post";
 		
-		$body = [ "data" => [ "title" => $title ]];
+		$body = array( "data" => array( "title" => $title ));
 		$result = $this->client->put("/post/141", $body);
 		
 		$data = $result['data'];
