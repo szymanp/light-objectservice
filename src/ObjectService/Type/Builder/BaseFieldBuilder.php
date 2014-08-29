@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Builder;
+namespace Light\ObjectService\Type\Builder;
 
 /**
  * Base class for field builders.
@@ -25,7 +25,7 @@ abstract class BaseFieldBuilder
 	/**
 	 * Sets the type of the property.
 	 * @param string $typeName
-	 * @return \Light\ObjectService\Builder\BaseFieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\BaseFieldBuilder
 	 */
 	public function type($typeName)
 	{
@@ -45,7 +45,7 @@ abstract class BaseFieldBuilder
 	/**
 	 * Sets the type of the property to a collection of the specified base type.
 	 * @param string $typeName	Base type.
-	 * @return \Light\ObjectService\Builder\BaseFieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\BaseFieldBuilder
 	 */
 	public function collectionOfType($typeName)
 	{

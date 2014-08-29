@@ -2,12 +2,12 @@
 
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Builder\CollectionSpecBuilder;
+use Light\ObjectService\Type\Builder\CollectionSpecBuilder;
 use Light\Exception\Exception;
 
 abstract class CollectionType extends Type
 {
-	/** @var \Light\ObjectService\Builder\CollectionSpecBuilder */
+	/** @var \Light\ObjectService\Type\Builder\CollectionSpecBuilder */
 	private $spec;
 		
 	/** @var Type */
@@ -21,7 +21,7 @@ abstract class CollectionType extends Type
 	
 	/**
 	 * Returns a specification for this type.
-	 * @return \Light\ObjectService\Builder\CollectionSpecBuilder
+	 * @return \Light\ObjectService\Type\Builder\CollectionSpecBuilder
 	 */
 	final public function getSpecification()
 	{

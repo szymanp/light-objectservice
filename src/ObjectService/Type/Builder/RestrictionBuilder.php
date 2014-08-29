@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Builder;
+namespace Light\ObjectService\Type\Builder;
 
 use Light\Exception\Exception;
 
@@ -20,7 +20,7 @@ class RestrictionBuilder extends BaseFieldBuilder
 	/**
 	 * Sets the type of the property.
 	 * @param string $typeName
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function type($typeName)
 	{
@@ -31,7 +31,7 @@ class RestrictionBuilder extends BaseFieldBuilder
 	/**
 	 * Sets the type of the property to a collection of the specified base type.
 	 * @param string $typeName	Base type.
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function collectionOfType($typeName)
 	{
@@ -41,7 +41,7 @@ class RestrictionBuilder extends BaseFieldBuilder
 	
 	/**
 	 * Marks this field as a criterion restriction.
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function criterion()
 	{

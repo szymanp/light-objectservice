@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Builder;
+namespace Light\ObjectService\Type\Builder;
 
 use Light\ObjectService\Exceptions\TypeException;
 use Light\Exception\Exception;
@@ -12,7 +12,7 @@ class CollectionSpecBuilder
 	/**
 	 * Returns a field definition for the named field. 
 	 * @param string $name
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function field($name)
 	{
@@ -28,7 +28,7 @@ class CollectionSpecBuilder
 	/**
 	 * Returns a field builder for this field, if it exists.
 	 * @param string	$name
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function getField($name)
 	{
@@ -41,7 +41,7 @@ class CollectionSpecBuilder
 	/**
 	 * Returns a field builder for this field.
 	 * @param string	$name
-	 * @return \Light\ObjectService\Builder\RestrictionBuilder
+	 * @return \Light\ObjectService\Type\Builder\RestrictionBuilder
 	 */
 	public function getFieldOrThrow($name)
 	{

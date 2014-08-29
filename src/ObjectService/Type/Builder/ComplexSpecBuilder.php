@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Builder;
+namespace Light\ObjectService\Type\Builder;
 
 use Light\ObjectService\Exceptions\TypeException;
 use Light\Exception\Exception;
@@ -24,7 +24,7 @@ class ComplexSpecBuilder
 	/**
 	 * Sets the class name of the objects described by this ComplexType.
 	 * @param string $name
-	 * @return \Light\ObjectService\Builder\ComplexSpecBuilder
+	 * @return \Light\ObjectService\Type\Builder\ComplexSpecBuilder
 	 */
 	public function classname($name)
 	{
@@ -35,7 +35,7 @@ class ComplexSpecBuilder
 	/**
 	 * Returns a field definition for the named field. 
 	 * @param string $name
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function field($name)
 	{
@@ -49,7 +49,7 @@ class ComplexSpecBuilder
 	/**
 	 * Marks this field as inaccessible.
 	 * @param string $name
-	 * @return \Light\ObjectService\Builder\ComplexSpecBuilder
+	 * @return \Light\ObjectService\Type\Builder\ComplexSpecBuilder
 	 */
 	public function exclude($name)
 	{
@@ -63,7 +63,7 @@ class ComplexSpecBuilder
 	/**
 	 * Marks the specified field as the key field.
 	 * @param string|Field $nameOrField
-	 * @return \Light\ObjectService\Builder\ComplexSpecBuilder
+	 * @return \Light\ObjectService\Type\Builder\ComplexSpecBuilder
 	 */
 	public function keyField($nameOrField)
 	{
@@ -92,7 +92,7 @@ class ComplexSpecBuilder
 	/**
 	 * Returns a field builder for this field, if it exists.
 	 * @param string	$name
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function getField($name)
 	{
@@ -105,7 +105,7 @@ class ComplexSpecBuilder
 	/**
 	 * Returns a field builder for this field.
 	 * @param string	$name
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function getFieldOrThrow($name)
 	{
@@ -132,7 +132,7 @@ class ComplexSpecBuilder
 	
 	/**
 	 * Retruns the key field for this model, if any.
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function getKeyField()
 	{

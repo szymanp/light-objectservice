@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Builder\ComplexSpecBuilder;
+use Light\ObjectService\Type\Builder\ComplexSpecBuilder;
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
@@ -16,7 +16,7 @@ use Light\Data\Helper;
  */
 class ComplexType extends Type
 {
-	/** @var \Light\ObjectService\Builder\ComplexSpecBuilder */
+	/** @var \Light\ObjectService\Type\Builder\ComplexSpecBuilder */
 	private $spec;
 	
 	/** @var string */
@@ -32,7 +32,7 @@ class ComplexType extends Type
 	
 	/**
 	 * Returns a specification for this type.
-	 * @return \Light\ObjectService\Builder\ComplexSpecBuilder
+	 * @return \Light\ObjectService\Type\Builder\ComplexSpecBuilder
 	 */
 	final public function getSpecification()
 	{

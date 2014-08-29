@@ -8,7 +8,7 @@ use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\FindContextObject;
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Builder\FieldBuilder;
+use Light\ObjectService\Type\Builder\FieldBuilder;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\WhereExpressionSource;
 use Light\Exception\Exception;

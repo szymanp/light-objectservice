@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Builder;
+namespace Light\ObjectService\Type\Builder;
 
 use Light\Exception\Exception;
 
@@ -27,7 +27,7 @@ class FieldBuilder extends BaseFieldBuilder
 	/**
 	 * Sets the name of the underlying property on the model object.
 	 * @param string $name
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function property($name)
 	{
@@ -42,7 +42,7 @@ class FieldBuilder extends BaseFieldBuilder
 	/**
 	 * Sets the type of the property.
 	 * @param string $typeName
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function type($typeName)
 	{
@@ -53,7 +53,7 @@ class FieldBuilder extends BaseFieldBuilder
 	/**
 	 * Sets the type of the property to a collection of the specified base type.
 	 * @param string $typeName	Base type.
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function collectionOfType($typeName)
 	{
@@ -63,7 +63,7 @@ class FieldBuilder extends BaseFieldBuilder
 	
 	/**
 	 * Marks this field as the primary key.
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function primaryKey()
 	{
@@ -79,7 +79,7 @@ class FieldBuilder extends BaseFieldBuilder
 	
 	/**
 	 * Makes this property read-only.
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function readonly()
 	{
@@ -90,7 +90,7 @@ class FieldBuilder extends BaseFieldBuilder
 	/**
 	 * Sets a getter for reading the value of this field.
 	 * @param array|Closure $callback
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function getter($callback)
 	{
@@ -101,7 +101,7 @@ class FieldBuilder extends BaseFieldBuilder
 	/**
 	 * Sets a setter for setting a new value of this field.
 	 * @param array|Closure $callback
-	 * @return \Light\ObjectService\Builder\FieldBuilder
+	 * @return \Light\ObjectService\Type\Builder\FieldBuilder
 	 */
 	public function setter($callback)
 	{

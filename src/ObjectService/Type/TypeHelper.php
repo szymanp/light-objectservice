@@ -3,7 +3,7 @@
 namespace Light\ObjectService\Type;
 
 use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Builder\BaseFieldBuilder;
+use Light\ObjectService\Type\Builder\BaseFieldBuilder;
 use Light\Exception\Exception;
 
 /**
