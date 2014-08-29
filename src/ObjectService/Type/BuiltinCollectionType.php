@@ -1,6 +1,6 @@
 <?php 
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 final class BuiltinCollectionType extends CollectionType
 {

@@ -2,13 +2,13 @@
 
 namespace Light\ObjectService\Mockup;
 
-use Light\ObjectService\Model\ObjectProvider;
+use Light\ObjectService\Type\ObjectProvider;
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\FindContext;
 use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Transaction\Transaction;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 
 class Database
 {
@@ -224,7 +224,7 @@ class PostModel extends ComplexType
 final class TypeFactory
 {
 	/**
-	 * @return \Light\ObjectService\Model\ComplexType
+	 * @return \Light\ObjectService\Type\ComplexType
 	 */
 	public static function getCommentType()
 	{

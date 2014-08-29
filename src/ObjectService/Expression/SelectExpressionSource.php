@@ -1,7 +1,7 @@
 <?php 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 
 interface SelectExpressionSource
 {

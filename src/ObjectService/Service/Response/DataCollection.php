@@ -2,7 +2,7 @@
 
 namespace Light\ObjectService\Service\Response;
 
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 
 /**
  * A projected representation of a collection resource. 
@@ -12,7 +12,7 @@ final class DataCollection implements DataEntity
 {
 	const CLASSNAME = __CLASS__;
 	
-	/** @var \Light\ObjectService\Model\CollectionType */
+	/** @var \Light\ObjectService\Type\CollectionType */
 	private $type;
 	/** @var mixed */
 	private $data;
@@ -42,7 +42,7 @@ final class DataCollection implements DataEntity
 	
 	/**
 	 * Returns the type of data in this object.
-	 * @return \Light\ObjectService\Model\CollectionType
+	 * @return \Light\ObjectService\Type\CollectionType
 	 */
 	public function getType()
 	{

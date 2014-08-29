@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Builder\ComplexSpecBuilder;
 use Light\ObjectService\Expression\WhereExpression;

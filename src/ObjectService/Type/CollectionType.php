@@ -1,6 +1,6 @@
 <?php 
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Builder\CollectionSpecBuilder;
 use Light\Exception\Exception;
@@ -30,7 +30,7 @@ abstract class CollectionType extends Type
 	
 	/**
 	 * Returns the type of items in this collection.
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	final public function getBaseType()
 	{

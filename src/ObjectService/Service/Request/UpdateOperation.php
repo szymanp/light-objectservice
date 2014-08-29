@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Service\Request;
 
 use Light\Exception\InvalidParameterType;
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Exceptions\TypeException;
 
 class UpdateOperation extends Operation

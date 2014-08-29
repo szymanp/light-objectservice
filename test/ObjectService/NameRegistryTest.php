@@ -4,10 +4,10 @@ namespace Light\ObjectBroker;
 
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Util\DefaultNameRegistry;
-use Light\ObjectService\Model\BuiltinType;
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\BuiltinType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Model\BuiltinCollectionType;
+use Light\ObjectService\Type\BuiltinCollectionType;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';

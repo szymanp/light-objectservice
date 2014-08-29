@@ -3,11 +3,11 @@
 namespace Light\ObjectService;
 
 use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Model\ObjectProvider;
+use Light\ObjectService\Type\ObjectProvider;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\ParsedPathExpression;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\PathReader;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\PathReader;
 
 class ObjectBroker
 {

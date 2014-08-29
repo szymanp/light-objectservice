@@ -2,20 +2,20 @@
 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\CollectionType;
-use Light\ObjectService\Model\Type;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\SimpleType;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\SimpleType;
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Exceptions\TypeException;
-use Light\ObjectService\Model\TypeHelper;
+use Light\ObjectService\Type\TypeHelper;
 
 final class WhereExpression implements WhereExpressionSource
 {
 	/** @var array<string, \Light\ObjectService\Expression\Value|\Light\ObjectService\Expression\Criterion[]> */
 	private $values = array();
 	
-	/** @var \Light\ObjectService\Model\CollectionType */
+	/** @var \Light\ObjectService\Type\CollectionType */
 	private $type;
 	
 	/**
@@ -154,7 +154,7 @@ final class WhereExpression implements WhereExpressionSource
 	
 	/**
 	 * Returns the type that this where expression applies to.
-	 * @return \Light\ObjectService\Model\CollectionType
+	 * @return \Light\ObjectService\Type\CollectionType
 	 */
 	public function getType()
 	{

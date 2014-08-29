@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
@@ -24,7 +24,7 @@ class PathReader
 	/** @var PathReader_Value[] */
 	private $resolved = array();
 	
-	/** @var \Light\ObjectService\Model\TypeHelper */
+	/** @var \Light\ObjectService\Type\TypeHelper */
 	private $typeHelper;
 	
 	/**
@@ -71,7 +71,7 @@ class PathReader
 	/**
 	 * Reads a value.
 	 * @throws ResolutionException
-	 * @return \Light\ObjectService\Model\ResolvedValue
+	 * @return \Light\ObjectService\Type\ResolvedValue
 	 */
 	public function read()
 	{
@@ -333,14 +333,14 @@ abstract class PathReader_Value
 	
 	/**
 	 * Returns the type of the value.
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	abstract public function getType();
 
 	/**
 	 * Returns the value as a Collection.
 	 * @throws PathReader_Exception
-	 * @return \Light\ObjectService\Model\PathReader_Collection
+	 * @return \Light\ObjectService\Type\PathReader_Collection
 	 */
 	public function asCollection()
 	{
@@ -354,7 +354,7 @@ abstract class PathReader_Value
 	/**
 	 * Returns the value as an Object.
 	 * @throws PathReader_Exception
-	 * @return \Light\ObjectService\Model\PathReader_Object
+	 * @return \Light\ObjectService\Type\PathReader_Object
 	 */
 	public function asObject()
 	{
@@ -368,7 +368,7 @@ abstract class PathReader_Value
 	/**
 	 * Returns the value as a Scalar.
 	 * @throws PathReader_Exception
-	 * @return \Light\ObjectService\Model\PathReader_Scalar
+	 * @return \Light\ObjectService\Type\PathReader_Scalar
 	 */
 	public function asScalar()
 	{
@@ -393,7 +393,7 @@ class PathReader_Object extends PathReader_Value
 	
 	/**
 	 * Returns the type of the value.
-	 * @return \Light\ObjectService\Model\ComplexType
+	 * @return \Light\ObjectService\Type\ComplexType
 	 */
 	public function getType()
 	{
@@ -414,7 +414,7 @@ class PathReader_Scalar extends PathReader_Value
 
 	/**
 	 * Returns the type of the value.
-	 * @return \Light\ObjectService\Model\SimpleType
+	 * @return \Light\ObjectService\Type\SimpleType
 	 */
 	public function getType()
 	{
@@ -435,7 +435,7 @@ class PathReader_Collection extends PathReader_Value
 	
 	/**
 	 * Returns the type of the collection.
-	 * @return \Light\ObjectService\Model\CollectionType
+	 * @return \Light\ObjectService\Type\CollectionType
 	 */
 	public function getType()
 	{
@@ -455,7 +455,7 @@ class PathReader_Collection extends PathReader_Value
 	/**
 	 * Returns the first and only element of this collection as an Object.
 	 * @throws PathReader_Exception
-	 * @return \Light\ObjectService\Model\PathReader_Object
+	 * @return \Light\ObjectService\Type\PathReader_Object
 	 */
 	public function getFirstElementAsObject()
 	{

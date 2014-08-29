@@ -1,13 +1,13 @@
 <?php 
 namespace Light\ObjectService;
 
-use Light\ObjectService\Model\Type;
-use Light\ObjectService\Model\SimpleType;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\CollectionType;
-use Light\ObjectService\Model\ObjectProvider;
-use Light\ObjectService\Model\BuiltinType;
-use Light\ObjectService\Model\BuiltinCollectionType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ObjectProvider;
+use Light\ObjectService\Type\BuiltinType;
+use Light\ObjectService\Type\BuiltinCollectionType;
 use Light\ObjectService\Util\DefaultNameRegistry;
 use Light\Exception\Exception;
 use Light\Exception\InvalidParameterType;
@@ -116,7 +116,7 @@ class ObjectRegistry
 	/**
 	 * Returns a published resource.
 	 * @param string	$address
-	 * @return object|\Light\ObjectService\Model\ObjectProvider
+	 * @return object|\Light\ObjectService\Type\ObjectProvider
 	 */
 	public function getResource($address)
 	{
@@ -144,7 +144,7 @@ class ObjectRegistry
 	/**
 	 * Returns a type description for a PHP type.
 	 * @param string $name
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	public function getType($name)
 	{
@@ -161,7 +161,7 @@ class ObjectRegistry
 	/**
 	 * Returns a collection type for a PHP type.
 	 * @param string $baseTypeName
-	 * @return \Light\ObjectService\Model\BuiltinCollectionType
+	 * @return \Light\ObjectService\Type\BuiltinCollectionType
 	 */
 	public function getCollectionType($baseTypeName)
 	{

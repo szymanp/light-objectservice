@@ -3,14 +3,14 @@ namespace Light\ObjectService\Service\Response;
 
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Model\Type;
-use Light\ObjectService\Model\SimpleType;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\CollectionType;
 use Light\Exception\InvalidParameterType;
-use Light\ObjectService\Model\TypeHelper;
+use Light\ObjectService\Type\TypeHelper;
 use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Model\ObjectProvider;
+use Light\ObjectService\Type\ObjectProvider;
 use Light\ObjectService\Expression\FindContextObject;
 use Light\ObjectService\Expression\NestedSelectExpression;
 
@@ -69,9 +69,9 @@ abstract class Projector
  */
 final class Projector_Complex extends Projector
 {
-	/** @var \Light\ObjectService\Model\ComplexType */
+	/** @var \Light\ObjectService\Type\ComplexType */
 	private $type;
-	/** @var \Light\ObjectService\Model\TypeHelper */
+	/** @var \Light\ObjectService\Type\TypeHelper */
 	private $typeHelper;
 	
 	protected function __construct(ObjectRegistry $registry, ComplexType $type)
@@ -150,7 +150,7 @@ final class Projector_Complex extends Projector
  */
 final class Projector_Simple extends Projector
 {
-	/** @var \Light\ObjectService\Model\SimpleType */
+	/** @var \Light\ObjectService\Type\SimpleType */
 	private $type;
 
 	protected function __construct(ObjectRegistry $registry, SimpleType $type)
@@ -177,7 +177,7 @@ final class Projector_Simple extends Projector
  */
 final class Projector_Collection extends Projector
 {
-	/** @var \Light\ObjectService\Model\CollectionType */
+	/** @var \Light\ObjectService\Type\CollectionType */
 	private $type;
 
 	protected function __construct(ObjectRegistry $registry, CollectionType $type)

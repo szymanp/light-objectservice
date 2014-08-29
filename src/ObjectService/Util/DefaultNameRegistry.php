@@ -2,11 +2,11 @@
 namespace Light\ObjectService\Util;
 
 use Light\ObjectService\NameRegistry;
-use Light\ObjectService\Model\Type;
+use Light\ObjectService\Type\Type;
 use Light\Exception\Exception;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\CollectionType;
-use Light\ObjectService\Model\SimpleType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\SimpleType;
 use Light\Util\URL;
 
 class DefaultNameRegistry implements NameRegistry

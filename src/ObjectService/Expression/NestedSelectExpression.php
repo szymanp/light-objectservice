@@ -2,7 +2,7 @@
 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Exceptions\TypeException;
 
 final class NestedSelectExpression extends SelectExpression

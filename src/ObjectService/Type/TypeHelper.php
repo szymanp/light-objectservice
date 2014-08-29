@@ -1,6 +1,6 @@
 <?php 
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Builder\BaseFieldBuilder;
@@ -18,7 +18,7 @@ final class TypeHelper
 	/**
 	 * Creates a new TypeHelper instance.
 	 * @param ObjectRegistry $registry
-	 * @return \Light\ObjectService\Model\TypeHelper
+	 * @return \Light\ObjectService\Type\TypeHelper
 	 */
 	public static function create(ObjectRegistry $registry)
 	{
@@ -35,7 +35,7 @@ final class TypeHelper
 	 * @param string 	$typeName
 	 * @param boolean 	$isCollection
 	 * @throws TypeHelper_Exception	If the type is not registered.
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	public function getType($typeName, $isCollection)
 	{
@@ -52,7 +52,7 @@ final class TypeHelper
 	 * Returns a type object for the given field.
 	 * @param BaseFieldBuilder $field
 	 * @throws TypeHelper_Exception	If the field does not specify a type.
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	public function getTypeForField(BaseFieldBuilder $field)
 	{
@@ -68,7 +68,7 @@ final class TypeHelper
 	/**
 	 * Returns the type of the given field if the type is an ObjectProvider, otherwise NULL.
 	 * @param BaseFieldBuilder $field
-	 * @return \Light\ObjectService\Model\ObjectProvider
+	 * @return \Light\ObjectService\Type\ObjectProvider
 	 */
 	public function getObjectProviderOrNull(BaseFieldBuilder $field)
 	{

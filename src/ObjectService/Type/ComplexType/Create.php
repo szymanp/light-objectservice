@@ -1,5 +1,5 @@
 <?php 
-namespace Light\ObjectService\Model\ComplexType;
+namespace Light\ObjectService\Type\ComplexType;
 
 /**
  * An interface for ComplexTypes that support creating new instances of objects.

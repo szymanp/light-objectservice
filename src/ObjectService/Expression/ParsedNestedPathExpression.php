@@ -4,9 +4,9 @@ namespace Light\ObjectService\Expression;
 
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Type\ResolvedValue;
 use Light\Exception\InvalidParameterValue;
 use Light\Exception\Exception;
 
@@ -16,7 +16,7 @@ use Light\Exception\Exception;
  */
 final class ParsedNestedPathExpression extends ParsedPathExpression
 {
-	/** @var \Light\ObjectService\Model\ResolvedValue */
+	/** @var \Light\ObjectService\Type\ResolvedValue */
 	private $resolvedValue;
 		
 	public function __construct(PathExpression $pathExpression, ResolvedValue $value)

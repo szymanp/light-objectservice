@@ -1,7 +1,7 @@
 <?php 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 
 /**
  * An interface for objects that can be compiled into a WhereExpression.

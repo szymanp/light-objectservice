@@ -3,7 +3,7 @@ namespace Light\ObjectService\Service;
 
 use Light\ObjectService\Service\Request\Request;
 use Light\ObjectService\Service\Response\Response;
-use Light\ObjectService\Model\PathReader;
+use Light\ObjectService\Type\PathReader;
 use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Service\Request\CreateOperation;

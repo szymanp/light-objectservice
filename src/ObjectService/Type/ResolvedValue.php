@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Expression\ParsedPathExpression;
 
@@ -12,7 +12,7 @@ final class ResolvedValue
 	/** @var mixed */
 	private $value;
 	
-	/** @var \Light\ObjectService\Model\Type */
+	/** @var \Light\ObjectService\Type\Type */
 	private $type;
 
 	/**
@@ -38,7 +38,7 @@ final class ResolvedValue
 	
 	/**
 	 * Returns the type of the value.
-	 * @return \Light\ObjectService\Model\Type
+	 * @return \Light\ObjectService\Type\Type
 	 */
 	public function getType()
 	{

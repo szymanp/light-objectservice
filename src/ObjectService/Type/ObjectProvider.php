@@ -1,6 +1,6 @@
 <?php 
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\FindContext;

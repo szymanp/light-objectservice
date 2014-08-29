@@ -1,6 +1,6 @@
 <?php 
 
-namespace Light\ObjectService\Model;
+namespace Light\ObjectService\Type;
 
 final class BuiltinType extends SimpleType
 {
@@ -26,7 +26,7 @@ final class BuiltinType extends SimpleType
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Model\SimpleType::getPhpType()
+	 * @see \Light\ObjectService\Type\SimpleType::getPhpType()
 	 */
 	public function getPhpType()
 	{

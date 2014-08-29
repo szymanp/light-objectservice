@@ -4,7 +4,7 @@ namespace Light\ObjectService\Expression;
 
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 use Light\Exception\InvalidParameterValue;
 
 /**

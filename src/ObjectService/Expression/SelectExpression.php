@@ -2,10 +2,10 @@
 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\TypeHelper;
-use Light\ObjectService\Model\SimpleType;
-use Light\ObjectService\Model\ComplexType;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\TypeHelper;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\CollectionType;
 use Light\Exception\InvalidParameterType;
 use Light\Exception\TypeException;
 
@@ -19,7 +19,7 @@ abstract class SelectExpression
 	/** @var array<string, NestedSelectExpression> */
 	private $subselections = array();
 	
-	/** @var \Light\ObjectService\Model\ComplexType */
+	/** @var \Light\ObjectService\Type\ComplexType */
 	private $type;
 	
 	/**
@@ -126,7 +126,7 @@ abstract class SelectExpression
 	
 	/**
 	 * Returns the type of object to which this selection is applicable.
-	 * @return \Light\ObjectService\Model\ComplexType
+	 * @return \Light\ObjectService\Type\ComplexType
 	 */
 	final public function getType()
 	{

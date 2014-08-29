@@ -2,12 +2,12 @@
 namespace Light\ObjectService\Service\Request;
 
 use Light\Exception\InvalidParameterType;
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 
 class CreateOperation extends UpdateOperation
 {
 	/**
-	 * @var \Light\ObjectService\Model\ComplexType
+	 * @var \Light\ObjectService\Type\ComplexType
 	 */
 	private $type;
 
@@ -22,7 +22,7 @@ class CreateOperation extends UpdateOperation
 	
 	/**
 	 * Returns the type of the object to be created.
-	 * @return \Light\ObjectService\Model\ComplexType
+	 * @return \Light\ObjectService\Type\ComplexType
 	 */
 	public function getType()
 	{
@@ -31,7 +31,7 @@ class CreateOperation extends UpdateOperation
 	
 	/**
 	 * Returns the resource created in this operation.
-	 * @return \Light\ObjectService\Model\ResolvedValue
+	 * @return \Light\ObjectService\Type\ResolvedValue
 	 */
 	public function getNewResource()
 	{

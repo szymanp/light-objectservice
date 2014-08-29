@@ -6,14 +6,14 @@ use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Model\PathReader;
+use Light\ObjectService\Type\PathReader;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Type\ResolvedValue;
 use Light\ObjectService\Mockup\Database;
 
 require_once 'config.php';
@@ -142,7 +142,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	
 	/**
 	 * @param PathExpression $path
-	 * @return \Light\ObjectService\Model\PathReader
+	 * @return \Light\ObjectService\Type\PathReader
 	 */
 	private function getReader(PathExpression $path)
 	{
@@ -151,7 +151,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @return \Light\ObjectService\Model\PathReader
+	 * @return \Light\ObjectService\Type\PathReader
 	 */
 	private function getNestedReader(PathExpression $path, ResolvedValue $value)
 	{

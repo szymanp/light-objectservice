@@ -2,10 +2,10 @@
 namespace Light\ObjectService\Service\Request;
 
 use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Type\ResolvedValue;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Model\PathReader;
+use Light\ObjectService\Type\PathReader;
 use Light\Exception\Exception;
 
 /**
@@ -20,7 +20,7 @@ abstract class Operation
 	/** @var \Light\ObjectService\Expression\PathExpression */
 	private $resourcePath;
 	
-	/** @var \Light\ObjectService\Model\ResolvedValue */
+	/** @var \Light\ObjectService\Type\ResolvedValue */
 	private $resource;
 	
 	/**
@@ -78,7 +78,7 @@ abstract class Operation
 	 * 
 	 * The resource might only be available after the operation has been executed.
 	 * 
-	 * @return \Light\ObjectService\Model\ResolvedValue
+	 * @return \Light\ObjectService\Type\ResolvedValue
 	 */
 	final public function getResource()
 	{
@@ -97,7 +97,7 @@ abstract class Operation
 	 * 
 	 * @param ExecutionParameters $params
 	 * @throws Exception
-	 * @return \Light\ObjectService\Model\ResolvedValue
+	 * @return \Light\ObjectService\Type\ResolvedValue
 	 */
 	final protected function readResource(ExecutionParameters $params)
 	{

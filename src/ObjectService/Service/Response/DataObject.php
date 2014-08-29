@@ -2,7 +2,7 @@
 
 namespace Light\ObjectService\Service\Response;
 
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\ComplexType;
 
 /**
  * A projected representation of an object resource. 
@@ -12,7 +12,7 @@ final class DataObject implements DataEntity
 {
 	const CLASSNAME = __CLASS__;
 	
-	/** @var \Light\ObjectService\Model\ComplexType */
+	/** @var \Light\ObjectService\Type\ComplexType */
 	private $type;
 	/** @var \stdClass */
 	private $data;
@@ -34,7 +34,7 @@ final class DataObject implements DataEntity
 	
 	/**
 	 * Returns the type of data in this object.
-	 * @return \Light\ObjectService\Model\ComplexType
+	 * @return \Light\ObjectService\Type\ComplexType
 	 */
 	public function getType()
 	{

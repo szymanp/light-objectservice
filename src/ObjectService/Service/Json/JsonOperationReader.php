@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Service\Json;
 
 use Light\ObjectService\Service\Request\Operation;
-use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Type\ResolvedValue;
 use Light\ObjectService\Exceptions\InvalidRequestException;
 use Light\ObjectService\Service\Request\CreateOperation;
 use Light\ObjectService\Service\Request\UpdateOperation;

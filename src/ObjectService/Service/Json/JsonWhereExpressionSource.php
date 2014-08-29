@@ -2,11 +2,11 @@
 namespace Light\ObjectService\Service\Json;
 
 use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Model\CollectionType;
+use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Expression\WhereExpressionSource;
-use Light\ObjectService\Model\Type;
-use Light\ObjectService\Model\TypeHelper;
-use Light\ObjectService\Model\ComplexType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Type\TypeHelper;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Exceptions\InvalidRequestException;
 use Light\Exception\NotImplementedException;

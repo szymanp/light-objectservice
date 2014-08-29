@@ -1,7 +1,7 @@
 <?php 
 namespace Light\ObjectService;
 
-use Light\ObjectService\Model\Type;
+use Light\ObjectService\Type\Type;
 
 /**
  * A registry of URIs for types and resources.

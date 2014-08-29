@@ -1,7 +1,7 @@
 <?php 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Model\ResolvedValue;
+use Light\ObjectService\Type\ResolvedValue;
 
 interface ResourceReference
 {
@@ -11,7 +11,7 @@ interface ResourceReference
 	public function isCollection();
 	
 	/**
-	 * @return \Light\ObjectService\Model\ResolvedValue
+	 * @return \Light\ObjectService\Type\ResolvedValue
 	 */
 	public function findResource();
 }

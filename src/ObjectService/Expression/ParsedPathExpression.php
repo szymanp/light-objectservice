@@ -10,7 +10,7 @@ abstract class ParsedPathExpression extends PathExpression
 	
 	/**
 	 * Returns the type of the root resource in the path.
-	 * @eturn \Light\ObjectService\Model\Type
+	 * @eturn \Light\ObjectService\Type\Type
 	 */
 	abstract public function getRootType();
 	
