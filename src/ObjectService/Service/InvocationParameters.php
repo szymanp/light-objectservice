@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\ObjectService\Service\Request\ExecutionParameters;
+use Light\ObjectService\Resource\Operation\ExecutionParameters;
 
 interface InvocationParameters extends ExecutionParameters
 {

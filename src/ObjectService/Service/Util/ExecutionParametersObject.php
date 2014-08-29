@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service\Util;
 
-use Light\ObjectService\Service\Request\ExecutionParameters;
+use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\ObjectRegistry;
 

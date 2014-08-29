@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Service\Request;
+namespace Light\ObjectService\Resource\Operation;
 
 /**
  * Parameters for the execution of an operation.

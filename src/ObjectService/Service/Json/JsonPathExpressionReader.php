@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Service\Json;
 
 use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Service\Request\Operation;
+use Light\ObjectService\Resource\Operation\Operation;
 
 /**
  * Reads a path expression from JSON data.

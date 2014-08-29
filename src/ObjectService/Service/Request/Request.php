@@ -21,7 +21,7 @@ interface Request
 	
 	/**
 	 * Returns the operation to be performed on the requested resource.
-	 * @return \Light\ObjectService\Service\Request\Operation
+	 * @return \Light\ObjectService\Resource\Operation\Operation
 	 */
 	function getOperation();
 }

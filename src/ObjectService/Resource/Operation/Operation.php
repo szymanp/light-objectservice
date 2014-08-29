@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Service\Request;
+namespace Light\ObjectService\Resource\Operation;
 
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Type\ResolvedValue;
@@ -14,7 +14,7 @@ use Light\Exception\Exception;
  */
 abstract class Operation
 {
-	/** @var \Light\ObjectService\Service\Request\Operation */
+	/** @var \Light\ObjectService\Resource\Operation\Operation */
 	private $parent;
 	
 	/** @var \Light\ObjectService\Expression\PathExpression */
@@ -26,7 +26,7 @@ abstract class Operation
 	/**
 	 * Sets the parent operation.
 	 * @param Operation $parent
-	 * @return \Light\ObjectService\Service\Request\Operation
+	 * @return \Light\ObjectService\Resource\Operation\Operation
 	 */
 	final public function setParent(Operation $parent)
 	{
@@ -37,7 +37,7 @@ abstract class Operation
 	/**
 	 * Sets the path to the resource that is the subject of this operation.
 	 * @param PathExpression $path
-	 * @return \Light\ObjectService\Service\Request\Operation
+	 * @return \Light\ObjectService\Resource\Operation\Operation
 	 */
 	final public function setResourcePath(PathExpression $path)
 	{
@@ -57,7 +57,7 @@ abstract class Operation
 	
 	/**
 	 * Returns the parent operation.
-	 * @return \Light\ObjectService\Service\Request\Operation
+	 * @return \Light\ObjectService\Resource\Operation\Operation
 	 */
 	final public function getParent()
 	{

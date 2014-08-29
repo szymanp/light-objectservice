@@ -1,12 +1,12 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Service\Request\Operation;
 use Light\ObjectService\Type\ResolvedValue;
 use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\ObjectService\Service\Request\CreateOperation;
-use Light\ObjectService\Service\Request\UpdateOperation;
-use Light\ObjectService\Service\Request\ReadOperation;
+use Light\ObjectService\Resource\Operation\Operation;
+use Light\ObjectService\Resource\Operation\CreateOperation;
+use Light\ObjectService\Resource\Operation\UpdateOperation;
+use Light\ObjectService\Resource\Operation\ReadOperation;
 use Light\Exception\Exception;
 use Light\ObjectService\Expression\PathExpression;
 use Light\Exception\NotImplementedException;
@@ -114,7 +114,7 @@ abstract class JsonOperationReader
 		}
 	}
 	
-	/** @var \Light\ObjectService\Service\Request\Operation */
+	/** @var \Light\ObjectService\Resource\Operation\Operation */
 	protected $parentOperation;
 	/** @var \Light\ObjectService\Expression\PathExpression */
 	protected $resourcePath;
@@ -152,7 +152,7 @@ abstract class JsonOperationReader
 	abstract protected function prevalidate();
 	
 	/**
-	 * @return \Light\ObjectService\Service\Request\Operation
+	 * @return \Light\ObjectService\Resource\Operation\Operation
 	 */
 	abstract public function read();
 }

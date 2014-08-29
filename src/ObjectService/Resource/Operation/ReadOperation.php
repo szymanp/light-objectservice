@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Service\Request;
+namespace Light\ObjectService\Resource\Operation;
 
 /**
  * A Read operation does not alter the resource. 

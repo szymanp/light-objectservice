@@ -2,6 +2,7 @@
 
 namespace Light\ObjectService\Service\Request;
 
+use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
 

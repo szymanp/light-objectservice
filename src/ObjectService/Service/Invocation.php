@@ -6,7 +6,7 @@ use Light\ObjectService\Service\Response\Response;
 use Light\ObjectService\Type\PathReader;
 use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Service\Request\CreateOperation;
+use Light\ObjectService\Resource\Operation\CreateOperation;
 use Light\ObjectService\Service\Response\Projector;
 
 class Invocation

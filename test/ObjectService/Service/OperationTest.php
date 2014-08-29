@@ -5,7 +5,7 @@ use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Service\Request\ReadOperation;
+use Light\ObjectService\Resource\Operation\ReadOperation;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;

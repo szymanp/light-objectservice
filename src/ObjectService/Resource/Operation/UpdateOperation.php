@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Service\Request;
+namespace Light\ObjectService\Resource\Operation;
 
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Type\ComplexType;

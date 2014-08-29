@@ -34,7 +34,7 @@ class InvocationParametersObject implements InvocationParameters
 
 	/**
 	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Service\Request\ExecutionParameters::getObjectRegistry()
+	 * @see \Light\ObjectService\Resource\Operation\ExecutionParameters::getObjectRegistry()
 	 */
 	public function getObjectRegistry()
 	{
@@ -43,7 +43,7 @@ class InvocationParametersObject implements InvocationParameters
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Service\Request\ExecutionParameters::getTransaction()
+	 * @see \Light\ObjectService\Resource\Operation\ExecutionParameters::getTransaction()
 	 */
 	public function getTransaction()
 	{

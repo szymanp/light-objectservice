@@ -33,7 +33,7 @@ class JsonRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$svcRequest  = $this->reader->read($httpRequest);
 		
 		$this->assertInstanceOf("Light\ObjectService\Service\Request\Request", $svcRequest);
-		$this->assertInstanceOf("Light\ObjectService\Service\Request\ReadOperation", $svcRequest->getOperation());
+		$this->assertInstanceOf("Light\ObjectService\Resource\Operation\ReadOperation", $svcRequest->getOperation());
 		$this->assertEquals("post", $svcRequest->getResourcePath()->getPath());
 	}
 	
@@ -53,7 +53,7 @@ DOC;
 		$svcRequest  = $this->reader->read($httpRequest);
 	
 		$this->assertInstanceOf("Light\ObjectService\Service\Request\Request", $svcRequest);
-		$this->assertInstanceOf("Light\ObjectService\Service\Request\ReadOperation", $svcRequest->getOperation());
+		$this->assertInstanceOf("Light\ObjectService\Resource\Operation\ReadOperation", $svcRequest->getOperation());
 		$this->assertEquals("post", $svcRequest->getResourcePath()->getPath());
 		
 		$targetWhere = $svcRequest->getResourcePath()->getWhereReference(PathExpression::TARGET);
