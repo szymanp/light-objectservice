@@ -2,9 +2,9 @@
 
 namespace Light\ObjectService\Type;
 
+use Light\Exception\Exception;
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Type\Builder\BaseFieldBuilder;
-use Light\Exception\Exception;
 
 /**
  * A helper class for working with types and fields.
@@ -43,7 +43,7 @@ final class TypeHelper
 							  : $this->registry->getType($typeName);
 		if (is_null($type))
 		{
-			throw new TypeHelper_Exception("PHP type \"%1\" is not registered with the object registry", $clazz);
+			throw new TypeHelper_Exception("PHP type \"%1\" is not registered with the object registry", $typeName);
 		}
 		return $type;
 	}

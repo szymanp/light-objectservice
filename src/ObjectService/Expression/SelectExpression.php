@@ -1,13 +1,12 @@
 <?php
-
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Type\TypeHelper;
-use Light\ObjectService\Type\SimpleType;
-use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\CollectionType;
 use Light\Exception\InvalidParameterType;
-use Light\Exception\TypeException;
+use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\TypeHelper;
 
 abstract class SelectExpression
 {

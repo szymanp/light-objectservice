@@ -2,8 +2,8 @@
 
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\FindContext;
+use Light\ObjectService\Expression\WhereExpression;
 
 abstract class ObjectProvider extends CollectionType
 {

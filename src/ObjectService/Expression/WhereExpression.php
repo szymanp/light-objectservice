@@ -2,12 +2,12 @@
 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Type\CollectionType;
-use Light\ObjectService\Type\Type;
-use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\SimpleType;
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\Type;
 use Light\ObjectService\Type\TypeHelper;
 
 final class WhereExpression implements WhereExpressionSource
@@ -74,7 +74,7 @@ final class WhereExpression implements WhereExpressionSource
 			$valid 		= !$fieldSpec->isCriterion()
 						  && ($type instanceof ComplexType
 						  	  || $type instanceof CollectionType
-						  		 && $type->getBaseType() instanceof CompleType);
+						  		 && $type->getBaseType() instanceof ComplexType);
 			
 			$addAsList = ($type instanceof CollectionType);
 		}

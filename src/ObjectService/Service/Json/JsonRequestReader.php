@@ -1,14 +1,11 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Expression\PathExpression;
+use Light\Exception\Exception;
 use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\ObjectService\Service\Request\Request;
 use Light\ObjectService\Service\Request\RequestObject;
 use Light\ObjectService\Service\Request\RequestReader;
 use Light\Util\HTTP\Request as HTTPRequest;
-use Light\Exception\Exception;
-use Light\Exception\NotImplementedException;
 
 class JsonRequestReader implements RequestReader
 {
@@ -148,7 +145,7 @@ class JsonRequestReader implements RequestReader
 		}
 		else
 		{
-			throw new Exception("Request URI <%1> is not within base path scope <%2>", $currentUri, $path);
+			throw new Exception("Request URI <%1> is not within base path scope <%2>", $currentUri, $this->basePath);
 		}
 		
 		if ($body && $body->query)

@@ -1,10 +1,10 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Service\Response\DataEntity;
-use Light\ObjectService\Service\Response\DataCollection;
-use Light\ObjectService\Service\Response\DataObject;
 use Light\Exception\InvalidParameterType;
+use Light\ObjectService\Service\Response\DataCollection;
+use Light\ObjectService\Service\Response\DataEntity;
+use Light\ObjectService\Service\Response\DataObject;
 
 class JsonDataEntitySerializer
 {

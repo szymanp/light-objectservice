@@ -1,10 +1,10 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Service\Response\Response;
-use Light\ObjectService\Service\Response\DataEntity;
-use Light\Util\HTTP\Response as HTTPResponse;
 use Light\Exception\NotImplementedException;
+use Light\ObjectService\Service\Response\DataEntity;
+use Light\ObjectService\Service\Response\Response;
+use Light\Util\HTTP\Response as HTTPResponse;
 
 class JsonResponse implements Response
 {

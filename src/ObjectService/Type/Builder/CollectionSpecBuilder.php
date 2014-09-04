@@ -2,8 +2,8 @@
 
 namespace Light\ObjectService\Type\Builder;
 
-use Light\ObjectService\Exceptions\TypeException;
 use Light\Exception\Exception;
+use Light\ObjectService\Exceptions\TypeException;
 
 class CollectionSpecBuilder
 {

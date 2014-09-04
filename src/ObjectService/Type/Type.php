@@ -2,8 +2,8 @@
 
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\ObjectRegistry;
 use Light\Exception\Exception;
+use Light\ObjectService\ObjectRegistry;
 
 /**
  * A base class for simple, complex and collection types.

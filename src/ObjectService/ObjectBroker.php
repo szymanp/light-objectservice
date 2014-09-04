@@ -2,10 +2,9 @@
 
 namespace Light\ObjectService;
 
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Type\ObjectProvider;
-use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\ParsedPathExpression;
+use Light\ObjectService\Expression\ParsedRootPathExpression;
+use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\PathReader;
 
@@ -36,7 +35,7 @@ class ObjectBroker
 		}
 		else
 		{
-			$parsedPath = new ParsedPathExpression($path, $this->objectRegistry);
+			$parsedPath = new ParsedRootPathExpression($path, $this->objectRegistry);
 		}
 		
 		$pathReader = new PathReader($parsedPath, $this->objectRegistry);

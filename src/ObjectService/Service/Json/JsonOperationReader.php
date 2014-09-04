@@ -1,15 +1,14 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Type\ResolvedValue;
-use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\ObjectService\Resource\Operation\Operation;
-use Light\ObjectService\Resource\Operation\CreateOperation;
-use Light\ObjectService\Resource\Operation\UpdateOperation;
-use Light\ObjectService\Resource\Operation\ReadOperation;
 use Light\Exception\Exception;
-use Light\ObjectService\Expression\PathExpression;
 use Light\Exception\NotImplementedException;
+use Light\ObjectService\Exceptions\InvalidRequestException;
+use Light\ObjectService\Expression\PathExpression;
+use Light\ObjectService\Resource\Operation\CreateOperation;
+use Light\ObjectService\Resource\Operation\Operation;
+use Light\ObjectService\Resource\Operation\ReadOperation;
+use Light\ObjectService\Resource\Operation\UpdateOperation;
 
 /**
  * Base for classes that parse JSON into Operation objects. 

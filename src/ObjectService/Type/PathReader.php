@@ -1,16 +1,14 @@
 <?php
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Expression\ParsedPathExpression;
-use Light\ObjectService\Expression\SelectExpressionSource;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\FindContextObject;
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Type\Builder\FieldBuilder;
-use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Expression\WhereExpressionSource;
 use Light\Exception\Exception;
+use Light\ObjectService\Exceptions\ResolutionException;
+use Light\ObjectService\Expression\FindContextObject;
+use Light\ObjectService\Expression\ParsedPathExpression;
+use Light\ObjectService\Expression\ParsedRootPathExpression;
+use Light\ObjectService\Expression\SelectExpressionSource;
+use Light\ObjectService\Expression\WhereExpressionSource;
+use Light\ObjectService\ObjectRegistry;
 
 class PathReader
 {

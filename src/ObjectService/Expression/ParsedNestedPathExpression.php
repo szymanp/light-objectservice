@@ -2,13 +2,10 @@
 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Type\CollectionType;
-use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\ObjectService\Type\ResolvedValue;
-use Light\Exception\InvalidParameterValue;
 use Light\Exception\Exception;
+use Light\Exception\InvalidParameterValue;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ResolvedValue;
 
 /**
  * A ParsedPathExpression for a path that is relative to another path.

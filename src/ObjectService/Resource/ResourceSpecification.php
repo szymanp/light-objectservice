@@ -1,10 +1,8 @@
 <?php
 namespace Light\ObjectService\Resource;
 
-use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
-use Light\ObjectService\Type\ResolvedValue;
-use Light\Exception\Exception;
+use Light\ObjectService\Resource\Operation\Operation;
 
 /**
  * Returns a target resource by optionally applying an operation to an existing or new resource.

@@ -2,9 +2,9 @@
 
 namespace Light\ObjectService\Service\Request;
 
-use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
+use Light\ObjectService\Resource\Operation\Operation;
 
 /**
  * An implementation of the {@link Request} interface.

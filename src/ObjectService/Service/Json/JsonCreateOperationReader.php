@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
-use Light\ObjectService\Resource\Operation\UpdateOperation;
 use Light\ObjectService\Exceptions\InvalidRequestException;
 
 class JsonCreateOperationReader extends JsonUpdateOperationReader

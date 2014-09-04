@@ -1,18 +1,18 @@
 <?php
 namespace Light\ObjectService\Service\Response;
 
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Type\Type;
-use Light\ObjectService\Type\SimpleType;
-use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\CollectionType;
 use Light\Exception\InvalidParameterType;
-use Light\ObjectService\Type\TypeHelper;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Type\ObjectProvider;
 use Light\ObjectService\Expression\FindContextObject;
 use Light\ObjectService\Expression\NestedSelectExpression;
+use Light\ObjectService\Expression\SelectExpression;
+use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\ObjectProvider;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Type\TypeHelper;
 
 /**
  * Projects a resource object or collection into a DataEntity object according to selection expressions.

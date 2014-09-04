@@ -2,8 +2,8 @@
 namespace Light\ObjectService\Service\Util;
 
 use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Service\InvocationParameters;
+use Light\ObjectService\Transaction\Transaction;
 
 /**
  * A configuration class for the ObjectService.
@@ -19,7 +19,7 @@ class InvocationParametersObject implements InvocationParameters
 	/**
 	 * Sets the object registry to be used with the REST service.
 	 * @param ObjectRegistry $objectRegistry
-	 * @return \Light\ObjectService\Service\Configuration
+	 * @return \Light\ObjectService\Service\Util\InvocationParametersObject
 	 */
 	public function setObjectRegistry(ObjectRegistry $objectRegistry)
 	{

@@ -1,12 +1,12 @@
 <?php
 namespace Light\ObjectBroker\Service;
 
-use Light\ObjectService\Service\Json\JsonWhereExpressionSource;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Mockup\CommentCollectionType;
-use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Mockup\CommentCollectionType;
+use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\Mockup\PostModel;
+use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Service\Json\JsonWhereExpressionSource;
 
 require_once 'config.php';
 require_once __DIR__ . '/../MockupModel.php';

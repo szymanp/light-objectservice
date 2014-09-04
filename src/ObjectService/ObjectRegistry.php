@@ -1,17 +1,16 @@
 <?php 
 namespace Light\ObjectService;
 
-use Light\ObjectService\Type\Type;
-use Light\ObjectService\Type\SimpleType;
-use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\CollectionType;
-use Light\ObjectService\Type\ObjectProvider;
-use Light\ObjectService\Type\BuiltinType;
-use Light\ObjectService\Type\BuiltinCollectionType;
-use Light\ObjectService\Util\DefaultNameRegistry;
 use Light\Exception\Exception;
 use Light\Exception\InvalidParameterType;
-use Light\Exception\NotImplementedException;
+use Light\ObjectService\Type\BuiltinCollectionType;
+use Light\ObjectService\Type\BuiltinType;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\ObjectProvider;
+use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\Type;
+use Light\ObjectService\Util\DefaultNameRegistry;
 
 class ObjectRegistry
 {

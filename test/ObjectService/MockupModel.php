@@ -2,13 +2,13 @@
 
 namespace Light\ObjectService\Mockup;
 
-use Light\ObjectService\Type\ObjectProvider;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\FindContext;
 use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Expression\FindContext;
+use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\ObjectProvider;
 
 class Database
 {

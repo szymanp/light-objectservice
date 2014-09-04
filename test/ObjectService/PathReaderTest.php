@@ -2,19 +2,18 @@
 
 namespace Light\ObjectBroker;
 
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Mockup\Post;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Type\PathReader;
-use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Expression\PathExpression;
+use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Mockup\Database;
+use Light\ObjectService\Mockup\Post;
+use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\Mockup\PostModel;
+use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Type\PathReader;
+use Light\ObjectService\Type\ResolvedValue;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';
@@ -67,7 +66,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	}
 	
     /**
-     * @expectedException        Light\ObjectService\Exceptions\ResolutionException
+     * @expectedException        \Light\ObjectService\Exceptions\ResolutionException
      * @expectedExceptionMessage Resolution of path "models/post" did not produce any value
      */
 	public function testFindNoValue()
@@ -79,7 +78,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	}
 	
     /**
-     * @expectedException        Light\ObjectService\Exceptions\ResolutionException
+     * @expectedException        \Light\ObjectService\Exceptions\ResolutionException
      * @expectedExceptionMessage Cannot read a single element of a multi-element collection
      */
 	public function testFindAllAndReadField()

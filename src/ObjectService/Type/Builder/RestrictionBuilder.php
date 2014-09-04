@@ -2,8 +2,6 @@
 
 namespace Light\ObjectService\Type\Builder;
 
-use Light\Exception\Exception;
-
 class RestrictionBuilder extends BaseFieldBuilder
 {
 	/** @var CollectionSpecBuilder */

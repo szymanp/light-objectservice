@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Type\ComplexType;
 
 class CreateOperation extends UpdateOperation

@@ -2,8 +2,8 @@
 
 namespace Light\ObjectService\Type\Builder;
 
-use Light\ObjectService\Exceptions\TypeException;
 use Light\Exception\Exception;
+use Light\ObjectService\Exceptions\TypeException;
 
 class ComplexSpecBuilder
 {
@@ -67,7 +67,7 @@ class ComplexSpecBuilder
 	 */
 	public function keyField($nameOrField)
 	{
-		if (is_string($name))
+		if (is_string($nameOrField))
 		{
 			$this->keyField = $this->fields[$nameOrField];
 		}

@@ -1,14 +1,14 @@
 <?php
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Type\Builder\ComplexSpecBuilder;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Expression\SelectExpression;
+use Light\Data\Helper;
 use Light\Exception\Exception;
 use Light\ObjectService\Exceptions\ResolutionException;
+use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Expression\SelectExpression;
+use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Transaction\Transaction;
-use Light\Data\Helper;
+use Light\ObjectService\Type\Builder\ComplexSpecBuilder;
 
 /**
  * A description of an object type.

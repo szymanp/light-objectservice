@@ -1,12 +1,12 @@
 <?php
 namespace Light\ObjectService\Util;
 
-use Light\ObjectService\NameRegistry;
-use Light\ObjectService\Type\Type;
 use Light\Exception\Exception;
-use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\NameRegistry;
 use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\SimpleType;
+use Light\ObjectService\Type\Type;
 use Light\Util\URL;
 
 class DefaultNameRegistry implements NameRegistry
@@ -103,6 +103,8 @@ class DefaultNameRegistry implements NameRegistry
 				return $result;
 			}
 		}
+
+		return null;
 	}
 	
 	protected function constructTypeUri(Type $type)

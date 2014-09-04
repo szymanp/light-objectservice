@@ -2,16 +2,13 @@
 
 namespace Light\ObjectBroker;
 
+use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Expression\ParsedPathExpression;
-use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\TypeFactory;
+use Light\ObjectService\ObjectRegistry;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';
@@ -67,7 +64,7 @@ class ParsedPathExpressionTest extends \PHPUnit_Framework_TestCase
 	}
 
     /**
-     * @expectedException        Light\ObjectService\Exceptions\InvalidRequestException
+     * @expectedException        \Light\ObjectService\Exceptions\InvalidRequestException
      * @expectedExceptionMessage WHERE reference "_3" used in path "models/post/_3/comments/_2" is not defined
      */
 	public function testPathWithInvalidRef()

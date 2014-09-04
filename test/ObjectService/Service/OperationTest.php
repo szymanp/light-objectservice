@@ -1,14 +1,12 @@
 <?php
 namespace Light\ObjectBroker\Service;
 
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Mockup\Post;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Resource\Operation\ReadOperation;
 use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Mockup\Post;
+use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\Mockup\PostModel;
+use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Resource\Operation\ReadOperation;
 use Light\ObjectService\Service\Util\ExecutionParametersObject;
 
 require_once 'config.php';

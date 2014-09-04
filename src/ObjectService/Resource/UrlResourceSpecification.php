@@ -1,9 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource;
 
-use Light\Exception\NotImplementedException;
 use Light\ObjectService\Exceptions\ResolutionException;
-use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\WhereExpressionSource;

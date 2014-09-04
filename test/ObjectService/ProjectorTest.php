@@ -1,17 +1,17 @@
 <?php
 namespace Light\ObjectBroker;
 
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Service\Response\Projector;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Expression\SelectExpression;
+use Light\ObjectService\Expression\WhereExpression;
 use Light\ObjectService\Mockup\CommentCollectionType;
 use Light\ObjectService\Mockup\Post;
-use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Service\Response\DataObject;
+use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\Mockup\PostModel;
+use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Service\Response\DataCollection;
-use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Service\Response\DataObject;
+use Light\ObjectService\Service\Response\Projector;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';

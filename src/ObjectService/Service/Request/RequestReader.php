@@ -25,7 +25,7 @@ interface RequestReader
 	/**
 	 * Parse a HTTP Request and return a Service Request object.
 	 * @param HTTPRequest $httpRequest
-	 * @throws InvalidRequestException
+	 * @throws \Light\ObjectService\Exceptions\InvalidRequestException
 	 * @return \Light\ObjectService\Service\Request\Request
 	 */
 	public function read(HTTPRequest $httpRequest);

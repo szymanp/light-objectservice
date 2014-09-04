@@ -1,9 +1,9 @@
 <?php
 namespace Light\ObjectService\Service\Util;
 
+use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Transaction\Transaction;
-use Light\ObjectService\ObjectRegistry;
 
 class ExecutionParametersObject implements ExecutionParameters
 {

@@ -2,8 +2,8 @@
 namespace Light\ObjectService\Resource\Operation;
 
 use Light\Exception\InvalidParameterType;
-use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Type\ComplexType;
 
 class UpdateOperation extends Operation
 {

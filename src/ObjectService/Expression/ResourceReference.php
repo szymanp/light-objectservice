@@ -1,8 +1,6 @@
 <?php 
 namespace Light\ObjectService\Expression;
 
-use Light\ObjectService\Type\ResolvedValue;
-
 interface ResourceReference
 {
 	/**

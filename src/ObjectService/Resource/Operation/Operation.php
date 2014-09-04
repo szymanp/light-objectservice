@@ -1,12 +1,12 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\Exception\Exception;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
+use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Type\PathReader;
-use Light\Exception\Exception;
+use Light\ObjectService\Type\ResolvedValue;
 
 /**
  * A base class for describing requested operations on resources.

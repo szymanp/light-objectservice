@@ -1,20 +1,16 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\ObjectService\Service\Util\InvocationParametersObject;
-use Light\ObjectService\ObjectRegistry;
-use Light\ObjectService\Service\Invocation;
-use Light\ObjectService\Service\Json\JsonRequestReader;
-use Light\Util\HTTP\Response as HTTPResponse;
-use Light\ObjectService\Service\Json\JsonResponse;
-use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\Mockup\PostCollectionModel;
-use Light\ObjectService\Mockup\Comment;
-use Light\ObjectService\Mockup\TypeFactory;
 use Light\ObjectService\Mockup\CommentCollectionType;
 use Light\ObjectService\Mockup\Database;
+use Light\ObjectService\Mockup\PostCollectionModel;
+use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Service;
+use Light\ObjectService\Service\Json\JsonRequestReader;
+use Light\ObjectService\Service\Json\JsonResponse;
+use Light\ObjectService\Service\Util\InvocationParametersObject;
 use Light\ObjectService\Transaction\Transaction;
+use Light\Util\HTTP\Response as HTTPResponse;
 
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../MockupModel.php';

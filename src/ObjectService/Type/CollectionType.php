@@ -2,8 +2,8 @@
 
 namespace Light\ObjectService\Type;
 
-use Light\ObjectService\Type\Builder\CollectionSpecBuilder;
 use Light\Exception\Exception;
+use Light\ObjectService\Type\Builder\CollectionSpecBuilder;
 
 abstract class CollectionType extends Type
 {

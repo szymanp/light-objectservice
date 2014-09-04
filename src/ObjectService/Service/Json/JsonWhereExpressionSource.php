@@ -1,15 +1,15 @@
 <?php
 namespace Light\ObjectService\Service\Json;
 
+use Light\Exception\NotImplementedException;
+use Light\ObjectService\Exceptions\InvalidRequestException;
+use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\WhereExpression;
-use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Expression\WhereExpressionSource;
+use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\Type;
 use Light\ObjectService\Type\TypeHelper;
-use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Exceptions\InvalidRequestException;
-use Light\Exception\NotImplementedException;
 
 /**
  * Reads a Where Expression in JSON format.

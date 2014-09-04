@@ -1,10 +1,10 @@
 <?php 
 namespace Light\ObjectService;
 
-use Light\ObjectService\Service\Request\RequestReader;
-use Light\ObjectService\Service\Response\Response;
 use Light\ObjectService\Service\Invocation;
 use Light\ObjectService\Service\InvocationParameters;
+use Light\ObjectService\Service\Request\RequestReader;
+use Light\ObjectService\Service\Response\Response;
 use Light\Util\HTTP\Request as HTTPRequest;
 use Light\Util\HTTP\Response as HTTPResponse;
 use Negotiation\FormatNegotiator;

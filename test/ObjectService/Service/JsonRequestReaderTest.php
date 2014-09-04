@@ -1,16 +1,16 @@
 <?php
 namespace Light\ObjectBroker\Service;
 
-use Light\Util\HTTP\Request as HTTPRequest;
-use Light\ObjectService\Service\Json\JsonRequestReader;
 use Light\ObjectService\Expression\PathExpression;
+use Light\ObjectService\Service\Json\JsonRequestReader;
+use Light\Util\HTTP\Request as HTTPRequest;
 
 require_once 'config.php';
 require_once __DIR__ . '/../MockupModel.php';
 
 class JsonRequestReaderTest extends \PHPUnit_Framework_TestCase
 {
-	/** @var \Light\ObjectService\ServiceJson\JsonRequestReader */
+	/** @var \Light\ObjectService\Service\Json\JsonRequestReader */
 	private $reader;
 	
 	protected function setUp()
