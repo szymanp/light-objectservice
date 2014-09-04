@@ -1,5 +1,4 @@
 <?php
-
 namespace Light\ObjectService\Type;
 
 use Light\ObjectService\Expression\ParsedPathExpression;
@@ -180,14 +179,14 @@ class PathReader
 					&& !($newObject instanceof \ArrayAccess)
 					&& !($newObject instanceof \Iterator))
 				{
-					throw new PathReader_Exception("%1::find() returned a non-array-like result (%2)", get_class($currentObject), $newObject);
+					throw new PathReader_Exception("%1::find() returned a non-array-like result (%2)", get_class($element), $newObject);
 				}
 					
 				$this->pushNewValue($newObject, $currentColl->type);
 			}
 			else
 			{
-				throw new PathReader_Exception("Cannot execute a query on a non-provider object (PHP class is \"%1\")", get_class($currentObject->value));
+				throw new PathReader_Exception("Cannot execute a query on a non-provider object (PHP class is \"%1\")", get_class($element->value));
 			}
 		}
 		elseif (is_integer($element))

@@ -192,7 +192,7 @@ class ObjectRegistry
 	}
 	
 	/**
-	 * Returns a name registry.
+	 * Returns the name registry.
 	 * @return \Light\ObjectService\NameRegistry
 	 */
 	public function getNameRegistry()
