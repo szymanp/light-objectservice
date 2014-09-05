@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Type\ComplexType;
+namespace Light\ObjectService\Type\ComplexTypeInterfaces;
 
 /**
  * Provides information about the context in which a complex-type object is deleted.

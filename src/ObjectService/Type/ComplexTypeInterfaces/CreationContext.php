@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Type\ComplexType;
+namespace Light\ObjectService\Type\ComplexTypeInterfaces;
 
 /**
  * Provides information about the context in which a complex-type object is created.
@@ -7,7 +7,7 @@ namespace Light\ObjectService\Type\ComplexType;
 interface CreationContext
 {
 	/**
-	 * Returns the relatedobject.
+	 * Returns the related object.
 	 * 
 	 * An object to be created will be assigned to a property of another object.
 	 * In this case, the object on which the property is defined is called the "related" object.

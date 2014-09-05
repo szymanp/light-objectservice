@@ -1,5 +1,5 @@
 <?php 
-namespace Light\ObjectService\Type\CollectionType;
+namespace Light\ObjectService\Type\CollectionTypeInterfaces;
 
 /**
  * An interface for CollectionTypes that support appending elements to a collection.
