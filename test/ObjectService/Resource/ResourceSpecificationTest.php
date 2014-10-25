@@ -9,9 +9,6 @@ use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Service\Util\ExecutionParametersObject;
 use Light\ObjectService\Util\DefaultNameRegistry;
 
-require_once 'config.php';
-require_once __DIR__ . '/../MockupModel.php';
-
 class ResourceSpecificationTest extends \PHPUnit_Framework_TestCase
 {
 	/** @var ExecutionParameters */
