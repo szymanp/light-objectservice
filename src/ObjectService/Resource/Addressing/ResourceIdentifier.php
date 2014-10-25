@@ -36,7 +36,7 @@ class ResourceIdentifier
 	 * @param ObjectRegistry $registry
 	 *
 	 */
-	public function resolve(ObjectRegistry $registry)
+	public function resolve(ObjectRegistry $registry)	// + endpoint registry?
 	{
 		// TODO
 	}

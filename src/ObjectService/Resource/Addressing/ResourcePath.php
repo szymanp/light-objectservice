@@ -12,6 +12,15 @@ final class ResourcePath
 	private $pathString;
 	private $elements;
 
+	// TODO Make a RelativeResourcePath subclass.
+	//		Change create($path) -> create($path, ResolvedValue $relativeTo = null)
+	//		- if 2nd arg is not null, then it would return a RelativeResourcePath
+	//		Then PathReader will now where to start.
+	//
+	//	 	Will ResourcePath be used as input to PathReader?
+	//		I guess to obtain the base object - yes.
+	//		But ultimately, whoever is reading the resource, they need to interact with ResourceIdentifier.
+
 	/**
 	 * Creates a new ResourcePath object from the resource path portion of the URL string.
 	 * @param $path
