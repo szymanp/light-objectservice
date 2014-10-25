@@ -1,10 +1,10 @@
 <?php
-
 namespace Light\ObjectService\Service\Request;
 
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
 use Light\ObjectService\Resource\Operation\Operation;
+use Light\ObjectService\Resource\UrlResourceSpecification;
 
 /**
  * An implementation of the {@link Request} interface.
@@ -12,55 +12,28 @@ use Light\ObjectService\Resource\Operation\Operation;
  */
 final class RequestObject implements Request
 {
-	private $resourcePath;
-	private $operation;
+	private $resourceSpecification;
 	private $selection;
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Service\Request\Request::getResourcePath()
-	 */
-	public function getResourcePath()
+	public function getResourceSpecification()
 	{
-		return $this->resourcePath;
+		return $this->resourceSpecification;
 	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Service\Request\Request::getOperation()
-	 */
-	public function getOperation()
-	{
-		return $this->operation;
-	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Service\Request\Request::getSelection()
-	 */
+
 	public function getSelection()
 	{
 		return $this->selection;
 	}
 
 	/**
-	 * Sets the path to the requested resource.
-	 * @param PathExpression $path
+	 * Sets the specification of the requested resource.
+	 * @param UrlResourceSpecification $resourceSpecification
 	 */
-	public function setResourcePath(PathExpression $path)
+	public function setResourceSpecification(UrlResourceSpecification $resourceSpecification)
 	{
-		$this->resourcePath = $path;
+		$this->resourceSpecification = $resourceSpecification;
 	}
-	
-	/**
-	 * Sets the operation to be performed on the requested resource.
-	 * @param Operation $operation
-	 */
-	public function setOperation(Operation $operation)
-	{
-		$this->operation = $operation;
-	}
-	
+
 	/**
 	 * Sets the expression for selecting fields of the requested resource.
 	 * @param SelectExpressionSource $selection

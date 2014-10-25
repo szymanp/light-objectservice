@@ -4,14 +4,17 @@ namespace Light\ObjectService\Resource;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Type\ResolvedValue;
 
-/**
- * Returns a resource object.
- */
-abstract class ResourceSpecification
+class ExistingResourceSpecification extends ResourceSpecification
 {
+	/** @var ResourceIdentifier */
+	private $resourceIdentifier;
+
 	/**
 	 * @param ExecutionParameters $parameters
 	 * @return ResolvedValue
 	 */
-	abstract public function resolve(ExecutionParameters $parameters);
+	public function resolve(ExecutionParameters $parameters)
+	{
+		// TODO: Implement resolve() method.
+	}
 }

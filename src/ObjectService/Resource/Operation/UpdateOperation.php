@@ -1,8 +1,11 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
+use Light\Exception\Exception;
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Resource\FieldTransformation;
+use Light\ObjectService\Resource\ResourceSpecification;
 use Light\ObjectService\Type\ComplexType;
 
 class UpdateOperation extends Operation
@@ -28,17 +31,17 @@ class UpdateOperation extends Operation
 	
 	/**
 	 * Sets the operation for a field.
-	 * @param string	$fieldName
-	 * @param Operation $operation
+	 * @param string				$fieldName
+	 * @param FieldTransformation 	$transformation
 	 */
-	public function setFieldOperation($fieldName, Operation $operation)
+	public function setFieldTransformation($fieldName, FieldTransformation $transformation)
 	{
-		$this->fields[$fieldName] = $operation;
+		$this->fields[$fieldName] = $transformation;
 	}
 	
 	/**
 	 * Returns a list of field-value pairs.
-	 * @return array<string, mixed>	The value can be either a simple value, an array, or an Operation object.
+	 * @return array<string, mixed>	The value can be either a simple value, an array, or an FieldTransformation object.
 	 */
 	public function getFields()
 	{
@@ -49,7 +52,7 @@ class UpdateOperation extends Operation
 	{
 		if (!$this->getResource())
 		{
-			$this->setResource($this->readResource($params));
+			throw new Exception("A resource must be specified as a subject for this operation");
 		}
 		
 		$type = $this->getResource()->getType();
@@ -66,10 +69,18 @@ class UpdateOperation extends Operation
 			{
 				$value->execute($params);
 			}
+			else if ($value instanceof ResourceSpecification)
+			{
+				$result = $value->execute($params);
+
+				$type->writeProperty($object, $fieldName, $result->getTargetResource(), $params->getTransaction());
+			}
 			else
 			{
 				$type->writeProperty($object, $fieldName, $value, $params->getTransaction());
 			}
 		}
+
+		return $this->getResource();
 	}
 }

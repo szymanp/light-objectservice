@@ -1,8 +1,9 @@
 <?php
-namespace Light\ObjectService\Service\Json;
+namespace Light\ObjectService\Service\Json\Request;
 
 use Light\Exception\Exception;
 use Light\ObjectService\Exceptions\InvalidRequestException;
+use Light\ObjectService\Resource\UrlResourceSpecification;
 use Light\ObjectService\Service\Request\RequestObject;
 use Light\ObjectService\Service\Request\RequestReader;
 use Light\Util\HTTP\Request as HTTPRequest;
@@ -10,12 +11,9 @@ use Light\Util\HTTP\Request as HTTPRequest;
 class JsonRequestReader implements RequestReader
 {
 	private static $validMethods = array("GET", "POST", "PUT", "DELETE", "ACTION", "TRANSACTION");
-	
-	private $basePath;
-	
-	public function __construct($basePath)
+
+	public function __construct()
 	{
-		$this->basePath = $basePath;
 	}
 
 	/**
@@ -88,6 +86,17 @@ class JsonRequestReader implements RequestReader
 		
 		// Create a new request object.
 		$requestObject = new RequestObject();
+
+		$rootResourceSpecification = new UrlResourceSpecification();
+		// TODO UrlResourceSpecification expects a full URL.
+		//		Could there be valid cases where the service endpoint has a different URL than the base for resources?
+		//		Should we then have come URL converter class that handles this?
+		$rootResourceSpecification->setUrl("");
+		$this->readQuery($body, $rootResourceSpecification);
+
+		$requestObject->setResourceSpecification($rootResourceSpecification);
+
+
 		// TODO
 		/*
 		$requestObject->setResourcePath($this->readPath($httpRequest, $body));
@@ -113,7 +122,7 @@ class JsonRequestReader implements RequestReader
 		
 		return $requestObject;
 	}
-	
+
 	private function readBody(HTTPRequest $httpRequest)
 	{
 		$body = $httpRequest->getBody(true);
@@ -131,48 +140,26 @@ class JsonRequestReader implements RequestReader
 		return $json;
 	}
 	
-	/**
-	 * Reads the PathExpression for this request.
-	 * @param HTTPRequest 	$httpRequest
-	 * @param \stdClass 	$body
-	 * @return \Light\ObjectService\Expression\PathExpression
-	 */
-	private function readPath(HTTPRequest $httpRequest, \stdClass $body = null)
+	private function readQuery(\stdClass $body = null, UrlResourceSpecification $resourceSpec)
 	{
-		$basePath = $this->basePath;
-		
-		$currentUri = $httpRequest->getUri();
-		if (substr($currentUri, 0, strlen($basePath)) == $basePath)
-		{
-			$href = substr($currentUri, strlen($basePath));
-		}
-		else
-		{
-			throw new Exception("Request URI <%1> is not within base path scope <%2>", $currentUri, $this->basePath);
-		}
-		
 		if ($body && $body->query)
 		{
 			if (is_object($body->query))
 			{
-				$whereExprs = $body->query;
+				foreach($body->query as $name => $query)
+				{
+					$resourceSpec->addQuery($name, JsonWhereExpressionSource::create($query));
+				}
 			}
 			else
 			{
 				throw new InvalidRequestException("body.query must be a JSON object");
 			}
 		}
-		else
-		{
-			$whereExprs = null;
-		}
-		
-		$pathExpressionReader = new JsonPathExpressionReader($href, $whereExprs);
-		return $pathExpressionReader->readPathExpression();
 	}
 	
 	private function readSelection(\stdClass $data)
 	{
-		
+		// TODO
 	}
 }

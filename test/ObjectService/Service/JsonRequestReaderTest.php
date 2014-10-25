@@ -33,8 +33,9 @@ class JsonRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$svcRequest  = $this->reader->read($httpRequest);
 		
 		$this->assertInstanceOf("Light\ObjectService\Service\Request\Request", $svcRequest);
-		$this->assertInstanceOf("Light\ObjectService\Resource\Operation\ReadOperation", $svcRequest->getOperation());
-		$this->assertEquals("post", $svcRequest->getResourcePath()->getPath());
+		$this->assertNotNull($svcRequest->getResourceSpecification());
+		$this->assertNull($svcRequest->getResourceSpecification()->getOperation());
+		$this->assertEquals("post", $svcRequest->getResourceSpecification()->getUrl());
 	}
 	
 	public function testReadRequestWithQuery()
@@ -53,10 +54,11 @@ DOC;
 		$svcRequest  = $this->reader->read($httpRequest);
 	
 		$this->assertInstanceOf("Light\ObjectService\Service\Request\Request", $svcRequest);
-		$this->assertInstanceOf("Light\ObjectService\Resource\Operation\ReadOperation", $svcRequest->getOperation());
-		$this->assertEquals("post", $svcRequest->getResourcePath()->getPath());
+		$this->assertNotNull($svcRequest->getResourceSpecification());
+		$this->assertNull($svcRequest->getResourceSpecification()->getOperation());
+		$this->assertEquals("post", $svcRequest->getResourceSpecification()->getUrl());
 		
-		$targetWhere = $svcRequest->getResourcePath()->getWhereReference(PathExpression::TARGET);
+		$targetWhere = $svcRequest->getResourceSpecification()->getQuery(PathExpression::TARGET);
 		$this->assertInstanceOf("Light\ObjectService\Expression\WhereExpressionSource", $targetWhere);
 	}
 	

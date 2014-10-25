@@ -4,10 +4,10 @@ namespace Light\ObjectService\Service\Request;
 interface Request
 {
 	/**
-	 * Returns the path to the requested resource.
-	 * @return \Light\ObjectService\Expression\PathExpression
+	 * Returns the specification of the requested resource.
+	 * @return \Light\ObjectService\Resource\UrlResourceSpecification
 	 */
-	function getResourcePath();
+	function getResourceSpecification();
 	
 	/**
 	 * Returns the select expression to be applied to the requested resource.
@@ -16,10 +16,4 @@ interface Request
 	 * @return \Light\ObjectService\Expression\SelectExpressionSource
 	 */
 	function getSelection();
-	
-	/**
-	 * Returns the operation to be performed on the requested resource.
-	 * @return \Light\ObjectService\Resource\Operation\Operation
-	 */
-	function getOperation();
 }

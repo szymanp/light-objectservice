@@ -1,7 +1,10 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
+use Light\ObjectService\Exceptions\TypeException;
 use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\ComplexTypeInterfaces;
+use Light\ObjectService\Type\Util\CreationDeletionContextObject;
 
 class CreateOperation extends UpdateOperation
 {
@@ -27,13 +30,20 @@ class CreateOperation extends UpdateOperation
 	{
 		return $this->type;
 	}
-	
-	/**
-	 * Returns the resource created in this operation.
-	 * @return \Light\ObjectService\Type\ResolvedValue
-	 */
-	public function getNewResource()
+
+	public function execute(ExecutionParameters $params)
 	{
-		// TODO
+		if ($this->type instanceof ComplexTypeInterfaces\Create)
+		{
+			$context = new CreationDeletionContextObject();
+			$newObject = $this->type->createObject($context);
+
+			// TODO
+			return null;
+		}
+		else
+		{
+			throw new TypeException("Type %1 does not support object creation", $this->type->getUri());
+		}
 	}
 }
