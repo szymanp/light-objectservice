@@ -1,15 +1,16 @@
 <?php
-namespace Light\ObjectService\Resource;
+namespace Light\ObjectService\Resource\Addressing;
 
+use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Resource\Query\Scope;
 
-final class ResourceIdentifier
+class ResourceIdentifier
 {
 	/** @var string */
 	private $url;
 	/** @var string */
 	private $serviceEndpoint;
-	/** @var string */
+	/** @var ResourcePath */
 	private $resourcePath;
 	/** @var boolean */
 	private $openCollection;
@@ -31,4 +32,12 @@ final class ResourceIdentifier
 		return $resourceIdentifier;
 	}
 
+	/**
+	 * @param ObjectRegistry $registry
+	 *
+	 */
+	public function resolve(ObjectRegistry $registry)
+	{
+		// TODO
+	}
 }
