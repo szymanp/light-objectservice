@@ -35,6 +35,10 @@ final class Endpoint
 		return new self("//");
 	}
 
+	/**
+	 * Constructs a new Endpoint.
+	 * @param string	$url
+	 */
 	private function __construct($url)
 	{
 		if (substr($url, -1, 1) != "/")
@@ -43,7 +47,7 @@ final class Endpoint
 		}
 
 		$this->url			  = $url;
-		$this->objectRegistry = new ObjectRegistry();
+		$this->objectRegistry = new ObjectRegistry($this);
 	}
 
 	/**
