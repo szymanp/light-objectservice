@@ -8,17 +8,8 @@ use Light\ObjectService\Type\BuiltinType;
 use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Util\DefaultNameRegistry;
 
-require_once 'config.php';
-require_once __DIR__ . '/MockupModel.php';
-
 class NameRegistryTest extends \PHPUnit_Framework_TestCase
 {
-	public function testResourceBaseUri()
-	{
-		$nameRegistry = new DefaultNameRegistry();
-		$this->assertEquals("//", $nameRegistry->getResourceBaseUri());
-	}
-	
 	public function testDefaultSimpleTypeUri()
 	{
 		$type = new BuiltinType("string");

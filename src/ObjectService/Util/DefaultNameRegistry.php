@@ -11,7 +11,6 @@ use Light\Util\URL;
 
 class DefaultNameRegistry implements NameRegistry
 {
-	private $baseResourceUri	= "//";
 	private $baseTypeUris		= array("" => "//");
 	private $sortedTypeUris;
 	
@@ -36,16 +35,7 @@ class DefaultNameRegistry implements NameRegistry
 			return $this->constructTypeUri($type);
 		}
 	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\NameRegistry::getResourceBaseUri()
-	 */
-	public function getResourceBaseUri()
-	{
-		return $this->baseResourceUri;
-	}
-	
+
 	/**
 	 * Assigns an URI to a type.
 	 * @param Type $type
@@ -62,16 +52,7 @@ class DefaultNameRegistry implements NameRegistry
 		$this->uris[$hash] = $uri;
 		$this->types[$hash] = $type;
 	}
-	
-	/**
-	 * Sets the base URI for resources.
-	 * @param string $baseUri
-	 */
-	public function setResourceBaseUri($baseUri)
-	{
-		$this->baseResourceUri = $baseUri;
-	}
-	
+
 	/**
 	 * Sets the base URI for types.
 	 * @param string $baseUri

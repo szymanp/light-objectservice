@@ -3,6 +3,7 @@ namespace Light\ObjectService;
 
 use Light\Exception\Exception;
 use Light\Exception\InvalidParameterType;
+use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Type\BuiltinCollectionType;
 use Light\ObjectService\Type\BuiltinType;
 use Light\ObjectService\Type\CollectionType;
@@ -15,6 +16,12 @@ use Light\ObjectService\Util\DefaultNameRegistry;
 class ObjectRegistry
 {
 	const PATH_SEPARATOR = "/";
+
+	/**
+	 * The Endpoint that owns this ObjectRegistry.
+	 * @var Endpoint
+	 */
+	private $endpoint;
 	
 	/** @var array<string, object|ObjectProvider> */
 	private $published = array();
@@ -27,9 +34,10 @@ class ObjectRegistry
 	
 	/** @var NameRegistry */
 	private $nameRegistry;
-	
-	public function __construct()
+
+	public function __construct(Endpoint $endpoint)
 	{
+		$this->endpoint	    = $endpoint;
 		$this->nameRegistry = new DefaultNameRegistry();
 	}
 	
@@ -197,6 +205,15 @@ class ObjectRegistry
 	public function getNameRegistry()
 	{
 		return $this->nameRegistry;
+	}
+
+	/**
+	 * Returns the Endpoint associated with this ObjectRegistry.
+	 * @return Endpoint
+	 */
+	public function getEndpoint()
+	{
+		return $this->endpoint;
 	}
 	
 	/**

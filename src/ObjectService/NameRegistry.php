@@ -19,10 +19,5 @@ interface NameRegistry
 	 * @return string	An URI for the specified type.
 	 */
 	public function getTypeUri(Type $type);
-	
-	/**
-	 * Returns the base URI for resources in this service.
-	 * @return string
-	 */
-	public function getResourceBaseUri();
+
 }
