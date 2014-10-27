@@ -2,7 +2,6 @@
 namespace Light\ObjectService\Resource\Addressing;
 
 use Light\ObjectService\EndpointRegistry;
-use Light\ObjectService\Exceptions\ResolutionException;
 use Light\ObjectService\Resource\Query\Scope;
 
 class ResourceIdentifier
@@ -21,17 +20,17 @@ class ResourceIdentifier
 	 */
 	public static function create($url, Scope $scope = null)
 	{
-		$resourceIdentifier = new self;
-
-		$resourceIdentifier->url = $url;
+		$resourceIdentifier = new self($url);
+		
 		$resourceIdentifier->scope = $scope;
 
 		return $resourceIdentifier;
 	}
 
-	protected function __construct()
+	protected function __construct($url)
 	{
 		// protected constructor
+		$this->url = $url;
 	}
 
 	/**
@@ -57,13 +56,6 @@ class ResourceIdentifier
 	 */
 	public function resolve(EndpointRegistry $registry)
 	{
-		$endpoint = $registry->findEndpoint($this->url);
-		if (is_null($endpoint))
-		{
-			throw new ResolutionException("URL \"%1\" does not correspond to any known service endpoint", $this->url);
-		}
-
-		$url = substr($this->url, strlen($endpoint->getUrl()) + 1);
-		print $url;
+		return new ResolvedResourceIdentifier($registry, $this);
 	}
 }
