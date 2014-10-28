@@ -38,6 +38,15 @@ class Scope
 	private $offset;
 
 	/**
+	 * Returns an empty Scope object.
+	 * @return Scope
+	 */
+	public static function createEmptyScope()
+	{
+		return new self();
+	}
+
+	/**
 	 * Returns the method to use for filtering the collection.
 	 * @return int	One of the WITH_* constants.
 	 */

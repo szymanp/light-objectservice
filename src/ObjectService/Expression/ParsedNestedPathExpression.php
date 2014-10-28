@@ -5,7 +5,7 @@ namespace Light\ObjectService\Expression;
 use Light\Exception\Exception;
 use Light\Exception\InvalidParameterValue;
 use Light\ObjectService\Type\CollectionType;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Resource\ResolvedValue;
 
 /**
  * A ParsedPathExpression for a path that is relative to another path.
@@ -13,7 +13,7 @@ use Light\ObjectService\Type\ResolvedValue;
  */
 final class ParsedNestedPathExpression extends ParsedPathExpression
 {
-	/** @var \Light\ObjectService\Type\ResolvedValue */
+	/** @var \Light\ObjectService\Resource\ResolvedValue */
 	private $resolvedValue;
 		
 	public function __construct(PathExpression $pathExpression, ResolvedValue $value)

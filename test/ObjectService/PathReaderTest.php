@@ -13,7 +13,7 @@ use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Type\PathReader;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Resource\ResolvedValue;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';

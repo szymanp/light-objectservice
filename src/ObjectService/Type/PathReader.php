@@ -9,6 +9,7 @@ use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
 use Light\ObjectService\Expression\WhereExpressionSource;
 use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Resource\ResolvedValue;
 
 class PathReader
 {
@@ -68,7 +69,7 @@ class PathReader
 	/**
 	 * Reads a value.
 	 * @throws ResolutionException
-	 * @return \Light\ObjectService\Type\ResolvedValue
+	 * @return \Light\ObjectService\Resource\ResolvedValue
 	 */
 	public function read()
 	{

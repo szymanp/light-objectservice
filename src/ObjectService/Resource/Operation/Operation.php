@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Resource\Operation;
 
 use Light\ObjectService\Resource\FieldTransformation;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Resource\ResolvedValue;
 
 /**
  * A base class for describing requested operations on resources.
@@ -10,7 +10,7 @@ use Light\ObjectService\Type\ResolvedValue;
  */
 abstract class Operation implements FieldTransformation
 {
-	/** @var \Light\ObjectService\Type\ResolvedValue */
+	/** @var \Light\ObjectService\Resource\ResolvedValue */
 	private $resource;
 	
 	/**
@@ -27,7 +27,7 @@ abstract class Operation implements FieldTransformation
 	 * 
 	 * Note that some operations might not have any subject resource.
 	 * 
-	 * @return \Light\ObjectService\Type\ResolvedValue
+	 * @return \Light\ObjectService\Resource\ResolvedValue
 	 */
 	final public function getResource()
 	{

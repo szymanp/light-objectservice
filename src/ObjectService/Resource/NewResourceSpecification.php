@@ -3,7 +3,7 @@ namespace Light\ObjectService\Resource;
 
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Resource\ResolvedValue;
 
 class NewResourceSpecification extends ResourceSpecification
 {

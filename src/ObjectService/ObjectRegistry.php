@@ -3,6 +3,8 @@ namespace Light\ObjectService;
 
 use Light\Exception\Exception;
 use Light\Exception\InvalidParameterType;
+use Light\ObjectService\Resource\Addressing\EndpointUrl;
+use Light\ObjectService\Resource\ResolvedValue;
 use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Type\BuiltinCollectionType;
 use Light\ObjectService\Type\BuiltinType;
@@ -238,8 +240,19 @@ class ObjectRegistry
 			if (isset($this->published[$str]))
 			{
 				$result = new \stdClass();
-				$result->name		= $str;
-				$result->resource 	= $this->published[$str];
+
+				$endpointUrl = EndpointUrl::create($this->endpoint, $str);
+				$value = $this->published[$str];
+				if ($value instanceof CollectionType)
+				{
+					$type = $value;
+				}
+				else
+				{
+					$type = $this->getType(get_class($value));
+				}
+
+				$result->resource 	= new ResolvedValue($type, $value, $endpointUrl);
 				$result->remainder	= $remainder;
 
 				return $result;

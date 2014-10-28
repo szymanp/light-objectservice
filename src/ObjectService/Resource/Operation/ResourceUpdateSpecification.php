@@ -5,7 +5,7 @@ use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Exceptions\TypeException;
 use Light\ObjectService\Resource\ResourceSpecification;
 use Light\ObjectService\Type\ComplexType;
-use Light\ObjectService\Type\ResolvedValue;
+use Light\ObjectService\Resource\ResolvedValue;
 
 final class ResourceUpdateSpecification
 {
@@ -38,7 +38,7 @@ final class ResourceUpdateSpecification
 
 	/**
 	 * Updates the given resource with this field-value specification.
-	 * @param ResolvedValue 		$resource
+	 * @param \Light\ObjectService\Resource\ResolvedValue 		$resource
 	 * @param ExecutionParameters 	$executionParameters
 	 * @throws TypeException
 	 * @throws \Light\ObjectService\Exceptions\ResolutionException

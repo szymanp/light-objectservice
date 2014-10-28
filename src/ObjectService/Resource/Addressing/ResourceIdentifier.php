@@ -3,59 +3,29 @@ namespace Light\ObjectService\Resource\Addressing;
 
 use Light\ObjectService\EndpointRegistry;
 use Light\ObjectService\Resource\Query\Scope;
+use Light\ObjectService\Resource\ResolvedValue;
 
-class ResourceIdentifier
+abstract class ResourceIdentifier
 {
-	/** @var string */
-	private $url;
-
-	/** @var Scope */
-	protected $scope;
-
 	/**
 	 * Creates a new ResourceIdentifier.
 	 * @param string	$url	The URL identifying the resource.
 	 * @param Scope 	$scope
 	 * @return ResourceIdentifier
 	 */
-	public static function create($url, Scope $scope = null)
+	public static function createFromUrl($url, Scope $scope = null)
 	{
-		$resourceIdentifier = new self($url);
-		
-		$resourceIdentifier->scope = $scope;
-
-		return $resourceIdentifier;
+		return new UrlResourceIdentifier($url, $scope);
 	}
 
-	protected function __construct($url)
+	public static function createFromResource(ResolvedValue $resource, $partialUrl)
 	{
-		// protected constructor
-		$this->url = $url;
+		// TODO
 	}
 
 	/**
-	 * @return Scope
+	 * @param EndpointRegistry $registry
+	 * @return ResourcePath
 	 */
-	public function getScope()
-	{
-		return $this->scope;
-	}
-
-	/**
-	 * Returns the original URL for this resource.
-	 * @return string
-	 */
-	public function getUrl()
-	{
-		return $this->url;
-	}
-
-	/**
-	 * @param ObjectRegistry $registry
-	 *
-	 */
-	public function resolve(EndpointRegistry $registry)
-	{
-		return new ResolvedResourceIdentifier($registry, $this);
-	}
+	abstract public function resolve(EndpointRegistry $registry);
 }
