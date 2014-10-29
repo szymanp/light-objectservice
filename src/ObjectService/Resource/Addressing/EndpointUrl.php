@@ -56,13 +56,17 @@ final class EndpointUrl
 	}
 
 	/**
-	 * Returns a new EndpointUrl that has the given relative URL path appended to this one.
+	 * Returns an EndpointUrl that has the given relative URL path appended to this one.
 	 * @param string $relativeUrl
 	 * @throws Exception	If the paths cannot be joined.
 	 * @return EndpointUrl
 	 */
 	public function join($relativeUrl)
 	{
+		if ($relativeUrl === "")
+		{
+			return $this;
+		}
 		if (strpos($this->relativeUrl, "?") !== false || strpos($this->relativeUrl, "#") !== false)
 		{
 			throw new Exception("The URL \"%1\" cannot be appended to as it contains a query or anchor part", $this->getUrl());

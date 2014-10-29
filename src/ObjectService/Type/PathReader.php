@@ -76,34 +76,35 @@ class PathReader
 	 */
 	public function read()
 	{
-		$partialpath = explode("/", $this->path->getSourceResource()->getEndpointUrl()->getRelativeUrl());
+		$resourceUrl = $this->path->hasPath() ? $this->path->getEndpointUrl() : null;
+		$resourceUrlString = $resourceUrl ? $resourceUrl->getRelativeUrl() : "(no string representation)";
 
 		$pathElements = $this->path->getElements();
 		$count 		  = count($pathElements);
 		
 		foreach($pathElements as $index => $element)
 		{
-			array_push($partialpath, $element);
-
 			try
 			{
 				$this->readElement($element, $index + 1 == $count);
 			}
 			catch (TypeHelper_Exception $e)
 			{
-				throw new ResolutionException("%1 (while resolving path \"%3\" at element \"%2\")",
+				throw new ResolutionException(
+					"%1 (while resolving path \"%3\" at element \"%2\")",
 					$e->getMessage(),
 					$element,
-					$this->path->getPath(),
+					$resourceUrlString,
 					$e);				
 			}
 			catch (PathReader_Exception $e)
 			{
-				throw new ResolutionException("%1 (while resolving path \"%3\" at element \"%2\")",
-											  $e->getMessage(),
-											  $element,
-											  $this->path->getPath(),
-											  $e);
+				throw new ResolutionException(
+					"%1 (while resolving path \"%3\" at element \"%2\")",
+					$e->getMessage(),
+					$element,
+					$resourceUrlString,
+					$e);
 			}
 		}
 		
@@ -111,10 +112,8 @@ class PathReader
 		$last = $this->getCurrent();
 		if (!$last->hasValue())
 		{
-			throw new ResolutionException("Resolution of path \"%1\" did not produce any value", $this->path->getPath());
+			throw new ResolutionException("Resolution of path \"%1\" did not produce any value", $resourceUrlString);
 		}
-
-		$resourceUrl = $this->path->hasPath() ? $this->path->getEndpointUrl() : null;
 
 		return new ResolvedValue($last->getType(), $last->value, $resourceUrl);
 	}
