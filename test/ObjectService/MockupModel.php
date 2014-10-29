@@ -13,6 +13,8 @@ use Light\ObjectService\Service\Util\ExecutionParametersObject;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Type\ComplexType;
+use Light\ObjectService\Type\ComplexTypeInterfaces\Create;
+use Light\ObjectService\Type\ComplexTypeInterfaces\CreationContext;
 use Light\ObjectService\Type\ObjectProvider;
 
 class EndpointSetup
@@ -249,9 +251,11 @@ class CommentCollectionType extends ObjectProvider
 	}
 }
 
-class PostModel extends ComplexType
+class PostModel extends ComplexType implements Create
 {
 	const CLASSNAME = __CLASS__;
+
+	public static $autoId = 4000;
 	
 	public function __construct()
 	{
@@ -280,6 +284,16 @@ class PostModel extends ComplexType
 			 ->done()
 			 ->field("tags")->type("string[]")->done()
 			 ->field("comments")->collectionOfType(Comment::CLASSNAME)->done();
+	}
+
+	/**
+	 * Creates a new instance of an object of this complex-type.
+	 * @param CreationContext $context
+	 * @return object
+	 */
+	public function createObject(CreationContext $context)
+	{
+		return new Post(++self::$autoId);
 	}
 }
 

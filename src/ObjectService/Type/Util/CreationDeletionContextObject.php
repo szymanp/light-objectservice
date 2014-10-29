@@ -1,6 +1,9 @@
 <?php
 namespace Light\ObjectService\Type\Util;
 
+use Light\ObjectService\Type\ComplexTypeInterfaces\CreationContext;
+use Light\ObjectService\Type\ComplexTypeInterfaces\DeletionContext;
+
 class CreationDeletionContextObject implements CreationContext, DeletionContext
 {
 	/** @var object */

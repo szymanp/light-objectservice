@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource;
 
+use Light\ObjectService\Exceptions\TypeException;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\Operation\ResourceUpdateSpecification;
 use Light\ObjectService\Type\ComplexType;
@@ -28,10 +29,10 @@ class NewResourceSpecification extends ResourceSpecification
 	 */
 	public function resolve(ExecutionParameters $parameters)
 	{
-		if ($this->type instanceof Create)
+		if ($this->complexType instanceof Create)
 		{
 			$context = new CreationDeletionContextObject();
-			$newObject = $this->type->createObject($context);
+			$newObject = $this->complexType->createObject($context);
 
 			$newResource = new ResolvedValue($this->complexType, $newObject);
 
@@ -44,7 +45,7 @@ class NewResourceSpecification extends ResourceSpecification
 		}
 		else
 		{
-			throw new TypeException("Type %1 does not support object creation", $this->type->getUri());
+			throw new TypeException("Type %1 does not support object creation", $this->complexType->getUri());
 		}
 	}
 }
