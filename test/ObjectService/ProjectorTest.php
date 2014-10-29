@@ -3,7 +3,7 @@ namespace Light\ObjectService;
 
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Mockup\CommentCollectionType;
 use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostCollectionModel;

@@ -1,7 +1,8 @@
 <?php
 namespace Light\ObjectService\Resource\Query;
 
-use Light\ObjectService\Expression\WhereExpressionSource;
+use Light\Exception\Exception;
+use Light\ObjectService\Resource\Query\WhereExpressionSource;
 
 /**
  * Scope specifies the filtering restrictions and ordering of a collection.
@@ -95,6 +96,22 @@ class Scope
 	public function getQuery()
 	{
 		return $this->query;
+	}
+
+	/**
+	 * @return WhereExpression
+	 */
+	public function getCompiledQuery()
+	{
+		if (is_null($this->query))
+		{
+			return null;
+		}
+		else if ($this->query instanceof WhereExpression)
+		{
+			return $this->query;
+		}
+		throw new Exception("Compiled query is not available");
 	}
 
 	/**

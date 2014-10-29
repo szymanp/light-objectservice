@@ -3,6 +3,7 @@
 namespace Light\ObjectService\Expression;
 
 use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Type\ComplexType;
 
 final class NestedSelectExpression extends SelectExpression
@@ -43,7 +44,7 @@ final class NestedSelectExpression extends SelectExpression
 	}
 	
 	/**
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return \Light\ObjectService\Resource\Query\WhereExpression
 	 */
 	final public function getWhereExpression()
 	{

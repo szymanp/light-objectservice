@@ -5,7 +5,8 @@ use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Expression\FindContextObject;
 use Light\ObjectService\Expression\NestedSelectExpression;
 use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\Resource\Query\Scope;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Type\ComplexType;
@@ -125,6 +126,8 @@ final class Projector_Complex extends Projector
 	{
 		$context = new FindContextObject();
 		$context->setContextObject($object);
+
+		$scope = new Scope();
 		
 		$whereExpr = null;
 		if ($select)
@@ -135,8 +138,9 @@ final class Projector_Complex extends Projector
 		{
 			$whereExpr = WhereExpression::create($provider);
 		}
+		$scope->setQuery($whereExpr);
 		
-		$result = $provider->find($whereExpr, $context);
+		$result = $provider->find($scope, $context);
 		
 		// TODO Type conversion of result?
 		

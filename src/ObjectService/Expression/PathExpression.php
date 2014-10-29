@@ -1,6 +1,7 @@
 <?php
 
 namespace Light\ObjectService\Expression;
+use Light\ObjectService\Resource\Query\WhereExpressionSource;
 
 /**
  * A path to a value in the object-property chain. 
@@ -64,7 +65,7 @@ class PathExpression
 	/**
 	 * Returns a named where expression.
 	 * @param unknown $ref
-	 * @return \Light\ObjectService\Expression\WhereExpressionSource
+	 * @return \Light\ObjectService\Resource\Query\WhereExpressionSource
 	 */
 	public function getWhereReference($ref)
 	{

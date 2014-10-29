@@ -7,7 +7,9 @@ use Light\ObjectService\Expression\FindContextObject;
 use Light\ObjectService\Expression\ParsedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
-use Light\ObjectService\Expression\WhereExpressionSource;
+use Light\ObjectService\Resource\Query\Scope;
+use Light\ObjectService\Resource\Query\WhereExpression;
+use Light\ObjectService\Resource\Query\WhereExpressionSource;
 use Light\ObjectService\ObjectRegistry;
 use Light\ObjectService\Resource\Addressing\ResourcePath;
 use Light\ObjectService\Resource\ResolvedValue;
@@ -150,7 +152,7 @@ class PathReader
 				$this->pushNewValue($newObject, $type);
 			}
 		}
-		elseif ($element instanceof WhereExpressionSource)
+		elseif ($element instanceof Scope)
 		{
 			// The underlying object must be of a type that is registered as a model.
 			// We invoke a find() on that model with the context set to the parent of that object.
@@ -161,8 +163,21 @@ class PathReader
 		
 			if ($currentColl->type instanceof ObjectProvider)
 			{
-				$whereExpr = $element->compile($currentColl->type);
-				
+				$scope = $element;
+
+				// Process the WhereExpression in the Scope.
+				$whereExpr = $scope->getQuery();
+				if (is_null($whereExpr))
+				{
+					// Create an empty WhereExpression.
+					$scope->setQuery(WhereExpression::create($currentColl->type));
+				}
+				else if (!($whereExpr instanceof WhereExpression))
+				{
+					// If a WhereExpressionSource is specified, compile it to a WhereExpression.
+					$scope->setQuery($whereExpr->compile($currentColl->type));
+				}
+
 				$context = new FindContextObject();
 				$context->setContextObject($currentColl->value);
 				
@@ -172,21 +187,21 @@ class PathReader
 					$context->setSelectionHint($selectionHint);
 				}
 				
-				$newObject = $currentColl->type->find($whereExpr, $context);
+				$newObject = $currentColl->type->find($scope, $context);
 					
 				// The result must be an array
 				if (!is_array($newObject)
 					&& !($newObject instanceof \ArrayAccess)
 					&& !($newObject instanceof \Iterator))
 				{
-					throw new PathReader_Exception("%1::find() returned a non-array-like result (%2)", get_class($element), $newObject);
+					throw new PathReader_Exception("%1::find() returned a non-array-like result (%2)", get_class($currentColl->value), $newObject);
 				}
 					
 				$this->pushNewValue($newObject, $currentColl->type);
 			}
 			else
 			{
-				throw new PathReader_Exception("Cannot execute a query on a non-provider object (PHP class is \"%1\")", get_class($element->value));
+				throw new PathReader_Exception("Cannot execute a query on a non-provider object (PHP class is \"%1\")", get_class($currentColl->value));
 			}
 		}
 		elseif (is_integer($element))
@@ -208,7 +223,8 @@ class PathReader
 				$baseType = $currentColl->type->getBaseType();
 				if ($baseType instanceof ComplexType)
 				{
-					$whereExpr = $baseType->getPrimaryKeyWhereExpression($element);
+					$scope = new Scope();
+					$scope->setQuery($baseType->getPrimaryKeyWhereExpression($element));
 				}
 				else
 				{
@@ -224,7 +240,7 @@ class PathReader
 					$context->setSelectionHint($selectionHint);
 				}
 					
-				$newObject = $currentColl->type->find($whereExpr, $context);
+				$newObject = $currentColl->type->find($scope, $context);
 
 				if (count($newObject) == 0)
 				{

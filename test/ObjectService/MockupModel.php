@@ -4,7 +4,8 @@ namespace Light\ObjectService\Mockup;
 
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\FindContext;
-use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\Resource\Query\Scope;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Type\ComplexType;
@@ -122,7 +123,7 @@ class PostCollectionModel extends ObjectProvider
 			 
 	}
 	
-	public function find(WhereExpression $expr, FindContext $context)
+	public function find(Scope $scope, FindContext $context)
 	{
 		$models = Database::$posts;
 	
@@ -138,7 +139,8 @@ class PostCollectionModel extends ObjectProvider
 				$models = array();
 			}
 		}
-	
+
+		$expr = $scope->getCompiledQuery();
 		$expr->with("id", function(Criterion $value, $propertyName) use (&$models)
 		{
 			$models = array_filter($models, function($model) use ($value)
@@ -162,7 +164,7 @@ class CommentCollectionType extends ObjectProvider
 	
 	}
 	
-	public function find(WhereExpression $expr, FindContext $context)
+	public function find(Scope $scope, FindContext $context)
 	{
 		$models = Database::$comments;
 	
@@ -174,7 +176,8 @@ class CommentCollectionType extends ObjectProvider
 				return $model->post_id == $post_id;
 			});
 		}
-	
+
+		$expr = $scope->getCompiledQuery();
 		$expr->with("id", function(Criterion $value, $propertyName) use (&$models)
 		{
 			$models = array_filter($models, function($model) use ($value)

@@ -1,9 +1,10 @@
 <?php 
-
-namespace Light\ObjectService\Expression;
+namespace Light\ObjectService\Resource\Query;
 
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Exceptions\TypeException;
+use Light\ObjectService\Expression\Criterion;
+use Light\ObjectService\Expression\Value;
 use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\SimpleType;
@@ -21,7 +22,7 @@ final class WhereExpression implements WhereExpressionSource
 	/**
 	 * Returns a new WhereExpression object.
 	 * @param CollectionType|ComplexType $type
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return WhereExpression
 	 */
 	public static function create(Type $type)
 	{
@@ -31,7 +32,7 @@ final class WhereExpression implements WhereExpressionSource
 		}
 		else if ($type instanceof SimpleType)
 		{
-			throw new InvalidParameterType('$typee', $type);
+			throw new InvalidParameterType('$type', $type);
 		}
 		
 		return new self($type);
@@ -50,7 +51,7 @@ final class WhereExpression implements WhereExpressionSource
 	 * Adds a restriction on a value.
 	 * @param string	$name
 	 * @param mixed		$value
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return WhereExpression
 	 */
 	public function setValue($name, $value)
 	{
@@ -111,7 +112,7 @@ final class WhereExpression implements WhereExpressionSource
 	 * Runs a callback function for each defined restriction.
 	 * @param string|array	$names		Restriction names.
 	 * @param callback		$callback
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return WhereExpression
 	 */
 	public function with($names, $callback)
 	{
@@ -163,7 +164,7 @@ final class WhereExpression implements WhereExpressionSource
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see \Light\ObjectService\Expression\WhereExpressionSource::compile()
+	 * @see WhereExpressionSource::compile()
 	 */
 	public function compile(CollectionType $type)
 	{

@@ -6,7 +6,7 @@ use Light\Exception\Exception;
 use Light\ObjectService\Exceptions\ResolutionException;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
-use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\Builder\ComplexSpecBuilder;
 
@@ -52,7 +52,7 @@ class ComplexType extends Type
 	 * Returns a WHERE expression filtering on the primary key.
 	 * @param integer	$pk
 	 * @throws Exception
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return \Light\ObjectService\Resource\Query\WhereExpression
 	 */
 	final public function getPrimaryKeyWhereExpression($pk)
 	{

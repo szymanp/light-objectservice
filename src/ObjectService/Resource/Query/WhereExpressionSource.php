@@ -1,5 +1,5 @@
 <?php 
-namespace Light\ObjectService\Expression;
+namespace Light\ObjectService\Resource\Query;
 
 use Light\ObjectService\Type\CollectionType;
 
@@ -18,7 +18,7 @@ interface WhereExpressionSource
 	 * 								If the there is a problem with the type of one of the values, e.g.
 	 * 								a value does not match a type, or the given type is not applicable in some context.
 	 * 	
-	 * @return \Light\ObjectService\Expression\WhereExpression
+	 * @return \Light\ObjectService\Resource\Query\WhereExpression
 	 */
 	public function compile(CollectionType $type);
 }

@@ -5,7 +5,7 @@ use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\PathExpression;
-use Light\ObjectService\Expression\WhereExpression;
+use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Mockup\Database;
 use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostCollectionModel;
@@ -96,12 +96,17 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 
 	public function testReadArrayProperty()
 	{
-		$path = new PathExpression();
-		$path->setPath("models/post/_1/tags");
-		$path->setWhereReference("_1",
-				WhereExpression::create($this->postCollectionModel)
-				->setValue("id", new Criterion(142)));
-	
+		$scope = new Scope();
+		$scope->setQuery(
+			WhereExpression::create($this->postCollectionModel)
+			->setValue("id", new Criterion(142)));
+
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("models/post")
+			->appendScope($scope)
+			->appendPath("tags")
+			->build();
+
 		$result = $this->getReader($path)->read();
 		
 		$this->assertEquals(array("post", "story"), $result->getValue());
@@ -109,8 +114,9 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	
 	public function testReadFromBuiltinArray()
 	{
-		$path = new PathExpression();
-		$path->setPath("models/post/142/tags/0");
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("models/post/142/tags/0")
+			->build();
 	
 		$result = $this->getReader($path)->read();
 	
@@ -119,8 +125,9 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	
 	public function testReadPublishedObject()
 	{
-		$path = new PathExpression();
-		$path->setPath("current/post/title");
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("current/post/title")
+			->build();
 		
 		$result = $this->getReader($path)->read();
 		
@@ -129,15 +136,17 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	
 	public function testNestedPathExpression()
 	{
-		$path1 = new PathExpression();
-		$path1->setPath("current/post");
-		
-		$path2 = new PathExpression();
-		$path2->setPath("title");
-		$path2->setRelativeTo($path1);
-		
+		$path1 = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("current/post")
+			->build();
+
 		$result1 = $this->getReader($path1)->read();
-		$result2 = $this->getNestedReader($path2, $result1)->read();
+
+		$path2 = ResourcePathBuilder::createFromResource($result1)
+			->appendPath("title")
+			->build();
+		
+		$result2 = $this->getReader($path2)->read();
 		
 		$this->assertSame($this->currentPost, $result1->getValue());
 		$this->assertEquals("Current post", $result2->getValue());
@@ -151,14 +160,6 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	{
 		return new PathReader($path, $this->registry);
 	}
-	
-	/**
-	 * @return \Light\ObjectService\Type\PathReader
-	 */
-	private function getNestedReader(PathExpression $path, ResolvedValue $value)
-	{
-		$parsed = new ParsedNestedPathExpression($path, $value);
-		return new PathReader($parsed, $this->registry);
-	}
+
 }
 
