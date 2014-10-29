@@ -23,10 +23,12 @@ class ResourceIdentifierTest extends \PHPUnit_Framework_TestCase
 		$resourceIdentifier = ResourceIdentifier::createFromUrl($url);
 		$resolved = $resourceIdentifier->resolve($registry);
 
-		$this->assertEquals("", $resolved->getPath());
-		$this->assertEquals(0, count($resolved->getElements()));
+		$resourcePath = $resolved->getResourcePath();
 
-		$baseResource = $resolved->getSourceResource();
+		$this->assertEquals("", $resourcePath->getPath());
+		$this->assertEquals(0, count($resourcePath->getElements()));
+
+		$baseResource = $resourcePath->getSourceResource();
 		$this->assertEquals("resource", $baseResource->getEndpointUrl()->getRelativeUrl());
 		$this->assertEquals("Title", $baseResource->getValue()->title);
 		$this->assertInstanceOf('Light\ObjectService\Mockup\PostModel', $baseResource->getType());
@@ -39,12 +41,13 @@ class ResourceIdentifierTest extends \PHPUnit_Framework_TestCase
 		$url = "http://example.org/endpoint/resource/title";
 		$resourceIdentifier = ResourceIdentifier::createFromUrl($url);
 		$resolved = $resourceIdentifier->resolve($registry);
+		$resourcePath = $resolved->getResourcePath();
 
-		$this->assertEquals("title", $resolved->getPath());
-		$this->assertEquals("title", $resolved->getLastElement());
-		$this->assertEquals(1, count($resolved->getElements()));
+		$this->assertEquals("title", $resourcePath->getPath());
+		$this->assertEquals("title", $resourcePath->getLastElement());
+		$this->assertEquals(1, count($resourcePath->getElements()));
 
-		$baseResource = $resolved->getSourceResource();
+		$baseResource = $resourcePath->getSourceResource();
 		$this->assertEquals("resource", $baseResource->getEndpointUrl()->getRelativeUrl());
 	}
 

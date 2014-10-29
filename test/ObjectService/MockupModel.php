@@ -2,14 +2,73 @@
 
 namespace Light\ObjectService\Mockup;
 
+use Light\ObjectService\EndpointRegistry;
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\FindContext;
+use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\Query\Scope;
 use Light\ObjectService\Resource\Query\WhereExpression;
+use Light\ObjectService\Service\Endpoint;
+use Light\ObjectService\Service\Util\ExecutionParametersObject;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\CollectionType;
 use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\ObjectProvider;
+
+class EndpointSetup
+{
+	/** @var Endpoint */
+	private $endpoint;
+	/** @var EndpointRegistry */
+	private $endpointRegistry;
+	/** @var ExecutionParameters */
+	private $executionParameters;
+
+	/**
+	 * @return EndpointRegistry
+	 */
+	public function __construct($baseUrl = "http://example.org/endpoint/")
+	{
+		$this->endpoint = Endpoint::create($baseUrl);
+		$objectRegistry = $this->endpoint->getObjectRegistry();
+
+		Database::initialize();
+
+		$objectRegistry->addType($postModel = new PostModel());
+		$objectRegistry->publishCollection("blog/posts", new PostCollectionModel());
+
+		$this->endpointRegistry = new EndpointRegistry();
+		$this->endpointRegistry->addEndpoint($this->endpoint);
+
+		$this->executionParameters = new ExecutionParametersObject();
+		$this->executionParameters->setEndpointRegistry($this->endpointRegistry);
+		$this->executionParameters->setTransaction(new Transaction());
+	}
+
+	/**
+	 * @return Endpoint
+	 */
+	public function getEndpoint()
+	{
+		return $this->endpoint;
+	}
+
+	/**
+	 * @return EndpointRegistry
+	 */
+	public function getEndpointRegistry()
+	{
+		return $this->endpointRegistry;
+	}
+
+	/**
+	 * @return ExecutionParameters
+	 */
+	public function getExecutionParameters()
+	{
+		return $this->executionParameters;
+	}
+}
 
 class Database
 {

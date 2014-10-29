@@ -45,7 +45,11 @@ final class UrlResourceIdentifier extends ResourceIdentifier
 
 		// TODO Parse query part of URL
 
-		return $resourcePath;
+		$resolvedResourceIdentifier = new ResolvedResourceIdentifier();
+		$resolvedResourceIdentifier->setEndpoint($endpoint);
+		$resolvedResourceIdentifier->setResourcePath($resourcePath);
+
+		return $resolvedResourceIdentifier;
 	}
 
 	/**

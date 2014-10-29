@@ -25,7 +25,7 @@ abstract class ResourceIdentifier
 
 	/**
 	 * @param EndpointRegistry $registry
-	 * @return ResourcePath
+	 * @return ResolvedResourceIdentifier
 	 */
 	abstract public function resolve(EndpointRegistry $registry);
 }

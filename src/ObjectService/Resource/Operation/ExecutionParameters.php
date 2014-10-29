@@ -1,5 +1,6 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
+use Light\ObjectService\EndpointRegistry;
 
 /**
  * Parameters for the execution of an operation.
@@ -12,8 +13,8 @@ interface ExecutionParameters
 	public function getTransaction();
 	
 	/**
-	 * Returns the object registry.
-	 * @return \Light\ObjectService\ObjectRegistry
+	 * Returns the endpoint registry.
+	 * @return EndpointRegistry
 	 */
-	public function getObjectRegistry();
+	public function getEndpointRegistry();
 }

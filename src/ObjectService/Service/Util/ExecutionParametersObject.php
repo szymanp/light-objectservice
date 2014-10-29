@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service\Util;
 
-use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\EndpointRegistry;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Transaction\Transaction;
 
@@ -15,7 +15,7 @@ class ExecutionParametersObject implements ExecutionParameters
 		$this->transaction = $tx;
 	}
 	
-	public function setObjectRegistry(ObjectRegistry $registry)
+	public function setEndpointRegistry(EndpointRegistry $registry)
 	{
 		$this->registry = $registry;
 	}
@@ -25,7 +25,7 @@ class ExecutionParametersObject implements ExecutionParameters
 		return $this->transaction;
 	}
 	
-	public function getObjectRegistry()
+	public function getEndpointRegistry()
 	{
 		return $this->registry;
 	}

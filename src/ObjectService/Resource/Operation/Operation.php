@@ -1,43 +1,19 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Light\ObjectService\Resource\FieldTransformation;
 use Light\ObjectService\Resource\ResolvedValue;
 
 /**
  * A base class for describing requested operations on resources.
  * 
  */
-abstract class Operation implements FieldTransformation
+abstract class Operation
 {
-	/** @var \Light\ObjectService\Resource\ResolvedValue */
-	private $resource;
-	
-	/**
-	 * Sets the resource that is the subject of this operation.
-	 * @param ResolvedValue $resource
-	 */
-	final public function setResource(ResolvedValue $resource)
-	{
-		$this->resource = $resource;
-	}
-	
-	/**
-	 * Returns the resource that is the subject of this operation.
-	 * 
-	 * Note that some operations might not have any subject resource.
-	 * 
-	 * @return \Light\ObjectService\Resource\ResolvedValue
-	 */
-	final public function getResource()
-	{
-		return $this->resource;
-	}
-
 	/**
 	 * Executes the operation.
-	 * @param ExecutionParameters $params
+	 * @param ResolvedValue			$resource
+	 * @param ExecutionParameters 	$params
 	 * @return ResolvedValue Result resource
 	 */
-	abstract public function execute(ExecutionParameters $params);
+	abstract public function execute(ResolvedValue $resource, ExecutionParameters $params);
 }
