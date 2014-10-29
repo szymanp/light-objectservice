@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Addressing;
 
+use Light\Exception\Exception;
 use Light\Exception\InvalidParameterValue;
 use Light\ObjectService\Resource\Query\Scope;
 use Light\ObjectService\Resource\Query\UrlScopeParser;
@@ -34,11 +35,19 @@ final class ResourcePath
 	 * @param ResolvedValue $source
 	 * @param string|array  $path
 	 */
-	protected  function __construct(ResolvedValue $source, $path)
+	protected function __construct(ResolvedValue $source, $path)
 	{
 		if (is_array($path))
 		{
-			$this->path = implode("/", $path);
+			$stringPath = true;
+			foreach($path as $el)
+			{
+				$stringPath = $stringPath && is_string($el);
+			}
+			if ($stringPath)
+			{
+				$this->path = implode("/", $path);
+			}
 			$pathElements = $path;
 		}
 		else if ($path[0] == "/")
@@ -65,12 +74,42 @@ final class ResourcePath
 	}
 
 	/**
-	 * Returns the original resource path string.
-	 * @return string
+	 * Returns the string representation of the resource path.
+	 *
+	 * Note that if the ResourcePath object was constructed from a path specified as an array,
+	 * then the string representation of the path might not be available.
+	 *
+	 * @return string|null
 	 */
 	public function getPath()
 	{
 		return $this->path;
+	}
+
+	/**
+	 * Returns true if the string representation of the path is available.
+	 * @return bool
+	 */
+	public function hasPath()
+	{
+		return !is_null($this->path);
+	}
+
+	/**
+	 * Returns an EndpointUrl representing the location of the target resource, if available.
+	 * @throws Exception	If the string representation of the path is not available.
+	 * @return EndpointUrl
+	 */
+	public function getEndpointUrl()
+	{
+		if ($this->hasPath())
+		{
+			return $this->sourceResource->getEndpointUrl()->join($this->path);
+		}
+		else
+		{
+			throw new Exception("A string representation of the path is not available");
+		}
 	}
 
 	/**
@@ -105,7 +144,12 @@ final class ResourcePath
 			if (is_numeric($element))
 			{
 				// a numeric identifier
-				$this->elements[] = (integer) $element;
+				$this->elements[] = (integer)$element;
+			}
+			elseif (is_object($element) && $element instanceof Scope)
+			{
+				// a scope object
+				$this->elements[] = $element;
 			}
 			elseif ($element[0] == "(" && substr($element, -1, 1) == ")")
 			{

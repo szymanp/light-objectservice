@@ -1,7 +1,9 @@
 <?php
 namespace Light\ObjectService\Resource\Addressing;
 
+use Light\Exception\Exception;
 use Light\ObjectService\Service\Endpoint;
+use Light\Util\URL;
 
 /**
  * An URL that is relative to a service endpoint.
@@ -53,5 +55,19 @@ final class EndpointUrl
 		return $this->relativeUrl;
 	}
 
+	/**
+	 * Returns a new EndpointUrl that has the given relative URL path appended to this one.
+	 * @param string $relativeUrl
+	 * @throws Exception	If the paths cannot be joined.
+	 * @return EndpointUrl
+	 */
+	public function join($relativeUrl)
+	{
+		if (strpos($this->relativeUrl, "?") !== false || strpos($this->relativeUrl, "#") !== false)
+		{
+			throw new Exception("The URL \"%1\" cannot be appended to as it contains a query or anchor part", $this->getUrl());
+		}
 
+		return new self($this->endpoint, URL::joinPaths(array($this->relativeUrl, $relativeUrl)));
+	}
 } 

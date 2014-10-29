@@ -9,11 +9,12 @@ use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
 use Light\ObjectService\Expression\WhereExpressionSource;
 use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Resource\Addressing\ResourcePath;
 use Light\ObjectService\Resource\ResolvedValue;
 
 class PathReader
 {
-	/** @var \Light\ObjectService\Expression\ParsedPathExpression */
+	/** @var ResourcePath */
 	private $path;
 	
 	/** @var \Light\ObjectService\ObjectRegistry */
@@ -30,13 +31,13 @@ class PathReader
 	 */
 	private $targetSelectionSource;
 	
-	public function __construct(ParsedPathExpression $path, ObjectRegistry $registry)
+	public function __construct(ResourcePath $resourcePath, ObjectRegistry $registry)
 	{
-		$this->path = $path;
+		$this->path = $resourcePath;
 		$this->registry = $registry;
 		$this->typeHelper = new TypeHelper($this->registry);
 		
-		$type = $this->path->getRootType();
+		$type = $this->path->getSourceResource()->getType();
 		if ($type instanceof CollectionType)
 		{
 			// An object provider
@@ -44,7 +45,7 @@ class PathReader
 		}
 		else if ($type instanceof ComplexType)
 		{
-			$this->resolved[] = new PathReader_Object($type, $this->path->getRootObject());
+			$this->resolved[] = new PathReader_Object($type, $this->path->getSourceResource()->getValue());
 		}
 		else
 		{
@@ -73,11 +74,9 @@ class PathReader
 	 */
 	public function read()
 	{
-		$partialpath = ($this->path instanceof ParsedRootPathExpression) ?
-					   array($this->path->getRootResourceName())
-					   : array();
-		
-		$pathElements = $this->path->getPathElements();
+		$partialpath = explode("/", $this->path->getSourceResource()->getEndpointUrl()->getRelativeUrl());
+
+		$pathElements = $this->path->getElements();
 		$count 		  = count($pathElements);
 		
 		foreach($pathElements as $index => $element)
@@ -112,8 +111,10 @@ class PathReader
 		{
 			throw new ResolutionException("Resolution of path \"%1\" did not produce any value", $this->path->getPath());
 		}
-		
-		return new ResolvedValue($last->getType(), $this->path, $last->value);
+
+		$resourceUrl = $this->path->hasPath() ? $this->path->getEndpointUrl() : null;
+
+		return new ResolvedValue($last->getType(), $last->value, $resourceUrl);
 	}
 	
 	private function readElement($element, $isLastElement)

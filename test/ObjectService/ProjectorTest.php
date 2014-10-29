@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectBroker;
+namespace Light\ObjectService;
 
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\SelectExpression;
@@ -9,12 +9,10 @@ use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Service\Response\DataCollection;
 use Light\ObjectService\Service\Response\DataObject;
 use Light\ObjectService\Service\Response\Projector;
-
-require_once 'config.php';
-require_once __DIR__ . '/MockupModel.php';
 
 class ProjectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,8 +24,8 @@ class ProjectorTest extends \PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		
-		$this->registry = new ObjectRegistry();
+
+		$this->registry = new ObjectRegistry(Endpoint::createInternal());
 		$this->registry->addType($this->postModel = new PostModel());
 		$this->registry->addType($this->commentCollectionType = new CommentCollectionType());
 		$this->registry->publishCollection("models/post", new PostCollectionModel());

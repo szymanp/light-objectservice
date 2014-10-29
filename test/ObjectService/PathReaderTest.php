@@ -1,6 +1,5 @@
 <?php
-
-namespace Light\ObjectBroker;
+namespace Light\ObjectService;
 
 use Light\ObjectService\Expression\Criterion;
 use Light\ObjectService\Expression\ParsedNestedPathExpression;
@@ -11,12 +10,12 @@ use Light\ObjectService\Mockup\Database;
 use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\PostModel;
-use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Resource\Addressing\ResourcePath;
+use Light\ObjectService\Resource\Query\Scope;
+use Light\ObjectService\Resource\Util\ResourcePathBuilder;
+use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Type\PathReader;
 use Light\ObjectService\Resource\ResolvedValue;
-
-require_once 'config.php';
-require_once __DIR__ . '/MockupModel.php';
 
 class PathReaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +32,7 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 		
 		Database::initialize();
 		
-		$this->registry = new ObjectRegistry();
+		$this->registry = new ObjectRegistry(Endpoint::createInternal());
 		$this->registry->addType($postModel = new PostModel());
 		$this->registry->publishCollection("models/post", $this->postCollectionModel = new PostCollectionModel());
 		$this->registry->publishObject("current/post", $this->currentPost = new Post(911, "Current post"));
@@ -42,11 +41,12 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	public function testFindAll()
 	{
 		$postModel = $this->registry->getProvider("models/post");
-		
-		$path = new PathExpression();
-		$path->setPath("models/post");
-		$path->setWhereReference(PathExpression::TARGET, WhereExpression::create($this->postCollectionModel));
-		
+
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+				->appendPath("models/post")
+				->appendScope(Scope::createEmptyScope())
+				->build();
+
 		$result = $this->getReader($path)->read();
 		
 		$this->assertTrue(is_array($result->getValue()));
@@ -56,10 +56,11 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	public function testFindByKey()
 	{
 		$postModel = $this->registry->getProvider("models/post");
-	
-		$path = new PathExpression();
-		$path->setPath("models/post/142");
-	
+
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+				->appendPath("models/post/142")
+				->build();
+
 		$result = $this->getReader($path)->read();
 	
 		$this->assertEquals(Database::$posts[1], $result->getValue());
@@ -71,8 +72,9 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
      */
 	public function testFindNoValue()
 	{
-		$path = new PathExpression();
-		$path->setPath("models/post");
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("models/post")
+			->build();
 		
 		$result = $this->getReader($path)->read();
 	}
@@ -83,10 +85,12 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
      */
 	public function testFindAllAndReadField()
 	{
-		$path = new PathExpression();
-		$path->setPath("models/post/_1/title");
-		$path->setWhereReference("_1", WhereExpression::create($this->postCollectionModel));
-	
+		$path = ResourcePathBuilder::createFromRegistry($this->registry)
+			->appendPath("models/post")
+			->appendScope(Scope::createEmptyScope())
+			->appendPath("title")
+			->build();
+
 		$result = $this->getReader($path)->read();
 	}
 
@@ -140,13 +144,12 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @param PathExpression $path
+	 * @param ResourcePath $path
 	 * @return \Light\ObjectService\Type\PathReader
 	 */
-	private function getReader(PathExpression $path)
+	private function getReader(ResourcePath $path)
 	{
-		$parsed = new ParsedRootPathExpression($path, $this->registry);
-		return new PathReader($parsed, $this->registry);
+		return new PathReader($path, $this->registry);
 	}
 	
 	/**

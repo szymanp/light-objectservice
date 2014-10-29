@@ -5,6 +5,7 @@ use Light\ObjectService\Expression\SelectExpression;
 use Light\ObjectService\Mockup\PostCollectionModel;
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\ObjectRegistry;
+use Light\ObjectService\Service\Endpoint;
 
 require_once 'config.php';
 require_once __DIR__ . '/MockupModel.php';
@@ -19,7 +20,7 @@ class SelectExpressionTest extends \PHPUnit_Framework_TestCase
 	{
 		parent::setUp();
 		
-		$this->registry = new ObjectRegistry();
+		$this->registry = new ObjectRegistry(Endpoint::createInternal());
 		$this->registry->addType($this->postModel = new PostModel());
 		$this->registry->publishCollection("models/post", new PostCollectionModel());
 	}

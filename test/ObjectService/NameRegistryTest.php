@@ -1,6 +1,6 @@
 <?php
 
-namespace Light\ObjectBroker;
+namespace Light\ObjectService;
 
 use Light\ObjectService\Mockup\PostModel;
 use Light\ObjectService\Type\BuiltinCollectionType;
