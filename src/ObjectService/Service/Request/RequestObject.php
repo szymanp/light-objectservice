@@ -3,6 +3,7 @@ namespace Light\ObjectService\Service\Request;
 
 use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Expression\SelectExpressionSource;
+use Light\ObjectService\Resource\Addressing\ResourceIdentifier;
 use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Resource\UrlResourceSpecification;
 
@@ -12,26 +13,51 @@ use Light\ObjectService\Resource\UrlResourceSpecification;
  */
 final class RequestObject implements Request
 {
-	private $resourceSpecification;
+	/** @var ResourceIdentifier */
+	private $resourceIdentifier;
+	/** @var Operation[] */
+	private $operations = array();
+	/** @var SelectExpressionSource */
 	private $selection;
-	
-	public function getResourceSpecification()
-	{
-		return $this->resourceSpecification;
-	}
 
-	public function getSelection()
+	/**
+	 * @return Operation[]
+	 */
+	public function getOperations()
 	{
-		return $this->selection;
+		return $this->operations;
 	}
 
 	/**
-	 * Sets the specification of the requested resource.
-	 * @param UrlResourceSpecification $resourceSpecification
+	 * @param Operation $operations
 	 */
-	public function setResourceSpecification(UrlResourceSpecification $resourceSpecification)
+	public function addOperation(Operation $operation)
 	{
-		$this->resourceSpecification = $resourceSpecification;
+		$this->operations[] = $operation;
+	}
+
+	/**
+	 * @return ResourceIdentifier
+	 */
+	public function getResourceIdentifier()
+	{
+		return $this->resourceIdentifier;
+	}
+
+	/**
+	 * @param ResourceIdentifier $resourceIdentifier
+	 */
+	public function setResourceIdentifier($resourceIdentifier)
+	{
+		$this->resourceIdentifier = $resourceIdentifier;
+	}
+
+	/**
+	 * @return SelectExpressionSource
+	 */
+	public function getSelection()
+	{
+		return $this->selection;
 	}
 
 	/**

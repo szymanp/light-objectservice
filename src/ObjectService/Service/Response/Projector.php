@@ -102,7 +102,7 @@ final class Projector_Complex extends Projector
 		{
 			$subselect = $select->getSubselect($field);
 			$fieldspec = $spec->getFieldOrThrow($field);
-			
+
 			if (!is_null($objectProvider = $this->typeHelper->getObjectProviderOrNull($fieldspec)))
 			{
 				// If the field's type is an object provider, then instead of reading it directly,

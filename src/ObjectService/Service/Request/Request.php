@@ -1,13 +1,23 @@
 <?php
 namespace Light\ObjectService\Service\Request;
 
+use Light\ObjectService\Resource\Addressing\ResourceIdentifier;
+use Light\ObjectService\Resource\Operation\Operation;
+
 interface Request
 {
 	/**
-	 * Returns the specification of the requested resource.
-	 * @return \Light\ObjectService\Resource\UrlResourceSpecification
+	 * Returns the identifier of the requested resource.
+	 * @return ResourceIdentifier
 	 */
-	function getResourceSpecification();
+	function getResourceIdentifier();
+
+
+	/**
+	 * Returns a list of operations to be performed on the resource.
+	 * @return Operation[]
+	 */
+	function getOperations();
 	
 	/**
 	 * Returns the select expression to be applied to the requested resource.

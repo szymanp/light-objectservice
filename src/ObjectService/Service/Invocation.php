@@ -3,6 +3,8 @@ namespace Light\ObjectService\Service;
 
 use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Resource\Operation\CreateOperation;
+use Light\ObjectService\Resource\Operation\Operation;
+use Light\ObjectService\Resource\Operation\UpdateOperation;
 use Light\ObjectService\Service\Request\Request;
 use Light\ObjectService\Service\Response\Projector;
 use Light\ObjectService\Service\Response\Response;
@@ -27,30 +29,28 @@ class Invocation
 	public function invoke()
 	{
 		// TODO exception handling
-		
-		$resourcePath = new ParsedRootPathExpression($this->request->getResourcePath(), $this->conf->getObjectRegistry());
-		$pathReader = new PathReader($resourcePath, $this->conf->getObjectRegistry());
+
+		$resolvedResourceIdentifier = $this->request->getResourceIdentifier()->resolve($this->conf->getEndpointRegistry());
+		$pathReader = new PathReader($resolvedResourceIdentifier->getResourcePath(), $resolvedResourceIdentifier->getEndpoint()->getObjectRegistry());
 		if ($this->request->getSelection())
 		{
 			$pathReader->setTargetSelection($this->request->getSelection());
 		}
 		$resource = $pathReader->read();
-		
-		$operation = $this->request->getOperation();
-		$operation->setResource($resource);
+		$resultResource = null;
 
-		$operation->execute($this->conf);
-		
-		if ($operation instanceof CreateOperation)
+		$operations = $this->getPrioritizedOperations($this->request->getOperations());
+		foreach($operations as $operation)
 		{
-			$resultResource = $operation->getNewResource();
+			$resultResource = $operation->execute($resource, $this->conf);
 		}
-		else
+
+		if (is_null($resultResource))
 		{
-			$resultResource = $operation->getResource();
+			$resultResource = $resource;
 		}
-		
-		$projector = Projector::create($this->conf->getObjectRegistry(), $resultResource->getType());
+
+		$projector = Projector::create($resolvedResourceIdentifier->getEndpoint()->getObjectRegistry(), $resultResource->getType());
 		if ($this->request->getSelection())
 		{
 			$selection = $this->request->getSelection()->compile($resultResource->getType()); 
@@ -69,5 +69,42 @@ class Invocation
 		{
 			$this->response->sendEntity($projectedResultResource);
 		}
+	}
+
+	private function getPrioritizedOperations(array $operations)
+	{
+		$orderingFn = function(Operation $operation)
+		{
+			if ($operation instanceof UpdateOperation)
+			{
+				return 1;
+			}
+			else
+			{
+				return 2;
+			}
+		};
+
+		$comparatorFn = function(Operation $a, Operation $b) use ($orderingFn)
+		{
+			$pa = $orderingFn($a);
+			$pb = $orderingFn($b);
+			if ($pa == $pb)
+			{
+				return 0;
+			}
+			else if ($pa > $pb)
+			{
+				return 1;
+			}
+			else
+			{
+				return -1;
+			}
+		};
+
+		usort($operations, $comparatorFn);
+
+		return $operations;
 	}
 }

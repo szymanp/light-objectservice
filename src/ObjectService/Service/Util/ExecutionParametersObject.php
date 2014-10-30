@@ -29,4 +29,14 @@ class ExecutionParametersObject implements ExecutionParameters
 	{
 		return $this->registry;
 	}
+
+	/**
+	 * Copy values from another ExecutionParameters object.
+	 * @param ExecutionParameters $params
+	 */
+	public function copyFrom(ExecutionParameters $params)
+	{
+		$this->transaction = $params->getTransaction();
+		$this->registry = $params->getEndpointRegistry();
+	}
 }

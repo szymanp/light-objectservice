@@ -29,17 +29,21 @@ class JsonRequestReaderTest extends \PHPUnit_Framework_TestCase
 	
 	public function testReadRequest()
 	{
+		$this->fail();
+
 		$httpRequest = $this->getMockRequest("GET", "/api/post");
 		$svcRequest  = $this->reader->read($httpRequest);
 		
 		$this->assertInstanceOf("Light\ObjectService\Service\Request\Request", $svcRequest);
-		$this->assertNotNull($svcRequest->getResourceSpecification());
-		$this->assertNull($svcRequest->getResourceSpecification()->getOperation());
+		$this->assertNotNull($svcRequest->getResourceIdentifier());
+		$this->assertEmpty($svcRequest->getOperations());
 		$this->assertEquals("post", $svcRequest->getResourceSpecification()->getUrl());
 	}
 	
 	public function testReadRequestWithQuery()
 	{
+		$this->fail();
+
 		$body = <<<DOC
 		{
 			"query": {

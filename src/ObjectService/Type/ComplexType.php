@@ -179,7 +179,7 @@ class ComplexType extends Type
 		}
 		catch (\Exception $e)
 		{
-			throw new ResolutionException("Field %1::%2 cannot be read: %3", $this->getName(), $propertyName, $e->getMessage(), $e);
+			throw new ResolutionException("Field %1::%2 cannot be read: %3", $this->getClassName(), $propertyName, $e->getMessage(), $e);
 		}
 	}
 	

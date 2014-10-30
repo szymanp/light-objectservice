@@ -1,5 +1,4 @@
 <?php 
-
 namespace Light\ObjectService\Type;
 
 use Light\Exception\Exception;

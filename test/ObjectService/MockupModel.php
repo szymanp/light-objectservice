@@ -36,7 +36,9 @@ class EndpointSetup
 
 		Database::initialize();
 
-		$objectRegistry->addType($postModel = new PostModel());
+		$objectRegistry->addType(new PostModel());
+		$objectRegistry->addType(TypeFactory::getCommentType());
+		$objectRegistry->addType(new CommentCollectionType());
 		$objectRegistry->publishCollection("blog/posts", new PostCollectionModel());
 
 		$this->endpointRegistry = new EndpointRegistry();
