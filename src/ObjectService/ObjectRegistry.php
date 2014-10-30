@@ -46,7 +46,10 @@ class ObjectRegistry
 	public function publishCollection($address, ObjectProvider $collection)
 	{
 		$this->published[$address] = $collection;
-		$this->addType($collection);
+		if (!$this->hasType($collection))
+		{
+			$this->addType($collection);
+		}
 		return $this;
 	}
 	
@@ -99,6 +102,29 @@ class ObjectRegistry
 		$type->attachToRegistry($this);
 		
 		return $this;
+	}
+
+	/**
+	 * Returns true if the given type is registered with this ObjectRegistry.
+	 * @param Type $type
+	 * @return bool
+	 */
+	public function hasType(Type $type)
+	{
+		if ($type instanceof SimpleType)
+		{
+			$key = $type->getPhpType();
+		}
+		else if ($type instanceof ComplexType)
+		{
+			$key = $type->getClassName();
+		}
+		else if ($type instanceof CollectionType)
+		{
+			$key = $type->getBaseType()->getClassName();
+			return isset($this->collectionTypes[$key]) && $this->collectionTypes[$key] === $type;
+		}
+		return isset($this->types[$key]) && $this->types[$key] === $type;
 	}
 	
 	/**

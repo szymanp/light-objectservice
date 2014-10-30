@@ -37,9 +37,11 @@ class EndpointSetup
 		Database::initialize();
 
 		$objectRegistry->addType(new PostModel());
+		$objectRegistry->addType(new AuthorType());
 		$objectRegistry->addType(TypeFactory::getCommentType());
-		$objectRegistry->addType(new CommentCollectionType());
+		$objectRegistry->addType($commentCollectionType = new CommentCollectionType());
 		$objectRegistry->publishCollection("blog/posts", new PostCollectionModel());
+		$objectRegistry->publishCollection("blog/comments", $commentCollectionType);
 
 		$this->endpointRegistry = new EndpointRegistry();
 		$this->endpointRegistry->addEndpoint($this->endpoint);
@@ -82,14 +84,21 @@ class Database
 	
 	public static function initialize()
 	{
+		// Authors
+		self::$authors = array();
+		self::$authors[] = new Author(254, "John Doe");
+		self::$authors[] = new Author(255, "Oliver Williams");
+
 		// Posts
 		self::$posts = array(); 
 
 		self::$posts[] = $model = new Post(141, "This is my first post");
 		$model->tags = array("post", "interesting");
-		
+		$model->author = self::$authors[0];
+
 		self::$posts[] = $model = new Post(142, "Object service in practice");
 		$model->tags = array("post", "story");
+		$model->author = self::$authors[1];
 		
 		// Comments
 		self::$comments = array();
@@ -135,6 +144,7 @@ class Post
 	public $title;
 	public $compact_title;
 	public $tags = array();
+	public $author;
 	
 	public function __construct($id = null, $title = null)
 	{
@@ -167,7 +177,7 @@ class Author
 	public $id;
 	public $name;
 	
-	public function __construct($id, $name)
+	public function __construct($id, $name = null)
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -267,6 +277,7 @@ class PostModel extends ComplexType implements Create
 			 ->classname(Post::CLASSNAME)
 			 ->field("id")->type("int")->primaryKey()->done()
 			 ->field("title")->type("string")->done()
+			 ->field("author")->type(Author::CLASSNAME)->done()
 			 ->field("compact_title")->type("string")
 			 ->getter(function(Post $post)
 			 {
@@ -296,6 +307,33 @@ class PostModel extends ComplexType implements Create
 	public function createObject(CreationContext $context)
 	{
 		return new Post(++self::$autoId);
+	}
+}
+
+class AuthorType extends ComplexType implements Create
+{
+	const CLASSNAME = __CLASS__;
+
+	public static $autoId = 4000;
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->getSpecification()
+			->classname(Author::CLASSNAME)
+			->field("id")->type("int")->primaryKey()->done()
+			->field("name")->type("string")->done();
+	}
+
+	/**
+	 * Creates a new instance of an object of this complex-type.
+	 * @param CreationContext $context
+	 * @return object
+	 */
+	public function createObject(CreationContext $context)
+	{
+		return new Author(++self::$autoId);
 	}
 }
 

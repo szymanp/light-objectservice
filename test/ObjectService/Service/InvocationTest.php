@@ -1,8 +1,11 @@
 <?php
 namespace Light\ObjectService\Service;
 
+use Light\ObjectService\Mockup\Author;
+use Light\ObjectService\Mockup\AuthorType;
 use Light\ObjectService\Mockup\EndpointSetup;
 use Light\ObjectService\Resource\Addressing\ResourceIdentifier;
+use Light\ObjectService\Resource\NewResourceSpecification;
 use Light\ObjectService\Resource\Operation\ResourceUpdateSpecification;
 use Light\ObjectService\Resource\Operation\UpdateOperation;
 use Light\ObjectService\Service\Request\RequestObject;
@@ -27,6 +30,9 @@ class InvocationTest extends \PHPUnit_Framework_TestCase
 		$parameters->copyFrom($this->endpointSetup->getExecutionParameters());
 	}
 
+	/**
+	 * GET http://example.org/endpoint/blog/posts/141
+	 */
 	public function testReadResource()
 	{
 		$request = new RequestObject();
@@ -46,6 +52,9 @@ class InvocationTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf(DataCollection::class, $data->tags);
 	}
 
+	/**
+	 * PUT http://example.org/endpoint/blog/posts/141
+	 */
 	public function testUpdateResource()
 	{
 		$updateSpec = new ResourceUpdateSpecification();
@@ -67,6 +76,48 @@ class InvocationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(141, $data->id);
 		$this->assertEquals("Updated title", $data->title);
 		$this->assertEquals("updated-title", $data->compact_title);
+	}
+
+	/**
+	 * PUT http://example.org/endpoint/blog/posts/141
+	 *
+	 * Creates a new Author object and assigns it to Post->author.
+	 */
+	public function testUpdateResourceWithAnObject()
+	{
+		// Author
+		$authorType = $this->endpointSetup->getEndpoint()->getObjectRegistry()->getType(Author::CLASSNAME);
+
+		$authorUpdateSpec = new ResourceUpdateSpecification();
+		$authorUpdateSpec->setValue("name", "John Williams");
+		$newAuthorSpec = new NewResourceSpecification($authorType, $authorUpdateSpec);
+
+		// Post
+		$updateSpec = new ResourceUpdateSpecification();
+		$updateSpec->setValue("title", "Updated title");
+		$updateSpec->setResource("author", $newAuthorSpec);
+		$updateOperation = new UpdateOperation($updateSpec);
+
+		// Request and Response
+		$request = new RequestObject();
+		$request->setResourceIdentifier(ResourceIdentifier::createFromUrl("http://example.org/endpoint/blog/posts/141"));
+		$request->addOperation($updateOperation);
+		$response = new MockupResponse();
+
+		// Invocation
+		$invocation = new Invocation($this->invocationParameters, $request, $response);
+		$invocation->invoke();
+
+		$this->assertEquals(MockupResponse::SEND_ENTITY, $response->method);
+		$this->assertInstanceOf(DataObject::class, $response->result);
+
+		$data = $response->result->getData();
+		$this->assertEquals(141, $data->id);
+		$this->assertEquals("Updated title", $data->title);
+
+		$authorData = $data->author->getData();
+		$this->assertEquals(AuthorType::$autoId, $authorData->id);
+		$this->assertEquals("John Williams", $authorData->name);
 	}
 
 	/**
