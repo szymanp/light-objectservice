@@ -2,9 +2,6 @@
 namespace Light\ObjectService;
 
 use Light\ObjectService\Expression\Criterion;
-use Light\ObjectService\Expression\ParsedNestedPathExpression;
-use Light\ObjectService\Expression\ParsedRootPathExpression;
-use Light\ObjectService\Expression\PathExpression;
 use Light\ObjectService\Resource\Query\WhereExpression;
 use Light\ObjectService\Mockup\Database;
 use Light\ObjectService\Mockup\Post;
@@ -66,10 +63,6 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(Database::$posts[1], $result->getValue());
 	}
 	
-    /**
-     * @expectedException        \Light\ObjectService\Exceptions\ResolutionException
-     * @expectedExceptionMessage Resolution of path "models/post" did not produce any value
-     */
 	public function testFindNoValue()
 	{
 		$path = ResourcePathBuilder::createFromRegistry($this->registry)
@@ -77,6 +70,8 @@ class PathReaderTest extends \PHPUnit_Framework_TestCase
 			->build();
 		
 		$result = $this->getReader($path)->read();
+		$this->assertTrue($result->isCollection());
+		$this->assertTrue($result->isUnresolvedCollection());
 	}
 	
     /**

@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\ObjectService\Expression\ParsedRootPathExpression;
 use Light\ObjectService\Resource\Operation\CreateOperation;
 use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Resource\Operation\UpdateOperation;
