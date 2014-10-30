@@ -37,18 +37,58 @@ class Invocation
 			$pathReader->setTargetSelection($this->request->getSelection());
 		}
 		$resource = $pathReader->read();
+
+		// TODO
+		// The resource might be a collection of values. If so, the operation(s) should be executed
+		// on each of the resources separately. We need to modify ResolvedValue to contain information
+		// about the state of the collection (not a collection | unresolved collection | collection values).
+		// PathReader should then also be modified to feed this information into ResolvedValue.
+
 		$resultResource = null;
 
 		$operations = $this->getPrioritizedOperations($this->request->getOperations());
-		foreach($operations as $operation)
+
+		// Execute the requested operation(s) on the relevant resource(s).
+		if ($resource->isCollection() && !$resource->isUnresolvedCollection())
 		{
-			$resultResource = $operation->execute($resource, $this->conf);
+			// Execute the operations on all resources in the collection.
+			$resultResource = $resource;
+
+			foreach($resource->getValueAsResources() as $value)
+			{
+				foreach($operations as $operation)
+				{
+					$operation->execute($value, $this->conf);
+				}
+			}
+		}
+		else
+		{
+			// Execute the operation on the requested resource only.
+			foreach($operations as $operation)
+			{
+				// TODO
+				// As we might be invoking many operations, we should probably pick
+				// the resource from the first executed operation as the result resource.
+				$resultResource = $operation->execute($resource, $this->conf);
+			}
 		}
 
 		if (is_null($resultResource))
 		{
 			$resultResource = $resource;
 		}
+
+		// TODO
+		// Some resources (in particular those that are isUnresolvedCollection) do not have any value to be projected.
+		// You could argue that we should give some kind of Method not allowed error when reading them, but projection
+		// will happen even if you are appending to such a resource.
+		// So what are the options?
+		// - return nothing
+		// - invent some information to be returned (e.g. number of elements in collection, etc.)
+		// - find an alternative resource to show (e.g. if we were appending, then the one that was appended);
+		//	 but what if no alternative resource can be found - e.g. when we were sorting
+		// - evaluate the collection to return its elements
 
 		$projector = Projector::create($resolvedResourceIdentifier->getEndpoint()->getObjectRegistry(), $resultResource->getType());
 		if ($this->request->getSelection())
@@ -60,7 +100,11 @@ class Invocation
 			$selection = null;
 		}
 		$projectedResultResource = $projector->project($resultResource->getValue(), $selection);
-		
+
+		// TODO
+		// We do not have a Create operation anymore - but we have a NewResourceSpecification.
+		// How to pick up from Operation that a new resource could have been created there?
+
 		if ($operation instanceof CreateOperation)
 		{
 			$this->response->sendNewEntity($resultResource->getPath()->getPath(), $projectedResultResource);

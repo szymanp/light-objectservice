@@ -25,6 +25,11 @@ class UpdateOperation extends Operation
 	 */
 	public function execute(ResolvedValue $resource, ExecutionParameters $params)
 	{
+		if ($resource->isCollection())
+		{
+			throw new OperationNotAllowed($resource, "Cannot update a collection");
+		}
+
 		$this->resourceUpdateSpecification->update($resource, $params);
 
 		return $resource;

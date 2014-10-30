@@ -112,6 +112,10 @@ class PathReader
 		$last = $this->getCurrent();
 		if (!$last->hasValue())
 		{
+			if ($last instanceof PathReader_Collection && $last->getType() instanceof ObjectProvider)
+			{
+				return ResolvedValue::unresolvedCollection($last->getType(), $resourceUrl);
+			}
 			throw new ResolutionException("Resolution of path \"%1\" did not produce any value", $resourceUrlString);
 		}
 
