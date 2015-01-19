@@ -1,10 +1,8 @@
 <?php
-namespace Light\ObjectService;
-
-use Light\ObjectService\Service\Endpoint;
+namespace Light\ObjectService\Service;
 
 /**
- * A registry storing known service endpoints.
+ * A registry storing service endpoints.
  */
 final class EndpointRegistry
 {
@@ -22,8 +20,8 @@ final class EndpointRegistry
 
 	/**
 	 * Finds an Endpoint corresponding to the given URL.
-	 * @param $url
-	 * @return Endpoint|null	An Endpoint object, if found; otherwise, NULL.
+	 * @param string $url
+	 * @return Endpoint	An Endpoint object, if found; otherwise, NULL.
 	 */
 	public function findEndpoint($url)
 	{
