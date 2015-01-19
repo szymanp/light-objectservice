@@ -3,9 +3,12 @@ namespace Light\ObjectService\Service;
 
 use Light\ObjectService\Mockup\Author;
 use Light\ObjectService\Mockup\AuthorType;
+use Light\ObjectService\Mockup\Database;
 use Light\ObjectService\Mockup\EndpointSetup;
+use Light\ObjectService\Mockup\Post;
 use Light\ObjectService\Resource\Addressing\ResourceIdentifier;
 use Light\ObjectService\Resource\NewResourceSpecification;
+use Light\ObjectService\Resource\Operation\AppendOperation;
 use Light\ObjectService\Resource\Operation\ResourceUpdateSpecification;
 use Light\ObjectService\Resource\Operation\UpdateOperation;
 use Light\ObjectService\Service\Request\RequestObject;
@@ -207,6 +210,33 @@ class InvocationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(142, $data[1]->getData()->id);
 		$this->assertEquals("Updated title", $data[0]->getData()->title);
 		$this->assertEquals("Updated title", $data[1]->getData()->title);
+	}
+
+	public function testAppendToCollection()
+	{
+		// Post
+		$postType = $this->endpointSetup->getEndpoint()->getObjectRegistry()->getType(Post::CLASSNAME);
+
+		$updateSpec = new ResourceUpdateSpecification();
+		$updateSpec->setValue("title", "Appended post");
+
+		$subject = new NewResourceSpecification($postType, $updateSpec);
+		$appendOperation = new AppendOperation($subject);
+
+		$request = new RequestObject();
+		$request->setResourceIdentifier(ResourceIdentifier::createFromUrl("http://example.org/endpoint/blog/posts"));
+		$request->addOperation($appendOperation);
+		$response = new MockupResponse();
+
+		$invocation = new Invocation($this->invocationParameters, $request, $response);
+		$invocation->invoke();
+
+		// TODO What should the result be? The appended object? The whole collection?
+//		$this->assertEquals(MockupResponse::SEND_ENTITY, $response->method);
+//		$this->assertInstanceOf(DataCollection::class, $response->result);
+
+		$this->assertEquals(3, Database::$posts);
+		$this->assertEquals("Appended post", Database::$posts[2]->title);
 	}
 }
  

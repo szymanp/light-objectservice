@@ -12,6 +12,7 @@ use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Service\Util\ExecutionParametersObject;
 use Light\ObjectService\Transaction\Transaction;
 use Light\ObjectService\Type\CollectionType;
+use Light\ObjectService\Type\CollectionTypeInterfaces\Append;
 use Light\ObjectService\Type\ComplexType;
 use Light\ObjectService\Type\ComplexTypeInterfaces\Create;
 use Light\ObjectService\Type\ComplexTypeInterfaces\CreationContext;
@@ -184,7 +185,7 @@ class Author
 	}
 }
 
-class PostCollectionModel extends ObjectProvider
+class PostCollectionModel extends ObjectProvider implements Append
 {
 	public function __construct()
 	{
@@ -223,6 +224,17 @@ class PostCollectionModel extends ObjectProvider
 		});
 	
 		return $models;
+	}
+
+	/**
+	 * Appends a value to the collection
+	 * @param mixed $collection
+	 * @param mixed $value
+	 */
+	public function appendValue($collection, $value)
+	{
+		// TODO
+		//$collection[] = $value;
 	}
 }
 
