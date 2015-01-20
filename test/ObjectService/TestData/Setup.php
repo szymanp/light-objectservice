@@ -32,6 +32,8 @@ class Setup
 	{
 		$this->typeProvider = new DefaultTypeProvider();
 		$this->typeProvider->addType(new AuthorType());
+		$this->typeProvider->addType(new PostType());
+		$this->typeProvider->addType(new PostCollectionType());
 
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
 		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
@@ -55,7 +57,7 @@ class Setup
 	}
 
 	/**
-	 * @return mixed
+	 * @return TypeRegistry
 	 */
 	public function getTypeRegistry()
 	{

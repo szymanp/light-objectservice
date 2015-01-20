@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Service;
 
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
+use Light\ObjectService\Resource\Selection\RootSelection;
 
 interface Request
 {
@@ -20,10 +21,10 @@ interface Request
 	public function getOperations();
 	
 	/**
-	 * Returns the select expression to be applied to the requested resource.
-	 * The select expression returned by this method will be applied
-	 * to the requested resource to return data in the response to this request.
-	 * @return \Light\ObjectService\Expression\SelectExpressionSource
+	 * Returns the field selection to be applied to the requested resource.
+	 * The selection returned by this method will be applied to the requested
+	 * resource to return data in the response to this request.
+	 * @return RootSelection
 	 */
 	public function getSelection();
 }

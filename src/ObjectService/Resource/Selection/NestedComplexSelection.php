@@ -3,7 +3,7 @@ namespace Light\ObjectService\Resource\Selection;
 
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 
-final class NestedSelection extends RootSelection
+final class NestedComplexSelection extends RootSelection
 {
 	/** @var Selection */
 	private $parent;
@@ -13,7 +13,4 @@ final class NestedSelection extends RootSelection
 		parent::__construct($typeHelper);
 		$this->parent = $parent;
 	}
-	
-	// TODO This class should either contain a Query or a Scope.
-	//		Which one should it be?
 }

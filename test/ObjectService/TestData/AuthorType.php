@@ -12,6 +12,7 @@ class AuthorType extends DefaultComplexType
 		$this->addProperty(new DefaultProperty("id", "int"));
 		$this->addProperty(new DefaultProperty("name", "string"));
 		$this->addProperty(new DefaultProperty("age", "int"));
+		$this->addProperty(new DefaultProperty("posts", Post::class . "[]"));
 
 	}
 }

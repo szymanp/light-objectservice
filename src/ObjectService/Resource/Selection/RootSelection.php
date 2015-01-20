@@ -65,7 +65,7 @@ class RootSelection extends Selection
 	/**
 	 * Returns a selection for selecting fields on a child object.
 	 * @param string $fieldName
-	 * @return NestedSelection
+	 * @return RootSelection
 	 * @throws TypeException
 	 */
 	final public function subselect($fieldName)
@@ -81,14 +81,18 @@ class RootSelection extends Selection
 			$typeHelper = $this->typeHelper->getPropertyTypeHelper($fieldName);
 			if ($typeHelper instanceof CollectionTypeHelper)
 			{
-				$typeHelper = $typeHelper->getBaseTypeHelper();
+				$subselection = new NestedCollectionSelection($this, $typeHelper);
 			}
-			if ($typeHelper instanceof SimpleTypeHelper)
+			elseif ($typeHelper instanceof ComplexTypeHelper)
+			{
+				$subselection = new NestedComplexSelection($this, $typeHelper);
+			}
+			elseif ($typeHelper instanceof SimpleTypeHelper)
 			{
 				throw new TypeException("Field \"%1\" is of a simple type and cannot have a subselection", $fieldName);
 			}
 			
-			$this->subselections[$fieldName] = new NestedSelection($this, $typeHelper);
+			$this->subselections[$fieldName] = $subselection;
 		}
 		return $this->subselections[$fieldName];
 	}
@@ -123,8 +127,6 @@ class RootSelection extends Selection
 
 	private function addField($fieldName)
 	{
-		// TODO
-
 		if ($fieldName == self::ALL)
 		{
 			// Add all fields

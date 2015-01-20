@@ -9,6 +9,16 @@ use Light\ObjectAccess\Type\ComplexTypeHelper;
 abstract class Selection
 {
 	/**
+	 * Creates a new Selection object.
+	 * @param ComplexTypeHelper $typeHelper
+	 * @return RootSelection
+	 */
+	public static function create(ComplexTypeHelper $typeHelper)
+	{
+		return new RootSelection($typeHelper);
+	}
+
+	/**
 	 * Returns a list of field names to be selected.
 	 * @return string[]
 	 */
