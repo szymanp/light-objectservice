@@ -2,7 +2,9 @@
 namespace Light\ObjectService\Service\Util;
 
 use Light\ObjectAccess\Exception\ResourceException;
+use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\Endpoint;
@@ -46,7 +48,9 @@ class DefaultObjectProvider implements ObjectProvider
 	 */
 	public function publishValue($address, $value)
 	{
-		// TODO
+		$typeHelper = $this->typeRegistry->getTypeHelperByValue($value);
+		$addressObject = EndpointRelativeAddress::create($this->endpoint, $address);
+		$this->resources[$address] = ResolvedValue::create($typeHelper, $value, $addressObject, Origin::unavailable());
 
 		return $this;
 	}

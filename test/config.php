@@ -10,6 +10,8 @@ include_once "test/ObjectAccess/TestData/Setup.php";
 
 // Set the working directory to the root of the tests
 chdir($BASE_PATH);
+include_once "ObjectService/TestData/Author.php";
+include_once "ObjectService/TestData/AuthorType.php";
 include_once "ObjectService/TestData/Setup.php";
 @include_once "config-local.php";
 
