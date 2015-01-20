@@ -19,24 +19,23 @@ final class Endpoint
 	/** @var ObjectProvider */
 	private $objectProvider;
 
-	/** @var TypeRegistry */
-	private $typeRegistry;
-
 	/**
 	 * Creates a new Endpoint with the given URL.
-	 * @param string	$url
+	 * @param string			$url
+	 * @param ObjectProvider	$objectProvider
 	 * @return Endpoint
 	 */
-	public static function create($url, TypeRegistry $typeRegistry, ObjectProvider $objectProvider)
+	public static function create($url, ObjectProvider $objectProvider)
 	{
-		return new self($url, $typeRegistry, $objectProvider);
+		return new self($url, $objectProvider);
 	}
 
 	/**
 	 * Constructs a new Endpoint.
-	 * @param string	$url
+	 * @param string			$url
+	 * @param ObjectProvider	$objectProvider
 	 */
-	private function __construct($url, TypeRegistry $typeRegistry, ObjectProvider $objectProvider)
+	private function __construct($url, ObjectProvider $objectProvider)
 	{
 		if (substr($url, -1, 1) != "/")
 		{
@@ -44,9 +43,7 @@ final class Endpoint
 		}
 
 		$this->url = $url;
-		$this->typeRegistry = $typeRegistry;
 		$this->objectProvider = $objectProvider;
-		$this->objectProvider->setEndpoint($this);
 	}
 
 	/**
@@ -64,7 +61,7 @@ final class Endpoint
 	 */
 	public function getTypeRegistry()
 	{
-		return $this->typeRegistry;
+		return $this->objectProvider->getTypeRegistry();
 	}
 
 	/**

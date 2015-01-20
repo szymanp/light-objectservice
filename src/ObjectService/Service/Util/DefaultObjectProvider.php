@@ -3,26 +3,56 @@ namespace Light\ObjectService\Service\Util;
 
 use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Service\ObjectProvider;
 
+/**
+ * An object provider where resources need to be published at predefined addresses.
+ */
 class DefaultObjectProvider implements ObjectProvider
 {
 	/** @var Endpoint */
 	private $endpoint;
-
+	/** @var TypeRegistry */
+	private $typeRegistry;
 	/** @var array<string, ResolvedResource> */
 	private $resources = array();
 
-	public function publishValue($address, $value)
+	/**
+	 * Constructs a new DefaultObjectProvider.
+	 * @param TypeRegistry $typeRegistry
+	 */
+	public function __construct(TypeRegistry $typeRegistry)
 	{
-		$typeRegistry = $this->endpoint->getTypeRegistry();
-
+		$this->typeRegistry = $typeRegistry;
 	}
 
 	/**
-	 * Publish a resource.
+	 * Sets an Endpoint to be used by this ObjectProvider.
+	 * @param Endpoint $endpoint
+	 */
+	public function setEndpoint(Endpoint $endpoint)
+	{
+		$this->endpoint = $endpoint;
+	}
+
+	/**
+	 * Publishes the given value at the specified local address.
+	 * @param string	$address	The address - relative to the endpoint.
+	 * @param mixed		$value		The value to be published.
+	 * @return $this
+	 */
+	public function publishValue($address, $value)
+	{
+		// TODO
+
+		return $this;
+	}
+
+	/**
+	 * Publishes a resource.
 	 *
 	 * The resource must be constructed with a resource address that belongs to this endpoint.
 	 *
@@ -54,13 +84,14 @@ class DefaultObjectProvider implements ObjectProvider
 	}
 
 	/**
-	 * Sets an Endpoint to be used by this ObjectProvider.
-	 * @param Endpoint $endpoint
+	 * Returns the TypeRegistry used by this ObjectProvider.
+	 * @return TypeRegistry
 	 */
-	public function setEndpoint(Endpoint $endpoint)
+	public function getTypeRegistry()
 	{
-		$this->endpoint = $endpoint;
+		return $this->typeRegistry;
 	}
+
 
 	/**
 	 * Returns a resource published at the given address.
@@ -70,7 +101,7 @@ class DefaultObjectProvider implements ObjectProvider
 	 */
 	public function getResource($address)
 	{
-		// TODO: Implement getResource() method.
+		return @ $this->resources[$address];
 	}
 
 	/**

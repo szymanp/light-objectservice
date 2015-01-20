@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Service;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Type\TypeRegistry;
 
 /**
  * An interface for classes that resolve addresses to resources.
@@ -13,6 +14,12 @@ interface ObjectProvider
 	 * @param Endpoint $endpoint
 	 */
 	public function setEndpoint(Endpoint $endpoint);
+
+	/**
+	 * Returns the TypeRegistry used by this ObjectProvider.
+	 * @return TypeRegistry
+	 */
+	public function getTypeRegistry();
 
 	/**
 	 * Returns a resource published at the given address.
