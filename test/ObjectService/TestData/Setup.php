@@ -31,6 +31,8 @@ class Setup
 	protected function __construct()
 	{
 		$this->typeProvider = new DefaultTypeProvider();
+		$this->typeProvider->addType(new AuthorType());
+
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
 		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
 		$this->endpoint = Endpoint::create("http://example.org/", $this->objectProvider);
