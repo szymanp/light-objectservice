@@ -70,7 +70,7 @@ class DefaultObjectProvider implements ObjectProvider
 
 		if ($address instanceof EndpointRelativeAddress)
 		{
-			if ($address->getEndpoint() !== $this->endpoint)
+			if ($address->getEndpoint() === $this->endpoint)
 			{
 				$this->resources[$address->getLocalAddressAsString()] = $resource;
 			}

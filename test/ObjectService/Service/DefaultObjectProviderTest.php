@@ -1,10 +1,13 @@
 <?php
 namespace Light\ObjectService\Service;
 
+use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedScalar;
+use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
+use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\Util\DefaultObjectProvider;
 use Light\ObjectService\TestData\Author;
 use Light\ObjectService\TestData\AuthorType;
@@ -46,5 +49,36 @@ class DefaultObjectProviderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($complexValue, $resource->getValue());
 		$this->assertEquals(Author::class, $resource->getTypeHelper()->getName());
 		$this->assertEquals("//resource/complex", $resource->getAddress()->getAsString());
+	}
+
+	/**
+	 * @expectedException 			\Light\ObjectAccess\Exception\ResourceException
+	 * @expectedExceptionMessage	Resource must have an address that is a subclass of Light\ObjectService\Resource\Addressing\EndpointRelativeAddress
+	 */
+	public function testPublishResourceWithInvalidAddress()
+	{
+		$objectProvider = new DefaultObjectProvider($this->typeRegistry);
+		$endpoint = Endpoint::create("//", $objectProvider);
+		$objectProvider->setEndpoint($endpoint);
+
+		$value = new Author(1010, "John Doe");
+		$resource = $this->typeRegistry->resolveValue($value);
+		$objectProvider->publishResource($resource);
+	}
+
+	public function testPublishResource()
+	{
+		$objectProvider = new DefaultObjectProvider($this->typeRegistry);
+		$endpoint = Endpoint::create("//", $objectProvider);
+		$objectProvider->setEndpoint($endpoint);
+
+		$value = new Author(1010, "John Doe");
+		$resource = ResolvedValue::create($this->typeRegistry->getComplexTypeHelper(Author::class),
+										  $value,
+										  EndpointRelativeAddress::create($endpoint, "author"),
+										  Origin::unavailable());
+		$objectProvider->publishResource($resource);
+
+		$this->assertSame($resource, $objectProvider->getResource("author"));
 	}
 }
