@@ -1,5 +1,6 @@
 <?php
 namespace Light\ObjectService\Resource\Projection;
+use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 
 /**
@@ -12,11 +13,14 @@ final class DataObject implements DataEntity
 	private $typeHelper;
 	/** @var \stdClass */
 	private $data;
+	/** @var ResourceAddress */
+	private $address;
 	
-	public function __construct(ComplexTypeHelper $typeHelper)
+	public function __construct(ComplexTypeHelper $typeHelper, ResourceAddress $address)
 	{
 		$this->typeHelper = $typeHelper;
 		$this->data = new \stdClass;
+		$this->address = $address;
 	}
 	
 	/**
@@ -35,5 +39,14 @@ final class DataObject implements DataEntity
 	public function getTypeHelper()
 	{
 		return $this->typeHelper;
+	}
+
+	/**
+	 * Returns the address associated with this entity.
+	 * @return ResourceAddress
+	 */
+	public function getResourceAddress()
+	{
+		return $this->address;
 	}
 }

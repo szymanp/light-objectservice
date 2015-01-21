@@ -134,7 +134,10 @@ class RootSelection extends Selection
 			$names = array();
 			foreach($allProperties as $property)
 			{
-				$names[] = $property->getName();
+				if ($property->isReadable())
+				{
+					$names[] = $property->getName();
+				}
 			}
 
 			$this->fields = array_unique(array_merge($this->fields, $names));

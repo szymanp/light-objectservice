@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Projection;
 
+use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectAccess\Type\CollectionTypeHelper;
 
 /**
@@ -13,10 +14,13 @@ final class DataCollection implements DataEntity
 	private $typeHelper;
 	/** @var mixed */
 	private $data;
+	/** @var ResourceAddress */
+	private $address;
 	
-	public function __construct(CollectionTypeHelper $typeHelper)
+	public function __construct(CollectionTypeHelper $typeHelper, ResourceAddress $address)
 	{
 		$this->typeHelper = $typeHelper;
+		$this->address = $address;
 	}
 	
 	/**
@@ -44,5 +48,14 @@ final class DataCollection implements DataEntity
 	public function getTypeHelper()
 	{
 		return $this->typeHelper;
+	}
+
+	/**
+	 * Returns the address associated with this entity.
+	 * @return ResourceAddress
+	 */
+	public function getResourceAddress()
+	{
+		return $this->address;
 	}
 }
