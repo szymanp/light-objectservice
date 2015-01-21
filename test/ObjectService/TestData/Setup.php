@@ -1,9 +1,12 @@
 <?php
 namespace Light\ObjectService\TestData;
 
+use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
+use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
 use Light\ObjectService\Service\Endpoint;
+use Light\ObjectService\Service\EndpointRegistry;
 use Light\ObjectService\Service\Util\DefaultObjectProvider;
 
 class Setup
@@ -19,6 +22,9 @@ class Setup
 
 	/** @var Endpoint */
 	private $endpoint;
+
+	/** @var EndpointRegistry */
+	private $endpointRegistry;
 
 	/** @var Database */
 	private $database;
@@ -43,6 +49,11 @@ class Setup
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
 		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
 		$this->endpoint = Endpoint::create("http://example.org/", $this->objectProvider);
+
+		$this->endpointRegistry = new EndpointRegistry();
+		$this->endpointRegistry->addEndpoint($this->endpoint);
+
+		$this->objectProvider->publishValue("resources/max", $this->database->getAuthor(1010));
 	}
 
 	/**
@@ -85,4 +96,15 @@ class Setup
 		return $this->database;
 	}
 
+	/**
+	 * Returns a new ExecutionParameters object.
+	 * @return DefaultExecutionParameters
+	 */
+	public function getExecutionParameters()
+	{
+		$ep = new DefaultExecutionParameters();
+		$ep->setEndpointRegistry($this->endpointRegistry);
+		$ep->setTransaction(new DummyTransaction());
+		return $ep;
+	}
 }

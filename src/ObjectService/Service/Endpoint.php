@@ -44,6 +44,7 @@ final class Endpoint
 
 		$this->url = $url;
 		$this->objectProvider = $objectProvider;
+		$this->objectProvider->setEndpoint($this);
 	}
 
 	/**
