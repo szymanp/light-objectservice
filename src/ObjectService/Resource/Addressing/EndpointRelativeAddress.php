@@ -156,24 +156,12 @@ class EndpointRelativeAddress implements ResourceAddress
 	}
 
 	/**
-	 * Returns a list of the local part address elements that are candidates for finding a published resource.
-	 *
-	 * This method returns all elements from the local part of the address up to the first non-string element.
-	 *
-	 * @return string[]
+	 * Returns a list of the local part address elements.
+	 * @return mixed[]
 	 */
-	public function getCandidatePathElements()
+	public function getPathElements()
 	{
-		$result = array();
-		foreach($this->elements as $element)
-		{
-			if (!is_string($element))
-			{
-				break;
-			}
-			$result[] = $element;
-		}
-		return $result;
+		return $this->elements;
 	}
 
 	/**

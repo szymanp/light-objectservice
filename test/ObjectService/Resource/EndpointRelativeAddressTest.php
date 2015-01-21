@@ -78,13 +78,13 @@ class EndpointRelativeAddressTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("http://example.org/job/", $newAddr->getAsString());
 	}
 
-	public function testGetCandidatePathElements()
+	public function testGetPathElements()
 	{
 		$addr = EndpointRelativeAddress::create($this->setup->getEndpoint(), "resources/job");
-		$addr = $addr->appendScope(Scope::createWithKey(123));
+		$addr = $addr->appendScope($scope = Scope::createWithKey(123));
 		$addr = $addr->appendElement("title");
 
-		$this->assertEquals(array("resources", "job"), $addr->getCandidatePathElements());
+		$this->assertEquals(array("resources", "job", $scope, "title"), $addr->getPathElements());
 	}
 
 }
