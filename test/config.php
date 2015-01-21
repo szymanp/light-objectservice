@@ -15,6 +15,7 @@ include_once "ObjectService/TestData/PostType.php";
 include_once "ObjectService/TestData/Author.php";
 include_once "ObjectService/TestData/AuthorType.php";
 include_once "ObjectService/TestData/PostCollectionType.php";
+include_once "ObjectService/TestData/Database.php";
 include_once "ObjectService/TestData/Setup.php";
 @include_once "config-local.php";
 

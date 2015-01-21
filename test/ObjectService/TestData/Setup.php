@@ -20,6 +20,9 @@ class Setup
 	/** @var Endpoint */
 	private $endpoint;
 
+	/** @var Database */
+	private $database;
+
 	/**
 	 * @return Setup
 	 */
@@ -30,10 +33,12 @@ class Setup
 
 	protected function __construct()
 	{
+		$this->database = new Database();
+
 		$this->typeProvider = new DefaultTypeProvider();
 		$this->typeProvider->addType(new AuthorType());
 		$this->typeProvider->addType(new PostType());
-		$this->typeProvider->addType(new PostCollectionType());
+		$this->typeProvider->addType(new PostCollectionType($this->database));
 
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
 		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
@@ -70,6 +75,14 @@ class Setup
 	public function getTypeProvider()
 	{
 		return $this->typeProvider;
+	}
+
+	/**
+	 * @return Database
+	 */
+	public function getDatabase()
+	{
+		return $this->database;
 	}
 
 }

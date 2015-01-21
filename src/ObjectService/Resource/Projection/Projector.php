@@ -18,6 +18,14 @@ use Light\ObjectService\Resource\Selection\Selection;
 class Projector
 {
 	/**
+	 * Holds a list of objects that have been projected to avoid infinite loops.
+	 * @var array
+	 */
+	private $traversedObjects = array();
+	/** @var integer */
+	private $traversalIdSequence = 1;
+
+	/**
 	 * Projects the value to a DataEntity object.
 	 * @param ResolvedResource	$resource
 	 * @param Selection 		$selection
@@ -64,6 +72,11 @@ class Projector
 	 */
 	public function projectObject(ResolvedObject $object, Selection $selection = null)
 	{
+		if ($traversalId = $this->traverse($object->getValue()) === true)
+		{
+			return new DataObject($object->getTypeHelper(), $object->getAddress());
+		}
+
 		if (is_null($selection))
 		{
 			// TODO Get default selection from the type.
@@ -81,6 +94,8 @@ class Projector
 
 			$data->$fieldName = $this->project($valueResource, $subselection);
 		}
+
+		$this->finishTraversal($traversalId);
 
 		return $result;
 
@@ -157,6 +172,30 @@ class Projector
 		$result->setData($data);
 
 		return $result;
+	}
+
+	/**
+	 * @param object $phpObject
+	 * @return bool|int    	Returns true if the object has already been traversed;
+	 * 						otherwise, returns an ID of the traversal for later removal with {@link finishTraversal}.
+	 */
+	final protected function traverse($phpObject)
+	{
+		if (in_array($phpObject, $this->traversedObjects, true))
+		{
+			return true;
+		}
+		else
+		{
+			$id = $this->traversalIdSequence++;
+			$this->traversedObjects[$id] = $phpObject;
+			return $id;
+		}
+	}
+
+	final protected function finishTraversal($traversalId)
+	{
+		unset($this->traversedObjects[$traversalId]);
 	}
 }
 
