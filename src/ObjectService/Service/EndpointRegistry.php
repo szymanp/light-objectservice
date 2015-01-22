@@ -1,5 +1,7 @@
 <?php
 namespace Light\ObjectService\Service;
+use Light\ObjectAccess\Exception\AddressResolutionException;
+use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 
 /**
@@ -54,5 +56,30 @@ final class EndpointRegistry
 		{
 			return null;
 		}
+	}
+
+	/**
+	 * Returns a resource identified by the given URL.
+	 * @param string	$url
+	 * @return \Light\ObjectAccess\Resource\ResolvedResource
+	 * @throws AddressResolutionException	If the resource cannot be found.
+	 */
+	public function getResource($url)
+	{
+		$address = $this->getResourceAddress($url);
+		if (is_null($address))
+		{
+			throw new AddressResolutionException("No endpoint matches address <%1>", $url);
+		}
+
+		$relativeAddress = $address->getEndpoint()->findResource($address->getPathElements());
+
+		if (is_null($relativeAddress))
+		{
+			throw new AddressResolutionException("Address <%1> could not be resolved to any resource", $url);
+		}
+
+		$relativeAddressReader = new RelativeAddressReader($relativeAddress);
+		return $relativeAddressReader->read();
 	}
 }

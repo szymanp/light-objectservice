@@ -13,7 +13,6 @@ abstract class Operation
 	 * Executes the operation.
 	 * @param ResolvedResource		$resource
 	 * @param ExecutionParameters 	$parameters
-	 * @return ResolvedResource	The resource that is the result of this operation.
 	 */
 	abstract public function execute(ResolvedResource $resource, ExecutionParameters $parameters);
 }

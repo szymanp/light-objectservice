@@ -34,9 +34,8 @@ class UpdateOperationTest extends \PHPUnit_Framework_TestCase
 			EmptyResourceAddress::create(),
 			Origin::unavailable());
 
-		$result = $updateOperation->execute($resource, $this->setup->getExecutionParameters());
+		$updateOperation->execute($resource, $this->setup->getExecutionParameters());
 
-		$this->assertSame($resource, $result);
 		$this->assertEquals("Updated post", $post->getTitle());
 		$this->assertSame($this->setup->getDatabase()->getAuthor(1010), $post->getAuthor());
 	}

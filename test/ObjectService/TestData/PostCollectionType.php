@@ -7,6 +7,7 @@ use Light\ObjectAccess\Resource\Origin_Unavailable;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
+use Light\ObjectAccess\Type\Collection\Element;
 use Light\ObjectAccess\Type\Collection\Iterate;
 use Light\ObjectAccess\Type\Util\CollectionPropertyHost;
 use Light\ObjectAccess\Type\Util\DefaultCollectionType;
@@ -58,5 +59,29 @@ class PostCollectionType extends DefaultCollectionType implements Iterate
 			throw new NotImplementedException("Unknown origin");
 		}
 		throw new \LogicException("Unknown class");
+	}
+
+	protected function getElementAtKeyFromResource(ResolvedCollectionResource $coll, $key)
+	{
+		$origin = $coll->getOrigin();
+		$post = $this->database->getPost($key);
+
+		if (is_null($post))
+		{
+			return Element::notExists();
+		}
+
+		if ($origin instanceof Origin_Unavailable)
+		{
+			return Element::valueOf($post);
+		}
+		elseif ($origin instanceof Origin_PropertyOfObject)
+		{
+			$object = $origin->getObject()->getValue();
+			if ($origin->getPropertyName() == "posts" && $object instanceof Author)
+			{
+				return $post->getAuthor() === $object ? Element::valueOf($post) : Element::notExists();
+			}
+		}
 	}
 }

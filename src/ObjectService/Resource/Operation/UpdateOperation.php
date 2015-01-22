@@ -42,7 +42,6 @@ final class UpdateOperation extends Operation
 	 * Executes the update operation.
 	 * @param ResolvedResource    $resource
 	 * @param ExecutionParameters $parameters
-	 * @return ResolvedResource The resource that is the result of this operation.
 	 * @throws ResourceException
 	 * @throws TypeException
 	 */
@@ -81,7 +80,5 @@ final class UpdateOperation extends Operation
 				$typeHelper->writeProperty($resource, $fieldName, $value, $parameters->getTransaction());
 			}
 		}
-
-		return $resource;
 	}
 } 

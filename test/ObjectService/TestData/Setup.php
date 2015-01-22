@@ -97,6 +97,14 @@ class Setup
 	}
 
 	/**
+	 * @return EndpointRegistry
+	 */
+	public function getEndpointRegistry()
+	{
+		return $this->endpointRegistry;
+	}
+
+	/**
 	 * Returns a new ExecutionParameters object.
 	 * @return DefaultExecutionParameters
 	 */
