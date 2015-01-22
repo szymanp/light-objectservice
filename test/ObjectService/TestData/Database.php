@@ -6,6 +6,9 @@ class Database
 	private $posts = array();
 	private $authors = array();
 
+	private $nextPostId = 5050;
+	private $nextAuthorid = 2020;
+
 	public function __construct()
 	{
 		$author = new Author(1010, "Max Ray");
@@ -111,5 +114,15 @@ class Database
 	public function getAnyPost()
 	{
 		return current($this->posts);
+	}
+
+	/**
+	 * Returns a new post.
+	 * @return Post
+	 */
+	public function createPost()
+	{
+		$this->addPost($post = new Post($this->nextPostId++));
+		return $post;
 	}
 }

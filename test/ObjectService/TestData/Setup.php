@@ -43,7 +43,7 @@ class Setup
 
 		$this->typeProvider = new DefaultTypeProvider();
 		$this->typeProvider->addType(new AuthorType());
-		$this->typeProvider->addType(new PostType());
+		$this->typeProvider->addType(new PostType($this->database));
 		$this->typeProvider->addType(new PostCollectionType($this->database));
 
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
