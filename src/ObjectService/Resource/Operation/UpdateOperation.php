@@ -4,6 +4,7 @@ namespace Light\ObjectService\Resource\Operation;
 use Light\Exception\InvalidParameterType;
 use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Exception\TypeException;
+use Light\ObjectAccess\Resource\ResolvedCollectionValue;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
@@ -47,11 +48,25 @@ final class UpdateOperation extends Operation
 	 */
 	public function execute(ResolvedResource $resource, ExecutionParameters $parameters)
 	{
-		if (!($resource instanceof ResolvedObject))
+		if ($resource instanceof ResolvedObject)
 		{
-			throw new TypeException("Only complex-type resources with concrete values can be updated");
+			$this->performUpdate($resource, $parameters);
 		}
+		elseif ($resource instanceof ResolvedCollectionValue)
+		{
+			foreach($resource->getTypeHelper()->getIterator($resource) as $elementResource)
+			{
+				$this->execute($elementResource, $parameters);
+			}
+		}
+		else
+		{
+			throw new TypeException("Resource class %1 is not applicable for update", get_class($resource));
+		}
+	}
 
+	protected function performUpdate(ResolvedObject $resource, ExecutionParameters $parameters)
+	{
 		$typeHelper = $resource->getTypeHelper();
 
 		foreach ($this->values as $fieldName => $value)

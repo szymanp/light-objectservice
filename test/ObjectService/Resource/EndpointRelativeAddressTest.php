@@ -87,4 +87,16 @@ class EndpointRelativeAddressTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(array("resources", "job", $scope, "title"), $addr->getPathElements());
 	}
 
+	public function testTrailingSlashToEmptyScope()
+	{
+		$addr = EndpointRelativeAddress::create($this->setup->getEndpoint(), "resources/job/");
+
+		$elements = $addr->getPathElements();
+		$this->assertEquals(3, count($elements));
+		$this->assertEquals("resources", $elements[0]);
+		$this->assertEquals("job", $elements[1]);
+		$this->assertInstanceOf(Scope\EmptyScope::class, $elements[2]);
+	}
+
+
 }

@@ -45,6 +45,13 @@ class EndpointRelativeAddress implements ResourceAddress
 		else
 		{
 			$address->elements = explode(self::SEPARATOR, $localAddress);
+
+			// Convert a trailing slash to an empty scope
+			if (end($address->elements) === "")
+			{
+				array_pop($address->elements);
+				$address->elements[] = Scope::createEmptyScope();
+			}
 		}
 		return $address;
 	}

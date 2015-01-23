@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Resource\Operation;
 
 use Light\ObjectAccess\Resource\Origin;
+use Light\ObjectAccess\Resource\ResolvedCollectionValue;
 use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectAccess\Resource\Util\EmptyResourceAddress;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
@@ -38,5 +39,18 @@ class UpdateOperationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals("Updated post", $post->getTitle());
 		$this->assertSame($this->setup->getDatabase()->getAuthor(1010), $post->getAuthor());
+	}
+
+	public function testMultipleUpdate()
+	{
+		$resource = $this->setup->getEndpointRegistry()->getResource("http://example.org/resources/max/posts/");
+		$this->assertInstanceOf(ResolvedCollectionValue::class, $resource);
+
+		$updateOperation = new UpdateOperation();
+		$updateOperation->setValue("title", $newTitle = "Updated post!");
+		$updateOperation->execute($resource, $this->setup->getExecutionParameters());
+
+		$this->assertEquals($newTitle, $this->setup->getDatabase()->getPost(4040)->getTitle());
+		$this->assertEquals($newTitle, $this->setup->getDatabase()->getPost(4041)->getTitle());
 	}
 }
