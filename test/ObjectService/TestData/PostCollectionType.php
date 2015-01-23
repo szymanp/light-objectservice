@@ -31,34 +31,40 @@ class PostCollectionType extends DefaultCollectionType implements Iterate
 
 	/**
 	 * Returns an Iterator over the elements in the given collection.
-	 * @param ResolvedCollection $collection
-	 * @return \Iterator
-	 * @throws NotImplementedException
+	 * @param ResolvedCollectionValue $collection
+	 * @return \Iterator	An iterator over the elements in the collection.
+	 *                   	The key of the iterator should indicate the key of the object in the collection.
 	 */
-	public function getIterator(ResolvedCollection $collection)
+	public function getIterator(ResolvedCollectionValue $collection)
 	{
-		if ($collection instanceof ResolvedCollectionValue)
+		return new \ArrayIterator($collection->getValue());
+	}
+
+	/**
+	 * Returns all the elements of the collection.
+	 *
+	 * This method will be called if all the elements of a collection need to be retrieved,
+	 * for example when a search using {@link EmptyScope} is invoked.
+	 *
+	 * @param ResolvedCollectionResource $collection
+	 * @return mixed	All the elements of the collection.
+	 */
+	public function read(ResolvedCollectionResource $collection)
+	{
+		$origin = $collection->getOrigin();
+		if ($origin instanceof Origin_Unavailable)
 		{
-			return new \ArrayIterator($collection->getValue());
+			return new \ArrayIterator($this->database->getPosts());
 		}
-		elseif ($collection instanceof ResolvedCollectionResource)
+		elseif ($origin instanceof Origin_PropertyOfObject)
 		{
-			$origin = $collection->getOrigin();
-			if ($origin instanceof Origin_Unavailable)
+			$object = $origin->getObject()->getValue();
+			if ($origin->getPropertyName() == "posts" && $object instanceof Author)
 			{
-				return new \ArrayIterator($this->database->getPosts());
+				return new \ArrayIterator($this->database->getPostsForAuthor($object));
 			}
-			elseif ($origin instanceof Origin_PropertyOfObject)
-			{
-				$object = $origin->getObject()->getValue();
-				if ($origin->getPropertyName() == "posts" && $object instanceof Author)
-				{
-					return new \ArrayIterator($this->database->getPostsForAuthor($object));
-				}
-			}
-			throw new NotImplementedException("Unknown origin");
 		}
-		throw new \LogicException("Unknown class");
+		throw new NotImplementedException("Unknown origin");
 	}
 
 	protected function getElementAtKeyFromResource(ResolvedCollectionResource $coll, $key)

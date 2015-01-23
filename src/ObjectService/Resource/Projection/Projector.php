@@ -11,6 +11,7 @@ use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedScalar;
 use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
+use Light\ObjectService\Resource\Util\DefaultSearchContext;
 
 /**
  * Projects a resource object or collection into a DataEntity object according to selection expressions.
@@ -111,17 +112,25 @@ class Projector
 	{
 		$result = new DataCollection($collection->getTypeHelper(), $collection->getAddress());
 
-		if ($selection && $selection instanceof NestedCollectionSelection && $selection->getScope())
+		if ($collection instanceof ResolvedCollectionResource)
 		{
-			// The selection provides a Scope. We should therefore apply it.
+			$scope = null;
+			if ($selection && $selection instanceof NestedCollectionSelection)
+			{
+				$scope = $selection->getScope();
+			}
+			$scope = is_null($scope) ? Scope::createEmptyScope() : $scope;
 
-			// TODO This call could accept the Selection object somehow as a hint for the find() method.
-			$elementIterator = $collection->getTypeHelper()->getElements($collection, $selection->getScope());
-		}
-		elseif ($collection instanceof ResolvedCollectionResource)
-		{
-			// The collection has no values. There is no scope provided, so we use an empty scope.
-			$elementIterator = $collection->getTypeHelper()->getElements($collection, Scope::createEmptyScope());
+			if ($scope instanceof Scope\QueryScope)
+			{
+				$searchContext = new DefaultSearchContext();
+				$searchContext->setSelectionHint($selection);
+				$elementIterator = $collection->getTypeHelper()->getIterator($collection->getTypeHelper()->queryCollection($collection, $scope, $searchContext));
+			}
+			else
+			{
+				$elementIterator = $collection->getTypeHelper()->getIteratorWithScope($collection, $scope);
+			}
 		}
 		elseif ($collection instanceof ResolvedCollectionValue)
 		{
