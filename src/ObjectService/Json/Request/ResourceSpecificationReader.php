@@ -4,19 +4,10 @@ namespace Light\ObjectService\Json\Request;
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Resource\ExistingResourceSpecification;
 use Light\ObjectService\Resource\NewResourceSpecification;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\ResourceSpecification;
 
-class ResourceSpecificationReader
+class ResourceSpecificationReader extends Reader
 {
-	/** @var ExecutionParameters */
-	private $executionParameters;
-
-	public function __construct(ExecutionParameters $executionParameters)
-	{
-		$this->executionParameters = $executionParameters;
-	}
-
 	/**
 	 * Reads a resource specification from a JSON object.
 	 * @param \stdClass $json
