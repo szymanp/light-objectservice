@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Service;
 
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
+use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Resource\Selection\RootSelection;
 
 interface Request
@@ -11,8 +12,6 @@ interface Request
 	 * @return EndpointRelativeAddress
 	 */
 	public function getResourceAddress();
-
-	// TODO
 
 	/**
 	 * Returns a list of operations to be performed on the resource.
