@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Json\Request;
 
 use Light\ObjectService\Exception\MalformedRequest;
+use Light\ObjectService\Json\Request\Operation\UpdateOperationReader;
 use Light\ObjectService\Resource\ExistingResourceSpecification;
 use Light\ObjectService\Resource\NewResourceSpecification;
 use Light\ObjectService\Resource\ResourceSpecification;
@@ -28,8 +29,17 @@ class ResourceSpecificationReader extends Reader
 
 		if ($meta->spec == ResourceSpecificationReader_Meta::SPEC_NEW)
 		{
-			// TODO
-			//return new NewResourceSpecification();
+			$typeHelper = $this->getExecutionParameters()->getEndpoint()->getTypeRegistry()->getTypeHelperByUri($meta->type);
+			if (isset($json->data))
+			{
+				$updateOperationReader = new UpdateOperationReader($this->getExecutionParameters());
+				$updateOperation = $updateOperationReader->read($json->data);
+			}
+			else
+			{
+				$updateOperation = null;
+			}
+			return new NewResourceSpecification($typeHelper, $updateOperation);
 		}
 		elseif ($meta->spec == ResourceSpecificationReader_Meta::SPEC_REF)
 		{

@@ -7,7 +7,7 @@ class Database
 	private $authors = array();
 
 	private $nextPostId = 5050;
-	private $nextAuthorid = 2020;
+	private $nextAuthorId = 2020;
 
 	public function __construct()
 	{
@@ -124,5 +124,15 @@ class Database
 	{
 		$this->addPost($post = new Post($this->nextPostId++));
 		return $post;
+	}
+
+	/**
+	 * Returns a new author.
+	 * @return Author
+	 */
+	public function createAuthor()
+	{
+		$this->addAuthor($author = new Author($this->nextAuthorId++));
+		return $author;
 	}
 }

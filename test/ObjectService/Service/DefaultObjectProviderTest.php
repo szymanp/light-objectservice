@@ -11,6 +11,7 @@ use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\Util\DefaultObjectProvider;
 use Light\ObjectService\TestData\Author;
 use Light\ObjectService\TestData\AuthorType;
+use Light\ObjectService\TestData\Database;
 
 class DefaultObjectProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +23,7 @@ class DefaultObjectProviderTest extends \PHPUnit_Framework_TestCase
 		parent::setUp();
 
 		$typeProvider = new DefaultTypeProvider();
-		$typeProvider->addType(new AuthorType());
+		$typeProvider->addType(new AuthorType(new Database()));
 		$this->typeRegistry = new TypeRegistry($typeProvider);
 	}
 
