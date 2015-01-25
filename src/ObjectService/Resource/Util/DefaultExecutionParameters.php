@@ -3,12 +3,15 @@ namespace Light\ObjectService\Resource\Util;
 
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 
 class DefaultExecutionParameters implements ExecutionParameters
 {
 	/** @var EndpointRegistry */
 	private $endpointRegistry;
+	/** @var Endpoint */
+	private $endpoint;
 	/** @var Transaction */
 	private $transaction;
 
@@ -44,4 +47,22 @@ class DefaultExecutionParameters implements ExecutionParameters
 	{
 		$this->transaction = $transaction;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getEndpoint()
+	{
+		return $this->endpoint;
+	}
+
+	/**
+	 * Sets the endpoint associated with this request.
+	 * @param Endpoint $endpoint
+	 */
+	public function setEndpoint(Endpoint $endpoint)
+	{
+		$this->endpoint = $endpoint;
+	}
+
 }

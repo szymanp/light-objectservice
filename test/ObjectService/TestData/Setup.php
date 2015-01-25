@@ -113,6 +113,7 @@ class Setup
 		$ep = new DefaultExecutionParameters();
 		$ep->setEndpointRegistry($this->endpointRegistry);
 		$ep->setTransaction(new DummyTransaction());
+		$ep->setEndpoint($this->getEndpoint());
 		return $ep;
 	}
 }
