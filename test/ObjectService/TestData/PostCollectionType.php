@@ -7,13 +7,15 @@ use Light\ObjectAccess\Resource\Origin_Unavailable;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
+use Light\ObjectAccess\Transaction\Transaction;
+use Light\ObjectAccess\Type\Collection\Append;
 use Light\ObjectAccess\Type\Collection\Element;
 use Light\ObjectAccess\Type\Collection\Iterate;
 use Light\ObjectAccess\Type\Util\CollectionPropertyHost;
 use Light\ObjectAccess\Type\Util\DefaultCollectionType;
 use Light\ObjectAccess\Type\Util\DefaultFilterableProperty;
 
-class PostCollectionType extends DefaultCollectionType implements Iterate
+class PostCollectionType extends DefaultCollectionType implements Iterate, Append
 {
 	/** @var Database */
 	private $database;
@@ -65,6 +67,30 @@ class PostCollectionType extends DefaultCollectionType implements Iterate
 			}
 		}
 		throw new NotImplementedException("Unknown origin");
+	}
+
+	/**
+	 * Appends a value to the collection
+	 * @param ResolvedCollection $collection
+	 * @param mixed              $value
+	 * @param Transaction        $transaction
+	 */
+	public function appendValue(ResolvedCollection $collection, $value, Transaction $transaction)
+	{
+		$origin = $collection->getOrigin();
+		if ($origin instanceof Origin_Unavailable)
+		{
+			$this->database->addPost($value);
+		}
+		else if ($origin instanceof Origin_PropertyOfObject)
+		{
+			$object = $origin->getObject()->getValue();
+			if ($origin->getPropertyName() == "posts" && $object instanceof Author)
+			{
+				$value->setAuthor($object);
+				$this->database->addPost($value);
+			}
+		}
 	}
 
 	protected function getElementAtKeyFromResource(ResolvedCollectionResource $coll, $key)
