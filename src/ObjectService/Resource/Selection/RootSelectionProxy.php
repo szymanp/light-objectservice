@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Selection;
 
+use Light\Exception\Exception;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 
 /**
@@ -8,39 +9,68 @@ use Light\ObjectAccess\Type\ComplexTypeHelper;
  */
 abstract class RootSelectionProxy extends Selection
 {
+	/** @var Selection */
+	private $innerSelection;
+
+	/**
+	 * Creates a root selection object for the given type helper.
+	 * @param ComplexTypeHelper $typeHelper
+	 * @return RootSelection
+	 */
 	abstract public function createSelection(ComplexTypeHelper $typeHelper);
 
+	/**
+	 * Prepares the selection proxy to be used with the given type.
+	 * @param ComplexTypeHelper $typeHelper
+	 * @throws Exception
+	 */
 	final public function prepare(ComplexTypeHelper $typeHelper)
 	{
-		// TODO
+		if (is_null($this->innerSelection))
+		{
+			$this->innerSelection = $this->createSelection($typeHelper);
+		}
+		else if ($this->innerSelection->getTypeHelper() !== $typeHelper)
+		{
+			throw new Exception("The selection proxy was already prepared with a different type");
+		}
 	}
 
 	/**
-	 * Returns a list of field names to be selected.
-	 * @return string[]
+	 * Returns the prepared selection object.
+	 * @return Selection
+	 * @throws Exception
+	 */
+	final public function getInnerSelection()
+	{
+		if ($this->innerSelection)
+		{
+			return $this->innerSelection;
+		}
+		throw new Exception("The selection proxy has not been prepared yet");
+	}
+
+	/**
+	 * @inheritdoc
 	 */
 	final public function getFields()
 	{
-		// TODO: Implement getFields() method.
+		return $this->getInnerSelection()->getFields();
 	}
 
 	/**
-	 * Returns a selection for a dependent object accessible via a named field.
-	 * @param string $fieldName
-	 * @return NestedSelection    A selection object, if defined for the field; otherwise, NULL.
+	 * @inheritdoc
 	 */
 	final public function getSubSelection($fieldName)
 	{
-		// TODO: Implement getSubSelection() method.
+		return $this->getInnerSelection()->getSubSelection($fieldName);
 	}
 
 	/**
-	 * Returns the type helper for the type that this selection is applicable to.
-	 * @return ComplexTypeHelper
+	 * @inheritdoc
 	 */
 	final public function getTypeHelper()
 	{
-		// TODO: Implement getTypeHelper() method.
+		return $this->getInnerSelection()->getTypeHelper();
 	}
-
 }
