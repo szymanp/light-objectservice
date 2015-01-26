@@ -7,6 +7,12 @@ use Light\ObjectService\Resource\Operation\AppendOperation;
 
 class AppendOperationReader extends Reader
 {
+	/**
+	 * Reads a delete operation from a JSON object.
+	 * @param \stdclass $json
+	 * @return AppendOperation
+	 * @throws \Light\ObjectService\Exception\MalformedRequest
+	 */
 	public function read(\stdclass $json)
 	{
 		$appendOperation = new AppendOperation();

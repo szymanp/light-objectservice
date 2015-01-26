@@ -22,5 +22,4 @@ abstract class Reader
 	{
 		return $this->executionParameters;
 	}
-
 }
