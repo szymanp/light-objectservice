@@ -24,6 +24,14 @@ class AppendOperation extends Operation
 	}
 
 	/**
+	 * @return ResolvedResource
+	 */
+	public function getElementResource()
+	{
+		return $this->elementResource;
+	}
+
+	/**
 	 * Executes the operation.
 	 * @param ResolvedResource    $resource
 	 * @param ExecutionParameters $parameters
