@@ -1,0 +1,61 @@
+{
+  "links": {
+    "self": {
+      "href": "http:\/\/example.org\/resources\/max"
+    }
+  },
+  "data": {
+    "id": 1010,
+    "name": "Max Ray",
+    "age": 35,
+    "posts": {
+      "links": {
+        "self": {
+          "href": "http:\/\/example.org\/resources\/max\/posts"
+        }
+      },
+      "data": [
+        {
+          "links": {
+            "self": {
+              "href": "http:\/\/example.org\/resources\/max\/posts\/0"
+            }
+          },
+          "data": {
+            "id": 4040,
+            "title": "First post",
+            "text": "Lorem ipsum dolor",
+            "author": {
+              "links": {
+                "self": {
+                  "href": "http:\/\/example.org\/resources\/max\/posts\/0\/author"
+                }
+              },
+              "data": {}
+            }
+          }
+        },
+        {
+          "links": {
+            "self": {
+              "href": "http:\/\/example.org\/resources\/max\/posts\/1"
+            }
+          },
+          "data": {
+            "id": 4041,
+            "title": "Second post",
+            "text": "Lorem lorem",
+            "author": {
+              "links": {
+                "self": {
+                  "href": "http:\/\/example.org\/resources\/max\/posts\/1\/author"
+                }
+              },
+              "data": {}
+            }
+          }
+        }
+      ]
+    }
+  }
+}
