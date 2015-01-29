@@ -8,7 +8,13 @@ use Light\ObjectService\Resource\Projection\DataEntity;
  */
 interface Response
 {
-	public function sendEntity(DataEntity $entity, $isNewEntity);
+	public function setOperations($operations = array());
 
-	public function sendException(\Exception $e);
+	public function setEntity(DataEntity $entity);
+
+	public function setException(\Exception $e);
+
+	public function setScalarValue($value);
+
+	public function send();
 }

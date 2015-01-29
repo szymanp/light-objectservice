@@ -15,6 +15,7 @@ interface Request
 
 	/**
 	 * Returns a list of operations to be performed on the resource.
+	 * The operations will be executed in the order of the list.
 	 * @return Operation[]
 	 */
 	public function getOperations();
