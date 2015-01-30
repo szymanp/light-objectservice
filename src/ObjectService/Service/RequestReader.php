@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Service;
 
+use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\MalformedRequest;
 use Symfony\Component\HttpFoundation;
 
@@ -21,9 +22,11 @@ interface RequestReader
 
 	/**
 	 * Parse a HTTP Request and return a Service Request object.
-	 * @param HttpFoundation\Request $httpRequest
+	 * @param HttpFoundation\Request 	$httpRequest
+	 * @param EndpointRegistry 			$endpointRegistry
+	 * @param Transaction 				$transaction
 	 * @throws MalformedRequest
 	 * @return Request
 	 */
-	public function read(HttpFoundation\Request $httpRequest);
+	public function read(HttpFoundation\Request $httpRequest, EndpointRegistry $endpointRegistry, Transaction $transaction);
 }

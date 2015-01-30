@@ -17,5 +17,10 @@ interface ResponseFactory
 	 */
 	public function getResponse();
 
-
+	/**
+	 * Returns true if the HTTP Request can be processed by this Response Factory.
+	 * @param HttpFoundation\Request $httpRequest
+	 * @return boolean
+	 */
+	public function isAcceptable(HttpFoundation\Request $httpRequest);
 }
