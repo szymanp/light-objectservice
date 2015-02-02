@@ -8,6 +8,7 @@ use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
 use Light\ObjectService\Service\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 use Light\ObjectService\Service\Util\DefaultObjectProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 class Setup
 {
@@ -37,7 +38,16 @@ class Setup
 		return new self();
 	}
 
-	protected function __construct()
+	/**
+	 * @return Setup
+	 */
+	public static function createWithCurrentUrl()
+	{
+		$httpRequest = Request::createFromGlobals();
+		return new self($httpRequest->getBaseUrl() . "/");
+	}
+
+	protected function __construct($endpointBase = "http://example.org/")
 	{
 		$this->database = new Database();
 
@@ -48,7 +58,7 @@ class Setup
 
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
 		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
-		$this->endpoint = Endpoint::create("http://example.org/", $this->objectProvider);
+		$this->endpoint = Endpoint::create($endpointBase, $this->objectProvider);
 
 		$this->endpointRegistry = new EndpointRegistry();
 		$this->endpointRegistry->addEndpoint($this->endpoint);

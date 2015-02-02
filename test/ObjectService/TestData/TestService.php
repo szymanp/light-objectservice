@@ -7,7 +7,7 @@ use Light\ObjectService\Service\Util\DefaultGetRequestReader;
 chdir(__DIR__ . "/../../..");
 require_once 'test/config.php';
 
-$setup = Setup::create();
+$setup = Setup::createWithCurrentUrl();
 
 $container = new EndpointContainer($setup->getEndpointRegistry());
 $container->setPrimaryRequestReader(new DefaultGetRequestReader());
