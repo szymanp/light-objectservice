@@ -5,13 +5,37 @@ use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
+use Light\ObjectService\Service\Protocol\ResourceSerializer;
 
 /**
  * Default serializer
  */
-class DefaultSerializer
+class DefaultSerializer implements ResourceSerializer
 {
+	/**
+	 * Returns the content type produced by this serializer.
+	 * @return string
+	 */
+	public function getContentType()
+	{
+		return "text/json";
+	}
+
+	/**
+	 * Serializes a projected resource.
+	 * @param DataEntity $dataEntity
+	 * @return mixed
+	 */
 	public function serialize(DataEntity $dataEntity)
+	{
+		return json_encode($this->serializeToObject($dataEntity));
+	}
+
+	/**
+	 * @param DataEntity $dataEntity
+	 * @return \stdClass
+	 */
+	public function serializeToObject(DataEntity $dataEntity)
 	{
 		$document = new \stdClass();
 
@@ -61,7 +85,7 @@ class DefaultSerializer
 			{
 				if ($value instanceof DataEntity)
 				{
-					$elements[] = $this->serialize($value);
+					$elements[] = $this->serializeToObject($value);
 				}
 				else
 				{
@@ -78,7 +102,7 @@ class DefaultSerializer
 			{
 				if ($value instanceof DataEntity)
 				{
-					$elements->$key = $this->serialize($value);
+					$elements->$key = $this->serializeToObject($value);
 				}
 				else
 				{
@@ -97,7 +121,7 @@ class DefaultSerializer
 		{
 			if ($value instanceof DataEntity)
 			{
-				$data->$propertyName = $this->serialize($value);
+				$data->$propertyName = $this->serializeToObject($value);
 			}
 			else
 			{

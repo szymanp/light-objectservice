@@ -14,7 +14,7 @@ class DefaultSerializerTest extends \PHPUnit_Framework_TestCase
 
 		$projector = new Projector();
 		$serializer = new DefaultSerializer();
-		$stdobj  = $serializer->serialize($projector->project($max));
+		$stdobj  = $serializer->serializeToObject($projector->project($max));
 
 		$json = json_encode($stdobj, JSON_PRETTY_PRINT);
 		$this->assertJsonStringEqualsJsonFile(dirname(__FILE__) . "/DefaultSerializerTest.testSimpleObject.json", $json);
