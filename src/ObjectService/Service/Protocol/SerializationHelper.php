@@ -4,7 +4,7 @@ namespace Light\ObjectService\Service\Protocol;
 use Light\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
-class ProtocolHelper
+class SerializationHelper
 {
 	/** @var Deserializer[] */
 	private $deserializers = array();
@@ -65,21 +65,41 @@ class ProtocolHelper
 		$target[$ct] = $serializer;
 	}
 
+	/**
+	 * Returns a deserializer matching for the content-type of the request entity.
+	 * @param Request $httpRequest
+	 * @return Deserializer	A Deserializer object, if a matching one is found; otherwise, NULL.
+	 */
 	public function getDeserializer(Request $httpRequest)
 	{
 		// TODO
 	}
 
+	/**
+	 * Returns an exception serializer matching the accepted content-type of the client.
+	 * @param Request $httpRequest
+	 * @return ExceptionSerializer An ExceptionSerializer object, if a matching one is found; otherwise, NULL.
+	 */
 	public function getExceptionSerializer(Request $httpRequest)
 	{
 		// TODO
 	}
 
+	/**
+	 * Returns a resource serializer matching the accepted content-type of the client.
+	 * @param Request $httpRequest
+	 * @return ResourceSerializer A ResourceSerializer object, if a matching one is found; otherwise, NULL.
+	 */
 	public function getResourceSerializer(Request $httpRequest)
 	{
 		// TODO
 	}
 
+	/**
+	 * Returns a value serializer matching the accepted content-type of the client.
+	 * @param Request $httpRequest
+	 * @return ValueSerializer A ValueSerializer object, if a matching one is found; otherwise, NULL.
+	 */
 	public function getValueSerializer(Request $httpRequest)
 	{
 		// TODO
