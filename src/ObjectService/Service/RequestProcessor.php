@@ -14,14 +14,16 @@ class RequestProcessor
 	protected $executionParameters;
 	/** @var Request */
 	protected $request;
-	/** @var Response */
-	protected $response;
 
-	public function __construct(ExecutionParameters $executionParams, Request $request, Response $response)
+	/** @var mixed */
+	private $entity;
+	/** @var \Exception */
+	private $exception;
+
+	public function __construct(ExecutionParameters $executionParams, Request $request)
 	{
 		$this->executionParameters = $executionParams;
 		$this->request = $request;
-		$this->response = $response;
 	}
 
 	public function process()
@@ -32,10 +34,44 @@ class RequestProcessor
 		}
 		catch (\Exception $e)
 		{
-			$this->response->setException($e);
+			$this->exception = $e;
 		}
+	}
 
-		$this->response->send();
+	/**
+	 * Returns true if the result is an exception.
+	 * @return bool
+	 */
+	public function hasException()
+	{
+		return !is_null($this->exception);
+	}
+
+	/**
+	 * Returns true if the result is a data entity.
+	 * @return bool
+	 */
+	public function hasEntity()
+	{
+		return !is_null($this->entity);
+	}
+
+	/**
+	 * Returns the exception that is the result of processing the request.
+	 * @return \Exception
+	 */
+	public function getException()
+	{
+		return $this->exception;
+	}
+
+	/**
+	 * Returns the entity that is the result of processing the request.
+	 * @return mixed
+	 */
+	public function getEntity()
+	{
+		return $this->entity;
 	}
 
 	protected function processWithoutErrorHandling()
@@ -54,13 +90,10 @@ class RequestProcessor
 			$operation->execute($resource, $this->executionParameters);
 		}
 
-		$this->response->setOperations($operations);
-
 		if (!is_null($projectedResource))
 		{
 			$projector = new Projector();
-			$dataEntity = $projector->project($projectedResource, $this->request->getSelection());
-			$this->response->setEntity($dataEntity);
+			$this->entity = $projector->project($projectedResource, $this->request->getSelection());
 		}
 	}
 
