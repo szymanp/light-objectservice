@@ -3,8 +3,8 @@ namespace Light\ObjectService\Service;
 
 use Light\Exception\Exception;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
-use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
+use Light\ObjectService\Service\Protocol\Protocol;
 use Symfony\Component\HttpFoundation;
 
 class EndpointContainer
@@ -13,14 +13,12 @@ class EndpointContainer
 	private $endpointRegistry;
 	/** @var HttpFoundation\Request */
 	private $httpRequest;
-	/** @var array<string, RequestReader[]> */
-	private $requestReaders = array();
-	/** @var array<string, ResponseFactory[]> */
-	private $responseFactories = array();
-	/** @var RequestReader */
-	private $primaryRequestReader;
+	/** @var Protocol[] */
+	private $protocols = array();
 	/** @var \Closure */
 	private $httpResponseFactory;
+	/** @var boolean */
+	private $production = true;
 
 	public function __construct(EndpointRegistry $endpointRegistry)
 	{
@@ -32,53 +30,14 @@ class EndpointContainer
 	}
 
 	/**
-	 * Adds a request reader to this container.
-	 * @param RequestReader $requestReader
+	 * Adds a protocol to this container.
+	 * @param Protocol $protocol
 	 * @return $this
 	 * @throws Exception
 	 */
-	public function addRequestReader(RequestReader $requestReader)
+	public function addProtocol(Protocol $protocol)
 	{
-		if (is_null($this->primaryRequestReader))
-		{
-			$this->primaryRequestReader = $requestReader;
-		}
-		foreach($requestReader->getAcceptableContentTypes() as $ct)
-		{
-			$ct = strtolower($ct);
-			$this->requestReaders[$ct][] = $requestReader;
-		}
-		return $this;
-	}
-
-	/**
-	 * Adds a response factory to this container.
-	 * @param ResponseFactory $responseFactory
-	 * @return $this
-	 * @throws Exception
-	 */
-	public function addResponseFactory(ResponseFactory $responseFactory)
-	{
-		foreach($responseFactory->getContentTypes() as $ct)
-		{
-			$ct = strtolower($ct);
-			$this->responseFactories[$ct][] = $responseFactory;
-		}
-		return $this;
-	}
-
-	/**
-	 * Sets the primary request reader.
-	 * The primary request reader will be used to service request that do not have any content type set
-	 * (for example, GET request).
-	 * By default, the first request reader added using {@link addRequestReader} will become the primary
-	 * request reader.
-	 * @param RequestReader $primaryRequestReader
-	 * @return $this
-	 */
-	public function setPrimaryRequestReader($primaryRequestReader)
-	{
-		$this->primaryRequestReader = $primaryRequestReader;
+		$this->protocols[] = $protocol;
 		return $this;
 	}
 
@@ -91,6 +50,16 @@ class EndpointContainer
 	{
 		$this->httpRequest = $httpRequest;
 		return $this;
+	}
+
+	/**
+	 * Sets the production mode.
+	 * If production mode is disabled, then detailed information about uncaught exceptions is printed.
+	 * @param boolean $production
+	 */
+	public function setProduction($production)
+	{
+		$this->production = $production;
 	}
 
 	/**
@@ -114,28 +83,13 @@ class EndpointContainer
 		// FIXME Where should the transaction come from?
 		$transaction = new DummyTransaction();
 
-		$requestReader = null;
-		$response = null;
+		$protocolInstance = null;
 
 		try
 		{
-			$requestReader = $this->pickRequestReader();
-			if (is_null($requestReader))
-			{
-				throw new EndpointContainer_Exception(
-					"The container is not configured to handle requests of this type",
-					HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
-			}
-
-			$responseFactory = $this->pickResponseFactory();
-			if (is_null($responseFactory))
-			{
-				throw new EndpointContainer_Exception(
-					"The container is unable to provide a response in any of the requested types",
-					HttpFoundation\Response::HTTP_NOT_ACCEPTABLE);
-			}
-
-			$response = $responseFactory->getResponse();
+			$protocol = $this->pickProtocolOrThrow();
+			$protocol->configure($this->endpointRegistry);
+			$protocolInstance = $protocol->newInstance($this->httpRequest, $transaction);
 		}
 		catch (EndpointContainer_Exception $e)
 		{
@@ -148,29 +102,43 @@ class EndpointContainer
 				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR, $e));
 		}
 
-		if (is_null($requestReader) or is_null($response))
+		if (is_null($protocolInstance))
 		{
 			return;
 		}
 
+		$httpResponse = null;
+
 		try
 		{
-			$request = $requestReader->read($this->httpRequest, $this->endpointRegistry, $transaction);
+			$request = $protocolInstance->readRequest();
 
 			$executionParameters = new DefaultExecutionParameters();
 			$executionParameters->setEndpoint($request->getResourceAddress()->getEndpoint());
 			$executionParameters->setTransaction($transaction);
 			$executionParameters->setEndpointRegistry($this->endpointRegistry);
 
-			$requestProcessor = new RequestProcessor($executionParameters, $request, $response);
+			$requestProcessor = new RequestProcessor($executionParameters, $request);
 			$requestProcessor->process();
+
+			if ($requestProcessor->hasEntity())
+			{
+				$httpResponse = $protocolInstance->prepareResourceResponse($requestProcessor->getEntity());
+			}
+			else if ($requestProcessor->hasException())
+			{
+				$httpResponse = $protocolInstance->prepareExceptionResponse($requestProcessor->getException());
+			}
+			else
+			{
+				throw new \LogicException("RequestProcessor returned no entity no exception");
+			}
 		}
 		catch (\Exception $e)
 		{
 			try
 			{
-				$response->setException($e);
-				$response->send();
+				$httpResponse = $protocolInstance->prepareExceptionResponse($e);
 			}
 			catch (\Exception $e2)
 			{
@@ -178,83 +146,105 @@ class EndpointContainer
 					"The container encountered a problem when sending an error response",
 					HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR,
 					$e2));
+				return;
 			}
+		}
+
+		if ($httpResponse)
+		{
+			$httpResponse->prepare($this->httpRequest);
+			$httpResponse->send();
+		}
+		else
+		{
+			$this->sendErrorResponse(new EndpointContainer_Exception(
+				"The protocol did not produce any response",
+				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR));
 		}
 	}
 
 	/**
-	 * Finds a request reader that can service the current HTTP request.
-	 * @return RequestReader	A request reader, if a matching one is found; otherwise, NULL.
+	 * Returns the first protocol that is capable of reading and responding to this request.
+	 * @return Protocol
+	 * @throws EndpointContainer_Exception
 	 */
-	protected function pickRequestReader()
+	protected function pickProtocolOrThrow()
 	{
-		$contentType = $this->httpRequest->getContentType();
+		$score = 0;
+		$scoreResult = null;
 
-		if (is_null($contentType))
+		foreach($this->protocols as $protocol)
 		{
-			return $this->primaryRequestReader;
-		}
-
-		$contentType = strtolower($contentType);
-		if (!isset($this->requestReaders[$contentType]))
-		{
-			// TOD Should we have a fallback reader?
-			return null;
-		}
-
-		foreach($this->requestReaders[$contentType] as $requestReader)
-		{
-			if ($requestReader->isAcceptable($this->httpRequest))
+			$result = $protocol->accepts($this->httpRequest);
+			if ($result->accepted())
 			{
-				return $requestReader;
+				return $protocol;
+			}
+			elseif ($result->badRequestedContentType())
+			{
+				$scoreResult = $result;
+				$score = 3;
+			}
+			elseif ($result->badSuppliedContentType() && $score < 2)
+			{
+				$scoreResult = $result;
+				$score = 2;
+			}
+			elseif ($result->badMethod() && $score < 1)
+			{
+				$scoreResult = $result;
+				$score = 1;
 			}
 		}
 
-		return null;
-	}
-
-	/**
-	 * Finds a response factory that can service the current HTTP request.
-	 * @return ResponseFactory	A response factory, if a matching one is found; otherwise, NULL.
-	 */
-	protected function pickResponseFactory()
-	{
-		$contentTypes = $this->httpRequest->getAcceptableContentTypes();
-
-		if (empty($contentTypes))
+		if (is_null($scoreResult) || $scoreResult->badSuppliedContentType())
 		{
-			return null;
+			throw new EndpointContainer_Exception(
+				"The container is not configured to handle requests of this type",
+				HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
 		}
-
-		foreach($contentTypes as $contentType)
+		elseif ($scoreResult->badRequestedContentType())
 		{
-			$contentType = strtolower($contentType);
-			if (!isset($this->responseFactories[$contentType]))
-			{
-				continue;
-			}
-
-			foreach($this->responseFactories[$contentType] as $responseFactory)
-			{
-				if ($responseFactory->isAcceptable($this->httpRequest))
-				{
-					return $responseFactory;
-				}
-			}
+			throw new EndpointContainer_Exception(
+				"The container is unable to provide a response to this request in any of the requested types",
+				HttpFoundation\Response::HTTP_NOT_ACCEPTABLE);
 		}
-
-		return null;
+		elseif ($scoreResult->badMethod())
+		{
+			throw new EndpointContainer_Exception(
+				"The container is unable to handle the requested method",
+				HttpFoundation\Response::HTTP_BAD_REQUEST);
+		}
 	}
 
 	protected function sendErrorResponse(EndpointContainer_Exception $e)
 	{
+		$body = "\t<p>" . $e->getMessage() . "</p>";
+
+		if (!$this->production)
+		{
+			if ($innerException = $e->getPrevious())
+			{
+				$innerExceptionClass = get_class($innerException);
+
+				$body .= <<<EOT
+	<p>Caused by:</p>
+	<blockquote>
+		<p><code>{$innerExceptionClass}</code></p>
+		<p>{$innerException->getMessage()}</p>
+	</blockquote>
+EOT;
+			}
+		}
+
 		$content = <<<EOT
 <html>
 <body>
-	<p>{$e->getMessage()}</p>
+{$body}
 </body>
 </html>
 EOT;
+
 
 
 		$httpResponse = call_user_func($this->httpResponseFactory, $content, $e->getCode());

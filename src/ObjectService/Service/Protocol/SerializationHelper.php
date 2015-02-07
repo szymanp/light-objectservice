@@ -2,6 +2,8 @@
 namespace Light\ObjectService\Service\Protocol;
 
 use Light\Exception\Exception;
+use Light\Exception\InvalidParameterType;
+use Light\ObjectService\Resource\Projection\DataEntity;
 use Symfony\Component\HttpFoundation\Request;
 
 class SerializationHelper
@@ -72,7 +74,51 @@ class SerializationHelper
 	 */
 	public function getDeserializer(Request $httpRequest)
 	{
-		// TODO
+		$contentType = $httpRequest->getContentType();
+
+		if (is_null($contentType))
+		{
+			// No deserializer can support this.
+			return null;
+		}
+
+		$contentType = strtolower(trim($contentType));
+
+		if (isset($this->deserializers[$contentType]))
+		{
+			return $this->deserializers[$contentType];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a serializer matching the given value and the accepted content-type of the client.
+	 * @param Request $httpRequest
+	 * @param mixed  $value
+	 * @return Serializer
+	 */
+	public function getSerializer(Request $httpRequest, $value)
+	{
+		if (is_object($value))
+		{
+			if ($value instanceof \Exception)
+			{
+				return $this->getExceptionSerializer($httpRequest);
+			}
+			else if ($value instanceof DataEntity)
+			{
+				return $this->getResourceSerializer($httpRequest);
+			}
+		}
+		elseif (is_scalar($value))
+		{
+			return $this->getValueSerializer($httpRequest);
+		}
+
+		throw new InvalidParameterType('$value', $value, "Exception|DataEntity|scalar");
 	}
 
 	/**
@@ -82,7 +128,7 @@ class SerializationHelper
 	 */
 	public function getExceptionSerializer(Request $httpRequest)
 	{
-		// TODO
+		return $this->pickSerializer($httpRequest, $this->exceptionSerializers);
 	}
 
 	/**
@@ -92,7 +138,7 @@ class SerializationHelper
 	 */
 	public function getResourceSerializer(Request $httpRequest)
 	{
-		// TODO
+		return $this->pickSerializer($httpRequest, $this->resourceSerializers);
 	}
 
 	/**
@@ -102,6 +148,46 @@ class SerializationHelper
 	 */
 	public function getValueSerializer(Request $httpRequest)
 	{
-		// TODO
+		return $this->pickSerializer($httpRequest, $this->valueSerializers);
+	}
+
+	/**
+	 * Returns a list of content-types that can be deserialized.
+	 * @return string[]
+	 */
+	public function getDeserializableContentTypes()
+	{
+		return array_keys($this->deserializers);
+	}
+
+	/**
+	 * Returns a list of content-types that can be serialized.
+	 * @return string[]
+	 */
+	public function getSerializableContentTypes()
+	{
+		return array_unique(array_merge(array_keys($this->resourceSerializers), array_keys($this->valueSerializers)));
+	}
+
+	protected function pickSerializer(Request $httpRequest, array & $pool)
+	{
+		$contentTypes = $httpRequest->getAcceptableContentTypes();
+
+		if (empty($contentTypes) || empty($pool))
+		{
+			return null;
+		}
+
+		foreach($contentTypes as $contentType)
+		{
+			$contentType = strtolower(trim($contentType));
+
+			if (isset($pool[$contentType]))
+			{
+				return $pool[$contentType];
+			}
+		}
+
+		return null;
 	}
 }

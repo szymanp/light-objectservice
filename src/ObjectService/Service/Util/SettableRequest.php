@@ -29,7 +29,7 @@ class SettableRequest implements Request
 	/**
 	 * @param EndpointRelativeAddress $resourceAddress
 	 */
-	public function setResourceAddress($resourceAddress)
+	public function setResourceAddress(EndpointRelativeAddress $resourceAddress)
 	{
 		$this->resourceAddress = $resourceAddress;
 	}

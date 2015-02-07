@@ -44,7 +44,7 @@ class Setup
 	public static function createWithCurrentUrl()
 	{
 		$httpRequest = Request::createFromGlobals();
-		return new self($httpRequest->getBaseUrl() . "/");
+		return new self($httpRequest->getSchemeAndHttpHost() . $httpRequest->getBaseUrl() . "/");
 	}
 
 	protected function __construct($endpointBase = "http://example.org/")
