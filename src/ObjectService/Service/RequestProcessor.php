@@ -4,6 +4,7 @@ namespace Light\ObjectService\Service;
 use Light\Exception\InvalidReturnValue;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
+use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\Projection\Projector;
@@ -114,7 +115,7 @@ class RequestProcessor
 
 		if (is_null($relativeAddress))
 		{
-			throw new AddressResolutionException("Address <%1> could not be resolved to any resource", $address->getAsString());
+			throw new NotFound($address->getAsString(), "Could not find any resource matching the URL");
 		}
 
 		$relativeAddressReader = new RelativeAddressReader($relativeAddress);

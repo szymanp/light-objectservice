@@ -245,8 +245,6 @@ EOT;
 </html>
 EOT;
 
-
-
 		$httpResponse = call_user_func($this->httpResponseFactory, $content, $e->getCode());
 		$httpResponse->setCharset("UTF-8");
 		$httpResponse->headers->set("content-type", array("text/html"));

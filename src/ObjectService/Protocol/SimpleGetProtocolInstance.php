@@ -3,6 +3,8 @@ namespace Light\ObjectService\Protocol;
 
 use Light\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
+use Light\ObjectService\Exception\HttpExceptionInformation;
+use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Service\Protocol\ProtocolInstance;
 use Light\ObjectService\Service\Request;
@@ -35,7 +37,7 @@ class SimpleGetProtocolInstance implements ProtocolInstance
 		$address = $this->protocol->getEndpointRegistry()->getResourceAddress($this->httpRequest->getUri());
 		if (is_null($address))
 		{
-			throw new Exception("No endpoint found");
+			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
 		}
 		$request->setResourceAddress($address);
 		// TODO Selection
@@ -55,8 +57,15 @@ class SimpleGetProtocolInstance implements ProtocolInstance
 			throw new Exception("No exception serializer found");
 		}
 
+		$statusCode = 500;
+
+		if ($result instanceof HttpExceptionInformation)
+		{
+			$statusCode = $result->getHttpStatusCode();
+		}
+
 		$content = $serializer->serialize($result);
-		$response = new HttpFoundation\Response($content);
+		$response = new HttpFoundation\Response($content, $statusCode);
 		$response->headers->set("Content-Type", $serializer->getContentType());
 
 		return $response;
