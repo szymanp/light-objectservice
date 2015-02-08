@@ -54,7 +54,7 @@ class SimpleGetProtocolInstance implements ProtocolInstance
 		$serializer = $this->protocol->getSerializationHelper()->getExceptionSerializer($this->httpRequest);
 		if (is_null($serializer))
 		{
-			throw new Exception("No exception serializer found");
+			throw new Exception("No exception serializer found", 0, $result);
 		}
 
 		$statusCode = 500;
@@ -98,5 +98,4 @@ class SimpleGetProtocolInstance implements ProtocolInstance
 
 		return $response;
 	}
-
 }

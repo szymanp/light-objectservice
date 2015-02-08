@@ -3,7 +3,9 @@ namespace Light\ObjectService\Service;
 
 use Light\Exception\Exception;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
+use Light\ObjectService\Formats\Html\HtmlExceptionSerializer;
 use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
+use Light\ObjectService\Service\Protocol\ExceptionSerializer;
 use Light\ObjectService\Service\Protocol\Protocol;
 use Symfony\Component\HttpFoundation;
 
@@ -17,6 +19,8 @@ class EndpointContainer
 	private $protocols = array();
 	/** @var \Closure */
 	private $httpResponseFactory;
+	/** @var ExceptionSerializer */
+	private $defaultExceptionSerializer;
 	/** @var boolean */
 	private $production = true;
 
@@ -27,6 +31,7 @@ class EndpointContainer
 		{
 			return new HttpFoundation\Response($content, $code, $headers);
 		};
+		$this->defaultExceptionSerializer = new HtmlExceptionSerializer();
 	}
 
 	/**
@@ -60,6 +65,15 @@ class EndpointContainer
 	public function setProduction($production)
 	{
 		$this->production = $production;
+	}
+
+	/**
+	 * Sets the exception serializer that will be used if no other serializer matches the requested content-type.
+	 * @param ExceptionSerializer $defaultExceptionSerializer
+	 */
+	public function setDefaultExceptionSerializer(ExceptionSerializer $defaultExceptionSerializer)
+	{
+		$this->defaultExceptionSerializer = $defaultExceptionSerializer;
 	}
 
 	/**
@@ -219,35 +233,11 @@ class EndpointContainer
 
 	protected function sendErrorResponse(EndpointContainer_Exception $e)
 	{
-		$body = "\t<p>" . $e->getMessage() . "</p>";
-
-		if (!$this->production)
-		{
-			if ($innerException = $e->getPrevious())
-			{
-				$innerExceptionClass = get_class($innerException);
-
-				$body .= <<<EOT
-	<p>Caused by:</p>
-	<blockquote>
-		<p><code>{$innerExceptionClass}</code></p>
-		<p>{$innerException->getMessage()}</p>
-	</blockquote>
-EOT;
-			}
-		}
-
-		$content = <<<EOT
-<html>
-<body>
-{$body}
-</body>
-</html>
-EOT;
+		$content = $this->defaultExceptionSerializer->serialize($e);
 
 		$httpResponse = call_user_func($this->httpResponseFactory, $content, $e->getCode());
 		$httpResponse->setCharset("UTF-8");
-		$httpResponse->headers->set("content-type", array("text/html"));
+		$httpResponse->headers->set("content-type", array($this->defaultExceptionSerializer->getContentType()));
 		$httpResponse->prepare($this->httpRequest);
 		$httpResponse->send();
 	}
