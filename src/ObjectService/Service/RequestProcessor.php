@@ -78,6 +78,11 @@ class RequestProcessor
 	protected function processWithoutErrorHandling()
 	{
 		$resource = $this->getResource();
+		if (is_null($resource))
+		{
+			throw new NotFound($this->request->getResourceAddress()->getAsString(), "RelativeAddressReader returned no resource");
+		}
+
 		$projectedResource = $resource;
 
 		$operations = $this->request->getOperations();
