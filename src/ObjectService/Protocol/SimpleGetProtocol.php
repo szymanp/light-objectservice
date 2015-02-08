@@ -24,6 +24,10 @@ class SimpleGetProtocol implements Protocol
 		$this->serializationHelper->addSerializer(new DefaultSerializer());
 		$this->serializationHelper->addSerializer(new HalSerializer());
 		$this->serializationHelper->addSerializer(new DefaultExceptionSerializer());
+
+		// Fallback for text/json
+		$this->serializationHelper->addSerializer(new DefaultSerializer("text/json"));
+		$this->serializationHelper->addSerializer(new DefaultExceptionSerializer(false, "text/json"));
 	}
 
 	/**

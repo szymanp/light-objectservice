@@ -10,15 +10,11 @@ use Light\ObjectService\Service\Protocol\ResourceSerializer;
 /**
  * Default serializer
  */
-class DefaultSerializer implements ResourceSerializer
+class DefaultSerializer extends BaseSerializer implements ResourceSerializer
 {
-	/**
-	 * Returns the content type produced by this serializer.
-	 * @return string
-	 */
-	public function getContentType()
+	public function __construct($contentType = "application/json")
 	{
-		return "text/json";
+		parent::__construct($contentType);
 	}
 
 	/**

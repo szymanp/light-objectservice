@@ -3,13 +3,14 @@ namespace Light\ObjectService\Formats\Json\Serializers;
 
 use Light\ObjectService\Service\Protocol\ExceptionSerializer;
 
-class DefaultExceptionSerializer implements ExceptionSerializer
+class DefaultExceptionSerializer extends BaseSerializer implements ExceptionSerializer
 {
 	/** @var bool */
 	protected $detailed;
 
-	public function __construct($detailed = false)
+	public function __construct($detailed = false, $contentType = "application/json")
 	{
+		parent::__construct($contentType);
 		$this->detailed = $detailed;
 	}
 
@@ -34,14 +35,4 @@ class DefaultExceptionSerializer implements ExceptionSerializer
 		}
 		return $json;
 	}
-
-	/**
-	 * Returns the content type produced by this serializer.
-	 * @return string
-	 */
-	public function getContentType()
-	{
-		return "text/json";
-	}
-
 }

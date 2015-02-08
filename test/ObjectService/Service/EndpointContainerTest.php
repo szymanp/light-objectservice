@@ -1,7 +1,9 @@
 <?php
 namespace Light\ObjectService\Service;
 
+use Light\ObjectService\TestData\JsonClient;
 use Light\ObjectService\TestData\Setup;
+use Light\ObjectService\Exception\NotFound;
 use Symfony\Component\HttpFoundation\Response;
 
 class EndpointContainerTest extends \PHPUnit_Framework_TestCase
@@ -31,6 +33,26 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, $this->errorResponse->sent);
 		$this->assertEquals(Response::HTTP_UNSUPPORTED_MEDIA_TYPE, $this->errorResponse->getStatusCode());
 		$this->assertStringMatchesFormat("%aThe container is not configured to handle requests of this type%a", $this->errorResponse->getContent());
+	}
+
+	public function testRemoteNotFound()
+	{
+		$client = new JsonClient();
+		$client->skipTestIfNotConfigured();
+
+		try
+		{
+			$client->get("/not/found");
+		}
+		catch (\Pest_NotFound $e)
+		{
+			$result = json_decode($e->getMessage());
+			$this->assertEquals(NotFound::class, $result->exceptionClass);
+
+			return;
+		}
+
+		$this->fail("Expected an exception");
 	}
 
 	protected function getResponseFactoryClosure()

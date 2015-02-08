@@ -14,16 +14,14 @@ use Light\ObjectService\Service\Protocol\ResourceSerializer;
  * https://tools.ietf.org/html/draft-kelly-json-hal-06
  *
  */
-class HalSerializer implements ResourceSerializer
+class HalSerializer extends BaseSerializer implements ResourceSerializer
 {
 	/** @var \stdClass */
 	private $document;
-	/** @var string */
-	private $contentType;
 
 	public function __construct($contentType = "application/hal+json")
 	{
-		$this->contentType = $contentType;
+		parent::__construct($contentType);
 	}
 
 	/**
@@ -61,14 +59,6 @@ class HalSerializer implements ResourceSerializer
 		}
 
 		return $this->document;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function getContentType()
-	{
-		return $this->contentType;
 	}
 
 	protected function addLink($rel, $href)

@@ -145,7 +145,7 @@ class EndpointContainer
 			}
 			else
 			{
-				throw new \LogicException("RequestProcessor returned no entity no exception");
+				throw new \LogicException("RequestProcessor returned no entity or exception");
 			}
 		}
 		catch (\Exception $e)
