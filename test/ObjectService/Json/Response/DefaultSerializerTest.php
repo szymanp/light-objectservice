@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Json\Response;
 
+use Light\ObjectService\Formats\Json\Serializers\DefaultSerializer;
 use Light\ObjectService\Resource\Projection\Projector;
 use Light\ObjectService\TestData\Setup;
 

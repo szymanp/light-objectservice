@@ -2,9 +2,9 @@
 namespace Light\ObjectService\Protocol;
 
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Json\Response\DefaultExceptionSerializer;
-use Light\ObjectService\Json\Response\DefaultSerializer;
-use Light\ObjectService\Json\Response\HalSerializer;
+use Light\ObjectService\Formats\Json\Serializers\DefaultExceptionSerializer;
+use Light\ObjectService\Formats\Json\Serializers\DefaultSerializer;
+use Light\ObjectService\Formats\Json\Serializers\HalSerializer;
 use Light\ObjectService\Service\EndpointRegistry;
 use Light\ObjectService\Service\Protocol\AcceptResult;
 use Light\ObjectService\Service\Protocol\Protocol;

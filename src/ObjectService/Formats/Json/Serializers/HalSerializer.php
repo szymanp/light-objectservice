@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Json\Response;
+namespace Light\ObjectService\Formats\Json\Serializers;
 
 use Light\Exception\InvalidParameterType;
 use Light\ObjectService\Resource\Projection\DataCollection;
@@ -8,23 +8,26 @@ use Light\ObjectService\Resource\Projection\DataObject;
 use Light\ObjectService\Service\Protocol\ResourceSerializer;
 
 /**
- * Default serializer
+ * Hypertext Application Language serializer.
+ *
+ * This class serializes objects using the HAL format, as described in
+ * https://tools.ietf.org/html/draft-kelly-json-hal-06
+ *
  */
-class DefaultSerializer implements ResourceSerializer
+class HalSerializer implements ResourceSerializer
 {
-	/**
-	 * Returns the content type produced by this serializer.
-	 * @return string
-	 */
-	public function getContentType()
+	/** @var \stdClass */
+	private $document;
+	/** @var string */
+	private $contentType;
+
+	public function __construct($contentType = "application/hal+json")
 	{
-		return "text/json";
+		$this->contentType = $contentType;
 	}
 
 	/**
-	 * Serializes a projected resource.
-	 * @param DataEntity $dataEntity
-	 * @return mixed
+	 * @inheritdoc
 	 */
 	public function serialize(DataEntity $dataEntity)
 	{
@@ -37,45 +40,69 @@ class DefaultSerializer implements ResourceSerializer
 	 */
 	public function serializeToObject(DataEntity $dataEntity)
 	{
-		$document = new \stdClass();
+		$this->document = new \stdClass;
 
 		if ($dataEntity->getResourceAddress()->hasStringForm())
 		{
-			$this->addLink($document, "self", $dataEntity->getResourceAddress()->getAsString());
+			$this->addLink("self", $dataEntity->getResourceAddress()->getAsString());
 		}
 
 		if ($dataEntity instanceof DataCollection)
 		{
-			$document->data = $this->serializeCollection($dataEntity);
+			$this->serializeCollection($dataEntity);
 		}
 		else if ($dataEntity instanceof DataObject)
 		{
-			$document->data = $this->serializeObject($dataEntity);
+			$this->serializeObject($dataEntity);
 		}
 		else
 		{
 			throw new InvalidParameterType('$dataEntity', $dataEntity);
 		}
 
-		return $document;
+		return $this->document;
 	}
 
-	protected function addLink(\stdClass $document, $rel, $href)
+	/**
+	 * @inheritdoc
+	 */
+	public function getContentType()
 	{
-		if (!isset($document->links))
+		return $this->contentType;
+	}
+
+	protected function addLink($rel, $href)
+	{
+		if (!isset($this->document->_links))
 		{
-			$document->links = new \stdclass;
+			$this->document->_links = new \stdclass;
 		}
 
 		$link = new \stdClass;
 		$link->href = $href;
 
-		$document->links->$rel = $link;
+		$this->document->_links->$rel = $link;
+	}
+
+	protected function addEmbedded($rel, DataEntity $dataEntity)
+	{
+		if (!isset($this->document->_embedded))
+		{
+			$this->document->_embedded = new \stdclass;
+		}
+
+		// TODO
+
 	}
 
 	protected function serializeCollection(DataCollection $dataCollection)
 	{
 		$data = $dataCollection->getData();
+
+		$hasScalars = false;
+		$hasResources = false;
+
+		// TODO
 
 		if (is_array($data))
 		{
@@ -85,50 +112,46 @@ class DefaultSerializer implements ResourceSerializer
 			{
 				if ($value instanceof DataEntity)
 				{
-					$elements[] = $this->serializeToObject($value);
+					$hasScalars = true;
+					$data[] = $this->serialize($value);
 				}
 				else
 				{
-					$elements[] = $value;
+					$hasResources = true;
+					$data[] = $value;
 				}
 			}
-			return $elements;
 		}
 		else
 		{
 			// The collection is a dictionary
-			$elements = new \stdClass();
+			$elements = array();
 			foreach($data as $key => $value)
 			{
 				if ($value instanceof DataEntity)
 				{
-					$elements->$key = $this->serializeToObject($value);
+					$data->$key = $this->serialize($value);
 				}
 				else
 				{
-					$elements->$key = $value;
+					$data->$key = $value;
 				}
 			}
-			return $elements;
 		}
 	}
 
 	protected function serializeObject(DataObject $dataObject)
 	{
-		$data = new \stdClass();
-
 		foreach($dataObject->getData() as $propertyName => $value)
 		{
 			if ($value instanceof DataEntity)
 			{
-				$data->$propertyName = $this->serializeToObject($value);
+				$this->addEmbedded($propertyName, $value);
 			}
 			else
 			{
-				$data->$propertyName = $value;
+				$this->document->$propertyName = $value;
 			}
 		}
-
-		return $data;
 	}
 }
