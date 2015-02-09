@@ -5,6 +5,9 @@ use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Service\Request;
 use Symfony\Component\HttpFoundation;
 
+/**
+ * A ProtocolInstance is a class that can read a request and respond to it.
+ */
 interface ProtocolInstance
 {
 	/**
