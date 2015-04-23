@@ -1,9 +1,7 @@
 <?php
 namespace Light\ObjectService\Protocol;
 
-use Light\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Service\Protocol\ProtocolInstance;
@@ -12,14 +10,14 @@ use Light\ObjectService\Service\Request;
 use Light\ObjectService\Service\Util\SettableRequest;
 use Symfony\Component\HttpFoundation;
 
-class SimpleGetProtocolInstance extends AbstractProtocolInstance
+class TreeUpdateProtocolInstance extends AbstractProtocolInstance
 {
-	/** @var SimpleGetProtocol */
+	/** @var TreeUpdateProtocol */
 	private $protocol;
 	/** @var Transaction */
 	private $transaction;
 
-	public function __construct(SimpleGetProtocol $protocol, HttpFoundation\Request $httpRequest, Transaction $transaction)
+	public function __construct(TreeUpdateProtocol $protocol, HttpFoundation\Request $httpRequest, Transaction $transaction)
 	{
 		parent::__construct($httpRequest);
 		$this->protocol = $protocol;
@@ -39,7 +37,11 @@ class SimpleGetProtocolInstance extends AbstractProtocolInstance
 			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
 		}
 		$request->setResourceAddress($address);
+
 		// TODO Selection
+
+		$contentType = $this->httpRequest->getContentType();
+
 		return $request;
 	}
 
