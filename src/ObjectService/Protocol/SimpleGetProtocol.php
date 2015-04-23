@@ -64,7 +64,7 @@ class SimpleGetProtocol implements Protocol
 		{
 			return AcceptResult::badMethod(array("GET"));
 		}
-		if ($this->serializationHelper->getResourceSerializer($httpRequest) !== null)
+		if ($this->serializationHelper->getResourceSerializer($httpRequest) === null)
 		{
 			return AcceptResult::badRequestedContentType($this->serializationHelper->getSerializableContentTypes());
 		}

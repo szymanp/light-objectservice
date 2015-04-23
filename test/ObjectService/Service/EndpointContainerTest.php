@@ -83,6 +83,21 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("4042", $result['data']);
 	}
 
+	/**
+	 * @expectedException \Pest_ClientError
+	 */
+	public function testCreatePost()
+	{
+		$client = new JsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->post("collections/post", [
+			'data' => [
+				'title' => "My newly created post"
+			]
+		]);
+	}
+
 	protected function getResponseFactoryClosure()
 	{
 		return function($content, $code, $headers = array())

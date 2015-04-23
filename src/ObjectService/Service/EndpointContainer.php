@@ -190,7 +190,7 @@ class EndpointContainer
 		foreach($this->protocols as $protocol)
 		{
 			$result = $protocol->accepts($this->httpRequest);
-			if ($result->accepted())
+			if ($result->isAccepted())
 			{
 				return $protocol;
 			}
