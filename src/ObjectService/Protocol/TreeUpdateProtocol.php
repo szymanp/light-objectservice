@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Protocol;
 
 use Light\ObjectAccess\Transaction\Transaction;
+use Light\ObjectService\Formats\Json\Deserializers\SimpleTreeDeserializer;
 use Light\ObjectService\Formats\Json\Serializers\DefaultExceptionSerializer;
 use Light\ObjectService\Formats\Json\Serializers\DefaultSerializer;
 use Light\ObjectService\Service\EndpointRegistry;
@@ -26,6 +27,8 @@ class TreeUpdateProtocol implements Protocol
 		$this->serializationHelper = new SerializationHelper();
 		$this->serializationHelper->addSerializer(new DefaultSerializer());
 		$this->serializationHelper->addSerializer(new DefaultExceptionSerializer());
+
+		$this->serializationHelper->addDeserializer(new SimpleTreeDeserializer());
 
 		// Fallback for text/json
 		$this->serializationHelper->addSerializer(new DefaultSerializer("text/json"));

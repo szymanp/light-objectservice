@@ -74,7 +74,7 @@ class SerializationHelper
 	 */
 	public function getDeserializer(Request $httpRequest)
 	{
-		$contentType = $httpRequest->getContentType();
+		$contentType = $httpRequest->headers->get('CONTENT_TYPE');
 
 		if (is_null($contentType))
 		{

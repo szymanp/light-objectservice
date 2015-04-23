@@ -40,7 +40,8 @@ class TreeUpdateProtocolInstance extends AbstractProtocolInstance
 
 		// TODO Selection
 
-		$contentType = $this->httpRequest->getContentType();
+		$deserializer = $this->getSerializationHelper()->getDeserializer($this->httpRequest);
+		$request->setFromDeserializedResult($deserializer->deserialize($this->httpRequest));
 
 		return $request;
 	}

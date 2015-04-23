@@ -4,6 +4,7 @@ namespace Light\ObjectService\Service\Util;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Resource\Operation\Operation;
 use Light\ObjectService\Resource\Selection\RootSelection;
+use Light\ObjectService\Service\Protocol\DeserializedResult;
 use Light\ObjectService\Service\Request;
 
 /**
@@ -64,5 +65,22 @@ class SettableRequest implements Request
 	public function getSelection()
 	{
 		return $this->selection;
+	}
+
+	/**
+	 * Sets the Request properties from a DeserializedResult.
+	 * @param DeserializedResult $result
+	 */
+	public function setFromDeserializedResult(DeserializedResult $result)
+	{
+		foreach($result->getOperations() as $operation)
+		{
+			$this->addOperation($operation);
+		}
+
+		if ($result->getSelection())
+		{
+			$this->setSelection($result->getSelection());
+		}
 	}
 }

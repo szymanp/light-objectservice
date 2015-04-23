@@ -1,6 +1,8 @@
 <?php
 namespace Light\ObjectService\Service\Protocol;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * A deserializer for request entities.
  */
@@ -14,9 +16,8 @@ interface Deserializer
 
 	/**
 	 * Deserializes the request entity.
-	 * @param string $contentType
-	 * @param string $requestEntity
+	 * @param Request $httpRequest
 	 * @return DeserializedResult
 	 */
-	public function deserialize($contentType, $requestEntity);
+	public function deserialize(Request $httpRequest);
 }
