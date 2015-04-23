@@ -3,8 +3,10 @@ namespace Light\ObjectService\Service\Util;
 
 use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Resource\Origin;
+use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
+use Light\ObjectAccess\Type\CollectionType;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\Endpoint;
@@ -83,6 +85,31 @@ class DefaultObjectProvider implements ObjectProvider
 		{
 			throw new ResourceException("Resource must have an address that is a subclass of " . EndpointRelativeAddress::class);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Publishes a collection type.
+	 *
+	 * @param string         $address
+	 * @param CollectionType $collectionType
+	 * @param Origin         $origin			If no origin is specified, an unavailable origin will be used.
+	 * @return $this
+	 * @throws ResourceException
+	 */
+	public function publishCollection($address, CollectionType $collectionType, Origin $origin = null)
+	{
+		if (!$origin)
+		{
+			$origin = Origin::unavailable();
+		}
+
+		$helper = $this->typeRegistry->getTypeHelperByType($collectionType);
+		$address = EndpointRelativeAddress::create($this->endpoint, $address);
+		$resource = new ResolvedCollectionResource($helper, $address, $origin);
+
+		$this->publishResource($resource);
 
 		return $this;
 	}

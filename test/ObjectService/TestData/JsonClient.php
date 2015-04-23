@@ -47,4 +47,9 @@ class JsonClient
 	{
 		return $this->pest->put($url, $data);
 	}
+
+	public function post($url, array $data)
+	{
+		return $this->pest->post($url, $data);
+	}
 }

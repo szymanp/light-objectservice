@@ -68,6 +68,21 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("Max Ray", $result['data']['name']);
 	}
 
+	public function testReadPosts()
+	{
+		$client = new JsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->get("collections/post");
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayHasKey("4040", $result['data']);
+		$this->assertArrayHasKey("4041", $result['data']);
+		$this->assertArrayHasKey("4042", $result['data']);
+	}
+
 	protected function getResponseFactoryClosure()
 	{
 		return function($content, $code, $headers = array())
