@@ -55,6 +55,19 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->fail("Expected an exception");
 	}
 
+	public function testReadAuthor()
+	{
+		$client = new JsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->get("resources/max");
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertEquals("Max Ray", $result['data']['name']);
+	}
+
 	protected function getResponseFactoryClosure()
 	{
 		return function($content, $code, $headers = array())
