@@ -25,30 +25,44 @@ class Projector
 	private $traversedObjects = array();
 	/** @var integer */
 	private $traversalIdSequence = 1;
+	/** @var array */
+	private $stack = array();
 
 	/**
 	 * Projects the value to a DataEntity object.
-	 * @param ResolvedResource	$resource
-	 * @param Selection 		$selection
+	 * @param ResolvedResource $resource
+	 * @param Selection        $selection
 	 * @return DataEntity|mixed
+	 * @throws ProjectorException
 	 */
 	public function project(ResolvedResource $resource, Selection $selection = null)
 	{
-		if ($resource instanceof ResolvedScalar)
+		try
 		{
-			return $this->projectScalar($resource);
+			if ($resource instanceof ResolvedScalar)
+			{
+				return $this->projectScalar($resource);
+			}
+			elseif ($resource instanceof ResolvedObject)
+			{
+				return $this->projectObject($resource, $selection);
+			}
+			elseif ($resource instanceof ResolvedCollection)
+			{
+				return $this->projectCollection($resource, $selection);
+			}
+			else
+			{
+				throw new InvalidParameterType('$resource', $resource);
+			}
 		}
-		elseif ($resource instanceof ResolvedObject)
+		catch (ProjectorException $e)
 		{
-			return $this->projectObject($resource, $selection);
+			throw $e;
 		}
-		elseif ($resource instanceof ResolvedCollection)
+		catch (\Exception $e)
 		{
-			return $this->projectCollection($resource, $selection);
-		}
-		else
-		{
-			throw new InvalidParameterType('$resource', $resource);
+			throw new ProjectorException($this->stack, $e);
 		}
 	}
 
@@ -57,7 +71,7 @@ class Projector
 	 * @param ResolvedScalar $value
 	 * @return mixed
 	 */
-	public function projectScalar(ResolvedScalar $value)
+	protected function projectScalar(ResolvedScalar $value)
 	{
 		// TODO We could invoke some type conversion from the SimpleType class...
 
@@ -71,7 +85,7 @@ class Projector
 	 * @return DataObject
 	 * @throws \Exception
 	 */
-	public function projectObject(ResolvedObject $object, Selection $selection = null)
+	protected function projectObject(ResolvedObject $object, Selection $selection = null)
 	{
 		if ($traversalId = $this->traverse($object->getValue()) === true)
 		{
@@ -90,10 +104,14 @@ class Projector
 
 		foreach($selection->getFields() as $fieldName)
 		{
+			$this->stack[] = $fieldName;
+
 			$valueResource = $object->getTypeHelper()->readProperty($object, $fieldName);
 			$subselection = $selection->getSubSelection($fieldName);
 
 			$data->$fieldName = $this->project($valueResource, $subselection);
+
+			array_pop($this->stack);
 		}
 
 		$this->finishTraversal($traversalId);
@@ -108,7 +126,7 @@ class Projector
 	 * @param Selection          $selection
 	 * @return DataCollection
 	 */
-	public function projectCollection(ResolvedCollection $collection, Selection $selection = null)
+	protected function projectCollection(ResolvedCollection $collection, Selection $selection = null)
 	{
 		$result = new DataCollection($collection->getTypeHelper(), $collection->getAddress());
 
@@ -160,6 +178,8 @@ class Projector
 				}
 			}
 
+			$this->stack[] = "[" . $key . "]";
+
 			$value = $this->project($element, $selection);
 
 			if (is_array($data))
@@ -170,6 +190,8 @@ class Projector
 			{
 				$data->$key = $value;
 			}
+
+			array_pop($this->stack);
 		}
 
 		if (is_null($data))
