@@ -33,6 +33,10 @@ class DefaultExceptionSerializer extends BaseSerializer implements ExceptionSeri
 		{
 			$json->previous = $this->serializeToObject($previous);
 		}
+		if ($this->detailed)
+		{
+			$json->trace = $e->getTrace();
+		}
 		return $json;
 	}
 }
