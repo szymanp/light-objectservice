@@ -6,6 +6,7 @@ use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
+use Light\ObjectAccess\Resource\ResolvedNull;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedScalar;
@@ -50,6 +51,10 @@ class Projector
 			elseif ($resource instanceof ResolvedCollection)
 			{
 				return $this->projectCollection($resource, $selection);
+			}
+			elseif ($resource instanceof ResolvedNull)
+			{
+				return null;
 			}
 			else
 			{

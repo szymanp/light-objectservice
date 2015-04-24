@@ -21,6 +21,9 @@ class RequestProcessor
 	/** @var \Exception */
 	private $exception;
 
+	/** @var bool */
+	private $errorHandling = true;
+
 	public function __construct(ExecutionParameters $executionParams, Request $request)
 	{
 		$this->executionParameters = $executionParams;
@@ -29,14 +32,29 @@ class RequestProcessor
 
 	public function process()
 	{
-		try
+		if ($this->errorHandling)
+		{
+			try
+			{
+				$this->processWithoutErrorHandling();
+			}
+			catch (\Exception $e)
+			{
+				$this->exception = $e;
+			}
+		}
+		else
 		{
 			$this->processWithoutErrorHandling();
 		}
-		catch (\Exception $e)
-		{
-			$this->exception = $e;
-		}
+	}
+
+	/**
+	 * Disables error handling in process() call.
+	 */
+	public function disableErrorHandling()
+	{
+		$this->errorHandling = false;
 	}
 
 	/**

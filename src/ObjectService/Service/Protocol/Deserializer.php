@@ -1,6 +1,7 @@
 <?php
 namespace Light\ObjectService\Service\Protocol;
 
+use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -16,8 +17,9 @@ interface Deserializer
 
 	/**
 	 * Deserializes the request entity.
-	 * @param Request $httpRequest
+	 * @param Request 				$httpRequest
+	 * @param ExecutionParameters 	$executionParameters
 	 * @return DeserializedResult
 	 */
-	public function deserialize(Request $httpRequest);
+	public function deserialize(Request $httpRequest, ExecutionParameters $executionParameters);
 }

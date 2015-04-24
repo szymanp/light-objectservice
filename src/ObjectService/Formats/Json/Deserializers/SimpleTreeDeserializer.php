@@ -2,6 +2,8 @@
 namespace Light\ObjectService\Formats\Json\Deserializers;
 
 use Light\ObjectService\Exception\MalformedRequest;
+use Light\ObjectService\Json\Request\Operation\AppendOperationReader;
+use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Service\Protocol\DeserializedResult;
 use Light\ObjectService\Service\Protocol\Deserializer;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,10 +21,12 @@ class SimpleTreeDeserializer implements Deserializer
 
 	/**
 	 * Deserializes the request entity.
-	 * @param Request $httpRequest
+	 * @param Request             $httpRequest
+	 * @param ExecutionParameters $executionParameters
 	 * @return DeserializedResult
+	 * @throws MalformedRequest
 	 */
-	public function deserialize(Request $httpRequest)
+	public function deserialize(Request $httpRequest, ExecutionParameters $executionParameters)
 	{
 		$result = new DeserializedResult();
 
@@ -32,6 +36,8 @@ class SimpleTreeDeserializer implements Deserializer
 		switch($method)
 		{
 			case "POST":
+				$reader = new AppendOperationReader($executionParameters);
+				break;
 				// TODO
 				// Is the Deserializer concept correct in terms of the input and output?
 				// As it is now the deserializer needs to implement the full logic of the protocol.
@@ -40,6 +46,8 @@ class SimpleTreeDeserializer implements Deserializer
 			default:
 				throw new MalformedRequest("Unexpected method " . $method);
 		}
+
+		$result->setOperations(array($reader->read($json)));
 
 		return $result;
 	}
