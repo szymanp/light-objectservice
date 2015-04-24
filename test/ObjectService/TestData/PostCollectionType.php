@@ -65,6 +65,7 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 			{
 				return new \ArrayIterator($this->database->getPostsForAuthor($object));
 			}
+			throw new NotImplementedException("Unknown origin (property = " . $origin->getPropertyName() . ", object = " . get_class($object) . ")");
 		}
 		throw new NotImplementedException("Unknown origin");
 	}

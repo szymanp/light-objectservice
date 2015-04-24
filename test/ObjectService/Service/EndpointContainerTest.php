@@ -1,7 +1,8 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\ObjectService\TestData\JsonClient;
+use Light\ObjectService\TestData\RemoteJsonClient;
+use Light\ObjectService\TestData\Post;
 use Light\ObjectService\TestData\Setup;
 use Light\ObjectService\Exception\NotFound;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 
 	public function testRemoteNotFound()
 	{
-		$client = new JsonClient();
+		$client = new RemoteJsonClient();
 		$client->skipTestIfNotConfigured();
 
 		try
@@ -57,7 +58,7 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 
 	public function testReadAuthor()
 	{
-		$client = new JsonClient();
+		$client = new RemoteJsonClient();
 		$client->skipTestIfNotConfigured();
 
 		$result = $client->get("resources/max");
@@ -70,7 +71,7 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 
 	public function testReadPosts()
 	{
-		$client = new JsonClient();
+		$client = new RemoteJsonClient();
 		$client->skipTestIfNotConfigured();
 
 		$result = $client->get("collections/post");
@@ -83,19 +84,28 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("4042", $result['data']);
 	}
 
-	/**
-	 * @expectedException \Pest_ClientError
-	 */
 	public function testCreatePost()
 	{
-		$client = new JsonClient();
+		$client = new RemoteJsonClient();
 		$client->skipTestIfNotConfigured();
 
 		$result = $client->post("collections/post", [
+			'meta' => [
+				'spec' => 'new',
+				'type' => "php:" . Post::class
+			],
 			'data' => [
 				'title' => "My newly created post"
 			]
 		]);
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayHasKey("4040", $result['data']);
+		$this->assertArrayHasKey("4041", $result['data']);
+		$this->assertArrayHasKey("4042", $result['data']);
+		$this->assertArrayHasKey("4043", $result['data']);
 	}
 
 	protected function getResponseFactoryClosure()

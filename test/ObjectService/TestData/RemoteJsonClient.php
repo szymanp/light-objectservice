@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\TestData;
 
-class JsonClient
+class RemoteJsonClient
 {
 	/** @var \PestJSON */
 	private $pest;
