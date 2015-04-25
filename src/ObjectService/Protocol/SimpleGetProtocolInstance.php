@@ -33,13 +33,13 @@ class SimpleGetProtocolInstance extends AbstractProtocolInstance
 	public function readRequest()
 	{
 		$request = new SettableRequest();
-		$address = $this->protocol->getEndpointRegistry()->getResourceAddress($this->httpRequest->getUri());
-		if (is_null($address))
+		$request->setResourceAddress($this->readResourceAddress($this->protocol->getEndpointRegistry()));
+
+		if (!is_null($selection = $this->readSelection()))
 		{
-			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
+			$request->setSelection($selection);
 		}
-		$request->setResourceAddress($address);
-		// TODO Selection
+
 		return $request;
 	}
 

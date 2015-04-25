@@ -84,6 +84,36 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("4042", $result['data']);
 	}
 
+	public function testReadPostWithInclusiveSelection()
+	{
+		$client = new RemoteJsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->get("collections/post/4040?select=id,title");
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayHasKey("id", $result['data']);
+		$this->assertArrayHasKey("title", $result['data']);
+		$this->assertArrayNotHasKey("author", $result['data']);
+	}
+
+	public function testReadPostWithExclusiveSelection()
+	{
+		$client = new RemoteJsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->get("collections/post/4040?select=*,-author");
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayHasKey("id", $result['data']);
+		$this->assertArrayHasKey("title", $result['data']);
+		$this->assertArrayNotHasKey("author", $result['data']);
+	}
+
 	public function testCreatePost()
 	{
 		$client = new RemoteJsonClient();

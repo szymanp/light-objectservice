@@ -8,6 +8,7 @@ use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\Projection\Projector;
+use Light\ObjectService\Resource\Selection\RootSelectionProxy;
 
 class RequestProcessor
 {
@@ -117,7 +118,13 @@ class RequestProcessor
 		if (!is_null($projectedResource))
 		{
 			$projector = new Projector();
-			$this->entity = $projector->project($projectedResource, $this->request->getSelection());
+
+			$selection = $this->request->getSelection();
+			if ($selection instanceof RootSelectionProxy)
+			{
+				$selection->prepare($projectedResource->getTypeHelper());
+			}
+			$this->entity = $projector->project($projectedResource, $selection);
 		}
 	}
 

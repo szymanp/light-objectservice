@@ -3,7 +3,9 @@ namespace Light\ObjectService\Protocol;
 
 use Light\Exception\Exception;
 use Light\ObjectService\Exception\HttpExceptionInformation;
+use Light\ObjectService\Formats\Uri\UriSelectionProxy;
 use Light\ObjectService\Resource\Projection\DataEntity;
+use Light\ObjectService\Service\EndpointRegistry;
 use Light\ObjectService\Service\Protocol\ProtocolInstance;
 use Light\ObjectService\Service\Protocol\SerializationHelper;
 use Symfony\Component\HttpFoundation;
@@ -76,5 +78,45 @@ abstract class AbstractProtocolInstance implements ProtocolInstance
 		$response->headers->set("Content-Type", $serializer->getContentType());
 
 		return $response;
+	}
+
+	/**
+	 * Reads the resource address from the request.
+	 * @param EndpointRegistry $endpointRegistry
+	 * @return \Light\ObjectService\Resource\Addressing\EndpointRelativeAddress
+	 * @throws NotFound
+	 */
+	protected function readResourceAddress(EndpointRegistry $endpointRegistry)
+	{
+		$uri = $this->httpRequest->getUri();
+
+		// Remove the query section
+		if (($qm = strpos($uri, '?')) > -1)
+		{
+			$uri = substr($uri, 0, $qm);
+		}
+
+		$address = $endpointRegistry->getResourceAddress($uri);
+		if (is_null($address))
+		{
+			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
+		}
+		return $address;
+	}
+
+	/**
+	 * Reads the selection from the query part of the URI.
+	 * @return UriSelectionProxy|null
+	 */
+	protected function readSelection()
+	{
+		if ($this->httpRequest->query->has("select"))
+		{
+			return new UriSelectionProxy($this->httpRequest->query->get("select"));
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

@@ -32,14 +32,12 @@ class TreeUpdateProtocolInstance extends AbstractProtocolInstance
 	public function readRequest()
 	{
 		$request = new SettableRequest();
-		$address = $this->protocol->getEndpointRegistry()->getResourceAddress($this->httpRequest->getUri());
-		if (is_null($address))
-		{
-			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
-		}
-		$request->setResourceAddress($address);
+		$request->setResourceAddress($address = $this->readResourceAddress($this->protocol->getEndpointRegistry()));
 
-		// TODO Selection
+		if (!is_null($selection = $this->readSelection()))
+		{
+			$request->setSelection($selection);
+		}
 
 		$executionParameters = new DefaultExecutionParameters();
 		$executionParameters->setEndpointRegistry($this->protocol->getEndpointRegistry());
