@@ -23,6 +23,8 @@ class EndpointContainer
 	private $defaultExceptionSerializer;
 	/** @var boolean */
 	private $production = true;
+	/** @var boolean */
+	private $sendResponse = true;
 
 	public function __construct(EndpointRegistry $endpointRegistry)
 	{
@@ -69,6 +71,15 @@ class EndpointContainer
 	}
 
 	/**
+	 * Sets whether the response should be automatically sent at the end of the execution.
+	 * @param boolean $sendResponse
+	 */
+	public function setSendResponse($sendResponse)
+	{
+		$this->sendResponse = $sendResponse;
+	}
+
+	/**
 	 * Sets the exception serializer that will be used if no other serializer matches the requested content-type.
 	 * @param ExceptionSerializer $defaultExceptionSerializer
 	 */
@@ -88,6 +99,10 @@ class EndpointContainer
 		return $this;
 	}
 
+	/**
+	 * Runs the container process.
+	 * @return HttpFoundation\Response	The response object.
+	 */
 	public function run()
 	{
 		if (is_null($this->httpRequest))
@@ -108,23 +123,20 @@ class EndpointContainer
 		}
 		catch (EndpointContainer_Exception $e)
 		{
-			$this->sendErrorResponse($e);
-			return;
+			return $this->sendErrorResponse($e);
 		}
 		catch (\Exception $e)
 		{
-			$this->sendErrorResponse(new EndpointContainer_Exception(
+			return $this->sendErrorResponse(new EndpointContainer_Exception(
 				"The container encountered a problem when reading the request",
 				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR, $e));
-			return;
 		}
 
 		if (is_null($protocolInstance))
 		{
-			$this->sendErrorResponse(new EndpointContainer_Exception(
+			return $this->sendErrorResponse(new EndpointContainer_Exception(
 				"Instantiation of protocol returned NULL",
 				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR));
-			return;
 		}
 
 		$httpResponse = null;
@@ -162,22 +174,27 @@ class EndpointContainer
 			}
 			catch (\Exception $e2)
 			{
-				$this->sendErrorResponse(new EndpointContainer_Exception(
+				return $this->sendErrorResponse(new EndpointContainer_Exception(
 					"The container encountered a problem when sending an error response",
 					HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR,
 					$e2));
-				return;
 			}
 		}
 
 		if ($httpResponse)
 		{
 			$httpResponse->prepare($this->httpRequest);
-			$httpResponse->send();
+
+			if ($this->sendResponse)
+			{
+				$httpResponse->send();
+			}
+
+			return $httpResponse;
 		}
 		else
 		{
-			$this->sendErrorResponse(new EndpointContainer_Exception(
+			return $this->sendErrorResponse(new EndpointContainer_Exception(
 				"The protocol did not produce any response",
 				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR));
 		}
@@ -237,6 +254,10 @@ class EndpointContainer
 		}
 	}
 
+	/**
+	 * @param EndpointContainer_Exception $e
+	 * @return HttpFoundation\Response
+	 */
 	protected function sendErrorResponse(EndpointContainer_Exception $e)
 	{
 		$content = $this->defaultExceptionSerializer->serialize($e);
@@ -245,7 +266,13 @@ class EndpointContainer
 		$httpResponse->setCharset("UTF-8");
 		$httpResponse->headers->set("content-type", array($this->defaultExceptionSerializer->getContentType()));
 		$httpResponse->prepare($this->httpRequest);
-		$httpResponse->send();
+
+		if ($this->sendResponse)
+		{
+			$httpResponse->send();
+		}
+
+		return $httpResponse;
 	}
 
 	protected function enableErrorException()
