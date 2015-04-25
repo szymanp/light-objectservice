@@ -10,6 +10,7 @@ use Light\ObjectAccess\Resource\ResolvedNull;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedScalar;
+use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
 use Light\ObjectService\Resource\Util\DefaultSearchContext;
@@ -92,9 +93,19 @@ class Projector
 	 */
 	protected function projectObject(ResolvedObject $object, Selection $selection = null)
 	{
+		// Read the address of the object.
+		// If the object does not have an address that has a string form, but the type supports canonical addresses,
+		// then it is generally better to use the canonical address (that should have a string representation).
+		$address = $object->getAddress();
+		if (!$address->hasStringForm() && $object->getType() instanceof CanonicalAddress)
+		{
+			$address = $object->getType()->getCanonicalAddress($object->getValue());
+		}
+
+		// Avoid traversing the same object twice.
 		if ($traversalId = $this->traverse($object->getValue()) === true)
 		{
-			return new DataObject($object->getTypeHelper(), $object->getAddress());
+			return new DataObject($object->getTypeHelper(), $address);
 		}
 
 		if (is_null($selection))
@@ -104,7 +115,7 @@ class Projector
 			$selection = Selection::create($object->getTypeHelper())->fields("*");
 		}
 
-		$result = new DataObject($object->getTypeHelper(), $object->getAddress());
+		$result = new DataObject($object->getTypeHelper(), $address);
 		$data = $result->getData();
 
 		foreach($selection->getFields() as $fieldName)

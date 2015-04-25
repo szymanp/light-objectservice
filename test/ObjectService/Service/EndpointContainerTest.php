@@ -114,6 +114,21 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayNotHasKey("author", $result['data']);
 	}
 
+	public function testReadPostsWithLimit()
+	{
+		$client = new RemoteJsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->get("collections/post?count=2&offset=1");
+
+		$this->assertArrayNotHasKey("links", $result);	// The address for the collection does not have a string form
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayNotHasKey("4040", $result['data']);
+		$this->assertArrayHasKey("4041", $result['data']);
+		$this->assertArrayHasKey("4042", $result['data']);
+	}
+
 	public function testCreatePost()
 	{
 		$client = new RemoteJsonClient();

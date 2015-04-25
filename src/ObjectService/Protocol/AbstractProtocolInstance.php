@@ -2,6 +2,8 @@
 namespace Light\ObjectService\Protocol;
 
 use Light\Exception\Exception;
+use Light\ObjectAccess\Query\Query;
+use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Formats\Uri\UriSelectionProxy;
@@ -115,6 +117,15 @@ abstract class AbstractProtocolInstance implements ProtocolInstance
 		{
 			throw new NotFound($this->httpRequest->getUri(), "No endpoint matching this address was found");
 		}
+
+		if ($this->httpRequest->query->has("count") || $this->httpRequest->query->has("offset"))
+		{
+			$count  = $this->httpRequest->query->getInt("count", null);
+			$offset = $this->httpRequest->query->getInt("offset", null);
+			$limitScope = Scope::createWithQuery(Query::emptyQuery(), $count, $offset);
+			$address = $address->appendScope($limitScope);
+		}
+
 		return $address;
 	}
 

@@ -2,20 +2,25 @@
 namespace Light\ObjectService\TestData;
 
 use Light\Exception\NotImplementedException;
+use Light\ObjectAccess\Query\Scope\QueryScope;
 use Light\ObjectAccess\Resource\Origin_PropertyOfObject;
 use Light\ObjectAccess\Resource\Origin_Unavailable;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
+use Light\ObjectAccess\TestData\QueryFilterIterator;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Type\Collection\Append;
 use Light\ObjectAccess\Type\Collection\Element;
 use Light\ObjectAccess\Type\Collection\Iterate;
+use Light\ObjectAccess\Type\Collection\Property;
+use Light\ObjectAccess\Type\Collection\Search;
+use Light\ObjectAccess\Type\Collection\SearchContext;
 use Light\ObjectAccess\Type\Util\CollectionPropertyHost;
 use Light\ObjectAccess\Type\Util\DefaultCollectionType;
 use Light\ObjectAccess\Type\Util\DefaultFilterableProperty;
 
-class PostCollectionType extends DefaultCollectionType implements Iterate, Append
+class PostCollectionType extends DefaultCollectionType implements Iterate, Append, Search
 {
 	/** @var Database */
 	private $database;
@@ -116,5 +121,32 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 				return $post->getAuthor() === $object ? Element::valueOf($post) : Element::notExists();
 			}
 		}
+	}
+
+	/**
+	 * Returns a specification of a collection property.
+	 * @param string $propertyName
+	 * @return Property    A Property object, if the property exists; otherwise, NULL.
+	 */
+	public function getProperty($propertyName)
+	{
+		return $this->properties[$propertyName];
+	}
+
+	/**
+	 * Returns all elements of the collection matching the query scope.
+	 * @param ResolvedCollectionResource $collection
+	 * @param QueryScope                 $scope
+	 * @param SearchContext              $context
+	 * @return mixed    Elements of the collection matching the scope.
+	 */
+	public function find(ResolvedCollectionResource $collection, QueryScope $scope, SearchContext $context)
+	{
+		$offset = $scope->getOffset() ?: 0;
+		$count = $scope->getCount() ?: -1;
+
+		$innerIterator = new \ArrayIterator($this->read($collection));
+		$iterator = new \LimitIterator(new QueryFilterIterator($innerIterator, $scope->getQuery()), $offset, $count);
+		return iterator_to_array($iterator);
 	}
 }
