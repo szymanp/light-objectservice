@@ -114,6 +114,30 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull($newElement['data']['author']);
 	}
 
+	public function testUpdatePost()
+	{
+		$client = new RemoteJsonClient();
+		$client->skipTestIfNotConfigured();
+
+		$result = $client->patch("collections/post/4041", [
+			'title' => "My updated title",
+			'text' => "Ipsum ipsum"
+		]);
+
+		$this->assertArrayHasKey("links", $result);
+		$this->assertArrayHasKey("data", $result);
+
+		$this->assertArrayHasKey("id", $result['data']);
+		$this->assertArrayHasKey("title", $result['data']);
+		$this->assertArrayHasKey("text", $result['data']);
+		$this->assertArrayHasKey("author", $result['data']);
+
+		$data = $result['data'];
+		$this->assertEquals("My updated title", $data['title']);
+		$this->assertEquals("Ipsum ipsum", $data['text']);
+		$this->assertEquals(1010, $data['author']['data']['id']);
+	}
+
 	protected function getResponseFactoryClosure()
 	{
 		return function($content, $code, $headers = array())

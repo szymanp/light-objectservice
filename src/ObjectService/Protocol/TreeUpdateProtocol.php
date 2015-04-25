@@ -51,7 +51,7 @@ class TreeUpdateProtocol implements Protocol
 	 */
 	public function accepts(Request $httpRequest)
 	{
-		$methods = ["POST", "PUT", "DELETE"];
+		$methods = ["POST", "PATCH", "DELETE"];
 
 		if (!in_array($httpRequest->getMethod(), $methods))
 		{

@@ -32,6 +32,7 @@ class EndpointContainer
 			return new HttpFoundation\Response($content, $code, $headers);
 		};
 		$this->defaultExceptionSerializer = new HtmlExceptionSerializer();
+		$this->enableErrorException();
 	}
 
 	/**
@@ -108,16 +109,21 @@ class EndpointContainer
 		catch (EndpointContainer_Exception $e)
 		{
 			$this->sendErrorResponse($e);
+			return;
 		}
 		catch (\Exception $e)
 		{
 			$this->sendErrorResponse(new EndpointContainer_Exception(
 				"The container encountered a problem when reading the request",
 				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR, $e));
+			return;
 		}
 
 		if (is_null($protocolInstance))
 		{
+			$this->sendErrorResponse(new EndpointContainer_Exception(
+				"Instantiation of protocol returned NULL",
+				HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR));
 			return;
 		}
 
@@ -242,6 +248,18 @@ class EndpointContainer
 		$httpResponse->send();
 	}
 
+	protected function enableErrorException()
+	{
+		set_error_handler(function($severity, $message, $file, $line)
+		{
+			if (!(error_reporting() & $severity))
+			{
+				// This error code is not included in error_reporting
+				return;
+			}
+			throw new \ErrorException($message, 0, $severity, $file, $line);
+		});
+	}
 }
 
 final class EndpointContainer_Exception extends \Exception

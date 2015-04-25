@@ -3,6 +3,7 @@ namespace Light\ObjectService\Formats\Json\Deserializers;
 
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Json\Request\Operation\AppendOperationReader;
+use Light\ObjectService\Json\Request\Operation\UpdateOperationReader;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Service\Protocol\DeserializedResult;
 use Light\ObjectService\Service\Protocol\Deserializer;
@@ -33,10 +34,18 @@ class SimpleTreeDeserializer implements Deserializer
 		$method = $httpRequest->getMethod();
 		$json = json_decode($httpRequest->getContent());
 
+		if (is_null($json))
+		{
+			$json = new \stdClass;
+		}
+
 		switch($method)
 		{
 			case "POST":
 				$reader = new AppendOperationReader($executionParameters);
+				break;
+			case "PATCH":
+				$reader = new UpdateOperationReader($executionParameters);
 				break;
 				// TODO
 				// Is the Deserializer concept correct in terms of the input and output?

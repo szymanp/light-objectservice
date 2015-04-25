@@ -45,6 +45,7 @@ class RemoteJsonClient
 
 	public function put($url, array $data)
 	{
+		$data = $this->pest->jsonEncode($data);
 		return $this->pest->put($url, $data);
 	}
 
@@ -52,4 +53,11 @@ class RemoteJsonClient
 	{
 		return $this->pest->post($url, $data);
 	}
+
+	public function patch($url, array $data)
+	{
+		$data = $this->pest->jsonEncode($data);
+		return $this->pest->patch($url, $data);
+	}
+
 }
