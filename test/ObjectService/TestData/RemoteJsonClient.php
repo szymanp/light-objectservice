@@ -16,7 +16,7 @@ class RemoteJsonClient
 	}
 
 	/**
-	 * @return boolean	true if the REST client is available.
+	 * @return boolean    true if the REST client is available.
 	 */
 	public function isAvailable()
 	{
@@ -32,6 +32,24 @@ class RemoteJsonClient
 		{
 			\PHPUnit_Framework_TestCase::markTestSkipped("Missing test.url setup in phpunit.xml");
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getServiceUrl()
+	{
+		return $this->pest->base_url;
+	}
+
+	/**
+	 * Returns the value of the named header from the latest request.
+	 * @param string $header
+	 * @return string
+	 */
+	public function getLastHeader($header)
+	{
+		return $this->pest->lastHeader($header);
 	}
 
 	/**
@@ -59,5 +77,4 @@ class RemoteJsonClient
 		$data = $this->pest->jsonEncode($data);
 		return $this->pest->patch($url, $data);
 	}
-
 }

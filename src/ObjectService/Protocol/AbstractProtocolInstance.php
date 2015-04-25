@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Protocol;
 
 use Light\Exception\Exception;
+use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Formats\Uri\UriSelectionProxy;
 use Light\ObjectService\Resource\Projection\DataEntity;
@@ -14,15 +15,18 @@ abstract class AbstractProtocolInstance implements ProtocolInstance
 {
 	/** @var HttpFoundation\Request */
 	protected $httpRequest;
+	/** @var Transaction */
+	protected $transaction;
 
 	/**
 	 * @return SerializationHelper
 	 */
 	abstract protected function getSerializationHelper();
 
-	protected function __construct(HttpFoundation\Request $httpRequest)
+	protected function __construct(HttpFoundation\Request $httpRequest, Transaction $transaction)
 	{
 		$this->httpRequest = $httpRequest;
+		$this->transaction = $transaction;
 	}
 
 	/**
@@ -76,6 +80,16 @@ abstract class AbstractProtocolInstance implements ProtocolInstance
 		$content = $serializer->serialize($result);
 		$response = new HttpFoundation\Response($content);
 		$response->headers->set("Content-Type", $serializer->getContentType());
+
+		// For POST methods, append a Location header indicating the first resource that was created.
+		if ($this->httpRequest->getMethod() == "POST" && !empty($this->transaction->getCreatedResources()))
+		{
+			$firstNewResource = $this->transaction->getCreatedResources()[0];
+			if ($firstNewResource->getAddress()->hasStringForm())
+			{
+				$response->headers->set("Location", $firstNewResource->getAddress()->getAsString());
+			}
+		}
 
 		return $response;
 	}

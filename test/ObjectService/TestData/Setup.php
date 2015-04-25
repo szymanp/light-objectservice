@@ -56,7 +56,7 @@ class Setup
 
 		$this->typeProvider = new DefaultTypeProvider();
 		$this->typeProvider->addType(new AuthorType($this->database));
-		$this->typeProvider->addType(new PostType($this->database));
+		$this->typeProvider->addType($postType = new PostType($this->database));
 		$this->typeProvider->addType($postCollectionType = new PostCollectionType($this->database));
 
 		$this->typeRegistry = new TypeRegistry($this->typeProvider);
@@ -68,6 +68,9 @@ class Setup
 
 		$this->objectProvider->publishValue("resources/max", $this->database->getAuthor(1010));
 		$this->objectProvider->publishCollection("collections/post", $postCollectionType);
+
+		// Assign canonical base addresses to types
+		$postType->setCanonicalBase($this->objectProvider->getResource("collections/post")->getAddress());
 	}
 
 	/**

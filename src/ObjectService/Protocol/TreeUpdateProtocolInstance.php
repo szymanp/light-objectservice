@@ -15,14 +15,11 @@ class TreeUpdateProtocolInstance extends AbstractProtocolInstance
 {
 	/** @var TreeUpdateProtocol */
 	private $protocol;
-	/** @var Transaction */
-	private $transaction;
 
 	public function __construct(TreeUpdateProtocol $protocol, HttpFoundation\Request $httpRequest, Transaction $transaction)
 	{
-		parent::__construct($httpRequest);
+		parent::__construct($httpRequest, $transaction);
 		$this->protocol = $protocol;
-		$this->transaction = $transaction;
 	}
 
 	/**

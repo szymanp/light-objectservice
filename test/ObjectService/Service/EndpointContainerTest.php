@@ -132,6 +132,9 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("links", $result);
 		$this->assertArrayHasKey("data", $result);
 
+		$this->assertEquals($client->getServiceUrl() . "/collections/post/5050",
+							$client->getLastHeader("Location"));
+
 		$this->assertArrayHasKey("4040", $result['data']);
 		$this->assertArrayHasKey("4041", $result['data']);
 		$this->assertArrayHasKey("4042", $result['data']);
