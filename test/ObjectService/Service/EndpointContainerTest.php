@@ -138,7 +138,6 @@ class EndpointContainerTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("4040", $result['data']);
 		$this->assertArrayHasKey("4041", $result['data']);
 		$this->assertArrayHasKey("4042", $result['data']);
-		// TODO The ID of the new post should come from a HTTP header.
 		$this->assertArrayHasKey("5050", $result['data']);
 
 		$newElement = $result['data']['5050'];
