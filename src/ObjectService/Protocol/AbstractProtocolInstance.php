@@ -6,6 +6,7 @@ use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\HttpExceptionInformation;
+use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Formats\Uri\UriSelectionProxy;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Service\EndpointRegistry;
