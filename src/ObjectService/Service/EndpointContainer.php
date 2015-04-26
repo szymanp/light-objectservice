@@ -125,12 +125,13 @@ class EndpointContainer
 
 		// Initiate the transaction
 		$transaction = $this->transaction;
-		$this->transaction->begin();
 
 		$protocolInstance = null;
 
 		try
 		{
+			$this->transaction->begin();
+
 			$protocol = $this->pickProtocolOrThrow();
 			$protocol->configure($this->endpointRegistry);
 			$protocolInstance = $protocol->newInstance($this->httpRequest, $transaction);
@@ -179,6 +180,9 @@ class EndpointContainer
 			{
 				throw new \LogicException("RequestProcessor returned no entity or exception");
 			}
+
+			// Commit the transaction
+			$this->transaction->commit();
 		}
 		catch (\Exception $e)
 		{
@@ -198,9 +202,6 @@ class EndpointContainer
 		if ($httpResponse)
 		{
 			$httpResponse->prepare($this->httpRequest);
-
-			// Commit the transaction
-			$this->transaction->commit();
 
 			if ($this->sendResponse)
 			{
