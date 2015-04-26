@@ -171,18 +171,21 @@ class EndpointContainer
 			if ($requestProcessor->hasEntity())
 			{
 				$httpResponse = $protocolInstance->prepareResourceResponse($requestProcessor->getEntity());
+
+				// Commit the transaction
+				$this->transaction->commit();
 			}
 			else if ($requestProcessor->hasException())
 			{
 				$httpResponse = $protocolInstance->prepareExceptionResponse($requestProcessor->getException());
+
+				// Rollback the transaction
+				$this->transaction->rollback();
 			}
 			else
 			{
 				throw new \LogicException("RequestProcessor returned no entity or exception");
 			}
-
-			// Commit the transaction
-			$this->transaction->commit();
 		}
 		catch (\Exception $e)
 		{
