@@ -115,6 +115,10 @@ class RequestProcessor
 			$operation->execute($resource, $this->executionParameters);
 		}
 
+		// Transfer the changes done during operation processing.
+		// We need to do it before projecting the result resource as otherwise the changes might not be visible.
+		$this->executionParameters->getTransaction()->transfer();
+
 		if (!is_null($projectedResource))
 		{
 			$projector = new Projector();
