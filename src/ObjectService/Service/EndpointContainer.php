@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Service;
 
 use Light\Exception\Exception;
+use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectService\Formats\Html\HtmlExceptionSerializer;
 use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
@@ -25,6 +26,8 @@ class EndpointContainer
 	private $production = true;
 	/** @var boolean */
 	private $sendResponse = true;
+	/** @var Transaction */
+	private $transaction;
 
 	public function __construct(EndpointRegistry $endpointRegistry)
 	{
@@ -34,6 +37,7 @@ class EndpointContainer
 			return new HttpFoundation\Response($content, $code, $headers);
 		};
 		$this->defaultExceptionSerializer = new HtmlExceptionSerializer();
+		$this->transaction = new DummyTransaction();
 		$this->enableErrorException();
 	}
 
@@ -80,6 +84,15 @@ class EndpointContainer
 	}
 
 	/**
+	 * Sets the transaction to use for the container execution.
+	 * @param Transaction $transaction
+	 */
+	public function setTransaction(Transaction $transaction)
+	{
+		$this->transaction = $transaction;
+	}
+
+	/**
 	 * Sets the exception serializer that will be used if no other serializer matches the requested content-type.
 	 * @param ExceptionSerializer $defaultExceptionSerializer
 	 */
@@ -110,8 +123,9 @@ class EndpointContainer
 			$this->httpRequest = HttpFoundation\Request::createFromGlobals();
 		}
 
-		// FIXME Where should the transaction come from?
-		$transaction = new DummyTransaction();
+		// Initiate the transaction
+		$transaction = $this->transaction;
+		$this->transaction->begin();
 
 		$protocolInstance = null;
 
@@ -184,6 +198,9 @@ class EndpointContainer
 		if ($httpResponse)
 		{
 			$httpResponse->prepare($this->httpRequest);
+
+			// Commit the transaction
+			$this->transaction->commit();
 
 			if ($this->sendResponse)
 			{
@@ -271,6 +288,9 @@ class EndpointContainer
 		{
 			$httpResponse->send();
 		}
+
+		// Abort the transaction
+		$this->transaction->rollback();
 
 		return $httpResponse;
 	}
