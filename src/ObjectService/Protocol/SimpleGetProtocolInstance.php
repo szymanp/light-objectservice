@@ -1,12 +1,7 @@
 <?php
 namespace Light\ObjectService\Protocol;
 
-use Szyman\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Exception\HttpExceptionInformation;
-use Light\ObjectService\Exception\NotFound;
-use Light\ObjectService\Resource\Projection\DataEntity;
-use Light\ObjectService\Service\Protocol\ProtocolInstance;
 use Light\ObjectService\Service\Protocol\SerializationHelper;
 use Light\ObjectService\Service\Request;
 use Light\ObjectService\Service\Util\SettableRequest;

@@ -1,8 +1,8 @@
 <?php
 namespace Light\ObjectService\Formats\Json\Serializers;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectService\Service\Protocol\Serializer;
+use Szyman\Exception\InvalidArgumentException;
 
 abstract class BaseSerializer implements Serializer
 {

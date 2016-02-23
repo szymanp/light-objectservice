@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Protocol;
 
-use Szyman\Exception\Exception;
 use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Transaction\Transaction;
@@ -13,6 +12,7 @@ use Light\ObjectService\Service\EndpointRegistry;
 use Light\ObjectService\Service\Protocol\ProtocolInstance;
 use Light\ObjectService\Service\Protocol\SerializationHelper;
 use Symfony\Component\HttpFoundation;
+use Szyman\Exception\Exception;
 
 abstract class AbstractProtocolInstance implements ProtocolInstance
 {

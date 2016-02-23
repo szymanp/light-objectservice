@@ -1,10 +1,10 @@
 <?php
 namespace Light\ObjectService\Service\Protocol;
 
-use Szyman\Exception\Exception;
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Symfony\Component\HttpFoundation\Request;
+use Szyman\Exception\Exception;
+use Szyman\Exception\InvalidArgumentException;
 
 class SerializationHelper
 {

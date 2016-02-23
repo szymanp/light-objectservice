@@ -1,8 +1,8 @@
 <?php
 namespace Light\ObjectService\Resource\Selection;
 
-use Szyman\Exception\Exception;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
+use Szyman\Exception\Exception;
 
 /**
  * A proxy selection that can be used if the {@link ComplexTypeHelper} object is not available at a given time.

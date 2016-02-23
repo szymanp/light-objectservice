@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Szyman\Exception\UnexpectedValueException;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Exception\NotFound;
@@ -9,6 +8,7 @@ use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
 use Light\ObjectService\Resource\Projection\Projector;
 use Light\ObjectService\Resource\Selection\RootSelectionProxy;
+use Szyman\Exception\UnexpectedValueException;
 
 class RequestProcessor
 {

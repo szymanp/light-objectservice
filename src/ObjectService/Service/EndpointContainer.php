@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Szyman\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectService\Formats\Html\HtmlExceptionSerializer;
@@ -9,6 +8,7 @@ use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
 use Light\ObjectService\Service\Protocol\ExceptionSerializer;
 use Light\ObjectService\Service\Protocol\Protocol;
 use Symfony\Component\HttpFoundation;
+use Szyman\Exception\Exception;
 
 class EndpointContainer
 {

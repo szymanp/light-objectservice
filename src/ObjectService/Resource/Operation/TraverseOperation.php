@@ -1,11 +1,11 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\UrlRelativeAddress;
+use Szyman\Exception\InvalidArgumentException;
 
 class TraverseOperation extends Operation
 {

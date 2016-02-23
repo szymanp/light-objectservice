@@ -1,10 +1,10 @@
 <?php
 namespace Light\ObjectService\Json\Request\Query;
 
-use Szyman\Exception\NotImplementedException;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Json\Request\Reader;
+use Szyman\Exception\NotImplementedException;
 
 class ScopeReader extends Reader
 {

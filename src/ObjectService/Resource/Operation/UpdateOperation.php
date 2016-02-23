@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
@@ -9,6 +8,7 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectService\Resource\ResourceSpecification;
+use Szyman\Exception\InvalidArgumentException;
 
 final class UpdateOperation extends Operation
 {

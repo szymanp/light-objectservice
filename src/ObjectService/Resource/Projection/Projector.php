@@ -1,7 +1,6 @@
 <?php
 namespace Light\ObjectService\Resource\Projection;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
@@ -14,6 +13,7 @@ use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
 use Light\ObjectService\Resource\Util\DefaultSearchContext;
+use Szyman\Exception\InvalidArgumentException;
 
 /**
  * Projects a resource object or collection into a DataEntity object according to selection expressions.

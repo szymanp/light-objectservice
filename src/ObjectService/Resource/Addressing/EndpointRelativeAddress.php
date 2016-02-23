@@ -1,11 +1,11 @@
 <?php
 namespace Light\ObjectService\Resource\Addressing;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectService\Service\Endpoint;
 use Light\Util\URL;
+use Szyman\Exception\InvalidArgumentException;
 
 /**
  * A resource address that is relative to a service endpoint.

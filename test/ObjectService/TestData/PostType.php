@@ -1,13 +1,13 @@
 <?php
 namespace Light\ObjectService\TestData;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectAccess\Type\Complex\Create;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
+use Szyman\Exception\InvalidArgumentException;
 
 class PostType extends DefaultComplexType implements Create, CanonicalAddress
 {

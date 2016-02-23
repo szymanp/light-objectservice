@@ -1,8 +1,8 @@
 <?php
 namespace Light\ObjectService\Exception;
 
-use Szyman\Exception\Exception;
 use Symfony\Component\HttpFoundation\Response;
+use Szyman\Exception\Exception;
 
 /**
  * The request could not be understood by the server due to malformed syntax.

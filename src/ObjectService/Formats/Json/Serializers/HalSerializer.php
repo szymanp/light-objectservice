@@ -1,11 +1,11 @@
 <?php
 namespace Light\ObjectService\Formats\Json\Serializers;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
 use Light\ObjectService\Service\Protocol\ResourceSerializer;
+use Szyman\Exception\InvalidArgumentException;
 
 /**
  * Hypertext Application Language serializer.

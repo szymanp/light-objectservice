@@ -1,11 +1,11 @@
 <?php
 namespace Light\ObjectService\Resource\Selection;
 
-use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 use Light\ObjectAccess\Type\SimpleTypeHelper;
+use Szyman\Exception\InvalidArgumentException;
 
 class RootSelection extends Selection
 {
