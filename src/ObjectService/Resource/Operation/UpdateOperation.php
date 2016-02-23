@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Light\Exception\InvalidParameterType;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Resource\ResolvedCollectionValue;
@@ -24,7 +24,7 @@ final class UpdateOperation extends Operation
 	{
 		if (!is_scalar($value) && !is_array($value))
 		{
-			throw new InvalidParameterType('$value', $value, "Only scalar and array values are allowed");
+			throw InvalidArgumentException::newInvalidType('$value', $value, "scalar");
 		}
 		$this->values[$fieldName] = $value;
 	}

@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Protocol;
 
-use Light\Exception\Exception;
+use Szyman\Exception\Exception;
 use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Transaction\Transaction;

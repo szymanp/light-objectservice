@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Selection;
 
-use Light\Exception\Exception;
+use Szyman\Exception\Exception;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 
 /**

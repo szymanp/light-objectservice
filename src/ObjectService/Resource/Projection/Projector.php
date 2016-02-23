@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Projection;
 
-use Light\Exception\InvalidParameterType;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedCollectionResource;
@@ -59,7 +59,7 @@ class Projector
 			}
 			else
 			{
-				throw new InvalidParameterType('$resource', $resource);
+				throw InvalidArgumentException::newInvalidType('$resource', $resource);
 			}
 		}
 		catch (ProjectorException $e)

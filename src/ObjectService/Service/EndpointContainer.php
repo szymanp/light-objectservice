@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\Exception\Exception;
+use Szyman\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectService\Formats\Html\HtmlExceptionSerializer;

@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\TestData;
 
-use Light\Exception\NotImplementedException;
+use Szyman\Exception\NotImplementedException;
 use Light\ObjectAccess\Query\Scope\QueryScope;
 use Light\ObjectAccess\Resource\Origin_PropertyOfObject;
 use Light\ObjectAccess\Resource\Origin_Unavailable;

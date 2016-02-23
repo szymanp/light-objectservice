@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Formats\Json\Serializers;
 
-use Light\Exception\InvalidParameterType;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
@@ -50,7 +50,7 @@ class DefaultSerializer extends BaseSerializer implements ResourceSerializer
 		}
 		else
 		{
-			throw new InvalidParameterType('$dataEntity', $dataEntity);
+			throw InvalidArgumentException::newInvalidType('$dataEntity', $dataEntity);
 		}
 
 		return $document;

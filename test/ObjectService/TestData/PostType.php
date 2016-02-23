@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\TestData;
 
-use Light\Exception\InvalidParameterType;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Type\Complex\CanonicalAddress;
@@ -60,7 +60,7 @@ class PostType extends DefaultComplexType implements Create, CanonicalAddress
 		}
 		else
 		{
-			throw new InvalidParameterType('$object', $object, Post::class);
+			throw InvalidArgumentException::newInvalidType('$object', $object, Post::class);
 		}
 	}
 }

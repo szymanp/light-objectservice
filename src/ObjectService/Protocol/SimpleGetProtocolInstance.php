@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Protocol;
 
-use Light\Exception\Exception;
+use Szyman\Exception\Exception;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Exception\NotFound;

@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Formats\Json\Serializers;
 
-use Light\Exception\InvalidParameterValue;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectService\Service\Protocol\Serializer;
 
 abstract class BaseSerializer implements Serializer
@@ -14,7 +14,7 @@ abstract class BaseSerializer implements Serializer
 		$this->contentType = $contentType;
 		if (!is_string($contentType))
 		{
-			throw new InvalidParameterValue('$contentType', $contentType, "string");
+			throw InvalidArgumentException::newInvalidType('$contentType', $contentType, "string");
 		}
 	}
 

@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Selection;
 
-use Light\Exception\InvalidParameterType;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
@@ -56,7 +56,7 @@ class RootSelection extends Selection
 		}
 		else
 		{
-			throw new InvalidParameterType('$fields', $fields, "string|array");
+			throw InvalidArgumentException::newInvalidType('$fields', $fields, "string|array");
 		}
 		
 		return $this;

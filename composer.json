@@ -1,5 +1,5 @@
 {
-    "name": "light/objectservice",
+    "name": "szyman/objectservice",
     "description": "Light Objectservice",
     "homepage": "https://github.com/szymanp/light-objectservice",
     "type": "library",
@@ -11,10 +11,10 @@
         }
     ],
     "require": {
+        "szyman/common-exceptions": "dev-master",
         "light/light": "dev-master",
         "light/objectaccess": "dev-master",
         "symfony/http-foundation": "@stable",
-        "willdurand/negotiation": "@stable",
         "php": ">=5.5.0"
     },
     "require-dev": {

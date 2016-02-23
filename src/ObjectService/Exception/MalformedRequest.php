@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Exception;
 
-use Light\Exception\Exception;
+use Szyman\Exception\Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

@@ -22,7 +22,7 @@ class JsonSelectionProxyTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException			\Light\Exception\Exception
+	 * @expectedException			\Szyman\Exception\Exception
 	 * @expectedExceptionMessage	The selection proxy was already prepared with a different type
 	 */
 	public function testPrepareTwoTimes()

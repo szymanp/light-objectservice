@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\Exception\InvalidReturnValue;
+use Szyman\Exception\UnexpectedValueException;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Exception\NotFound;
@@ -142,7 +142,7 @@ class RequestProcessor
 
 		if (!($address instanceof EndpointRelativeAddress))
 		{
-			throw new InvalidReturnValue($this->request, "getResourceAddress", $address, EndpointRelativeAddress::class);
+			throw UnexpectedValueException::newInvalidReturnValue($this->request, "getResourceAddress", $address, "Expecting " . EndpointRelativeAddress::class);
 		}
 
 		$relativeAddress = $address->getEndpoint()->findResource($address->getPathElements());

@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Addressing;
 
-use Light\Exception\InvalidParameterValue;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectService\Service\Endpoint;
@@ -105,7 +105,7 @@ class EndpointRelativeAddress implements ResourceAddress
 	{
 		if (strpos($pathElement, self::SEPARATOR) !== false)
 		{
-			throw new InvalidParameterValue('$pathElement', $pathElement, "The path element cannot contain the separator character (" . self::SEPARATOR . ")");
+			throw InvalidArgumentException::newInvalidValue('$pathElement', $pathElement, "The path element cannot contain the separator character (" . self::SEPARATOR . ")");
 		}
 
 		$newAddress = $this->getCopy();

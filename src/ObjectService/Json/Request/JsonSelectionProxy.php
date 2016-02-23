@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Json\Request;
 
-use Light\Exception\NotImplementedException;
+use Szyman\Exception\NotImplementedException;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 use Light\ObjectService\Resource\Selection\RootSelection;
 use Light\ObjectService\Resource\Selection\RootSelectionProxy;

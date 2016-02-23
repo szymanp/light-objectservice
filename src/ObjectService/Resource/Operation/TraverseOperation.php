@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Resource\Operation;
 
-use Light\Exception\InvalidParameterValue;
+use Szyman\Exception\InvalidArgumentException;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
@@ -21,7 +21,7 @@ class TraverseOperation extends Operation
 	{
 		if (empty($addressFragment))
 		{
-			throw new InvalidParameterValue('$addressFragment', $addressFragment, "Address fragment cannot be empty");
+			throw InvalidArgumentException::newInvalidValue('$addressFragment', $addressFragment, "Address fragment cannot be empty");
 		}
 		$this->traversals[$addressFragment][] = $operation;
 	}
