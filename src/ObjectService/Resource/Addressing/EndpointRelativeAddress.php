@@ -4,7 +4,6 @@ namespace Light\ObjectService\Resource\Addressing;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
 use Light\ObjectService\Service\Endpoint;
-use Light\Util\URL;
 use Szyman\Exception\InvalidArgumentException;
 
 /**
@@ -81,7 +80,7 @@ class EndpointRelativeAddress implements ResourceAddress
 		{
 			if ($scope instanceof Scope\KeyScope)
 			{
-				$newAddress->localAddressString = URL::joinPaths(array($newAddress->localAddressString, (string)$scope->getKey()));
+				$newAddress->localAddressString = self::joinUrlParts($newAddress->localAddressString, (string)$scope->getKey());
 			}
 			elseif ($scope instanceof Scope\EmptyScope)
 			{
@@ -112,7 +111,7 @@ class EndpointRelativeAddress implements ResourceAddress
 		$newAddress->elements[] = $pathElement;
 		if (!is_null($this->localAddressString))
 		{
-			$newAddress->localAddressString = URL::joinPaths(array($newAddress->localAddressString, $pathElement));
+			$newAddress->localAddressString = self::joinUrlParts($newAddress->localAddressString, $pathElement);
 		}
 		return $newAddress;
 	}
@@ -138,7 +137,7 @@ class EndpointRelativeAddress implements ResourceAddress
 		}
 		else
 		{
-			return URL::joinPaths(array($this->endpoint->getUrl(), $this->localAddressString));
+			return self::joinUrlParts($this->endpoint->getUrl(), $this->localAddressString);
 		}
 	}
 
@@ -181,5 +180,27 @@ class EndpointRelativeAddress implements ResourceAddress
 		$address->elements = $this->elements;
 		$address->localAddressString = $this->localAddressString;
 		return $address;
+	}
+
+	/**
+	 * Joins two URL parts together with the slash.
+	 * @param string	$a
+	 * @param string	$b
+	 * @return string
+	 */
+	private static function joinUrlParts($a, $b)
+	{
+		if (substr($a, -1, 1) == '/' && $b[0] == '/')
+		{
+			return $a . substr($b, 1);
+		}
+		elseif (substr($a, -1, 1) != '/' && $b[0] != '/')
+		{
+			return $a . '/' . $b;
+		}
+		else
+		{
+			return $a . $b;
+		}
 	}
 }

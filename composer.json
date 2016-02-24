@@ -12,7 +12,6 @@
     ],
     "require": {
         "szyman/common-exceptions": "dev-master",
-        "light/light": "dev-master",
         "light/objectaccess": "dev-master",
         "symfony/http-foundation": "@stable",
         "php": ">=5.5.0"
@@ -22,10 +21,6 @@
         "educoder/pest": "1.0.0"
     },
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/szymanp/light"
-        },
         {
             "type": "vcs",
             "url": "https://github.com/szymanp/light-objectaccess"
