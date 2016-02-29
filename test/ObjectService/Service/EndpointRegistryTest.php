@@ -1,8 +1,10 @@
 <?php
 namespace Light\ObjectService\Service;
 
+use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Light\ObjectService\Service\Util\DefaultObjectProvider;
+use Szyman\ObjectService\Configuration\Endpoint;
+use Szyman\ObjectService\Configuration\Util\DefaultObjectProvider;
 use Light\ObjectService\TestData\Setup;
 
 class EndpointRegistryTest extends \PHPUnit_Framework_TestCase
@@ -10,11 +12,13 @@ class EndpointRegistryTest extends \PHPUnit_Framework_TestCase
 	public function testGetResourceAddress()
 	{
 		$setup = Setup::create();
-		$objectProvider = new DefaultObjectProvider($setup->getTypeRegistry());
+
+		$typeProvider = new DefaultTypeProvider();
+		$objectProvider = new DefaultObjectProvider();
 
 		$registry = new EndpointRegistry();
-		$endpoint1 = Endpoint::create("http://example.org/", $objectProvider);
-		$endpoint2 = Endpoint::create("http://example.com", $objectProvider);
+		$endpoint1 = Endpoint::create("http://example.org/", $objectProvider, $typeProvider);
+		$endpoint2 = Endpoint::create("http://example.com", $objectProvider, $typeProvider);
 
 		$registry->addEndpoint($endpoint1);
 		$registry->addEndpoint($endpoint2);

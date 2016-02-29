@@ -3,7 +3,7 @@ namespace Light\ObjectService\Resource\Addressing;
 
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
-use Light\ObjectService\Service\Endpoint;
+use Szyman\ObjectService\Configuration\Endpoint;
 use Szyman\Exception\InvalidArgumentException;
 
 /**
@@ -13,7 +13,7 @@ class EndpointRelativeAddress implements ResourceAddress
 {
 	const SEPARATOR = "/";
 
-	/** @var Endpoint */
+	/** @var \Szyman\ObjectService\Configuration\Endpoint */
 	private $endpoint;
 	/** @var array */
 	private $elements;
@@ -57,7 +57,7 @@ class EndpointRelativeAddress implements ResourceAddress
 
 	/**
 	 * Constructs a new address.
-	 * @param Endpoint $endpoint
+	 * @param \Szyman\ObjectService\Configuration\Endpoint $endpoint
 	 */
 	protected function __construct(Endpoint $endpoint)
 	{
@@ -137,7 +137,7 @@ class EndpointRelativeAddress implements ResourceAddress
 		}
 		else
 		{
-			return self::joinUrlParts($this->endpoint->getUrl(), $this->localAddressString);
+			return self::joinUrlParts($this->endpoint->getPrimaryUrl(), $this->localAddressString);
 		}
 	}
 
@@ -154,7 +154,7 @@ class EndpointRelativeAddress implements ResourceAddress
 
 	/**
 	 * Returns the endpoint that this address is relative to.
-	 * @return Endpoint
+	 * @return \Szyman\ObjectService\Configuration\Endpoint
 	 */
 	public function getEndpoint()
 	{

@@ -1,37 +1,37 @@
 <?php
 namespace Light\ObjectService\Service;
 
-use Light\ObjectAccess\Resource\Origin;
+use Light\ObjectAccess\Resource\ResolvedCollectionResource;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedScalar;
-use Light\ObjectAccess\Resource\ResolvedValue;
-use Light\ObjectAccess\Type\TypeRegistry;
+use Light\ObjectAccess\Type\TypeProvider;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
-use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Light\ObjectService\Service\Util\DefaultObjectProvider;
+use Light\ObjectService\TestData\Post;
+use Light\ObjectService\TestData\PostCollectionType;
+use Szyman\ObjectService\Configuration\Endpoint;
+use Szyman\ObjectService\Configuration\Util\DefaultObjectProvider;
 use Light\ObjectService\TestData\Author;
 use Light\ObjectService\TestData\AuthorType;
 use Light\ObjectService\TestData\Database;
 
 class DefaultObjectProviderTest extends \PHPUnit_Framework_TestCase
 {
-	/** @var TypeRegistry */
-	private $typeRegistry;
+	/** @var TypeProvider */
+	private $typeProvider;
 
 	protected function setUp()
 	{
 		parent::setUp();
 
-		$typeProvider = new DefaultTypeProvider();
-		$typeProvider->addType(new AuthorType(new Database()));
-		$this->typeRegistry = new TypeRegistry($typeProvider);
+		$this->typeProvider = new DefaultTypeProvider();
+		$this->typeProvider->addType(new AuthorType(new Database()));
+		$this->typeProvider->addType(new PostCollectionType(new Database()));
 	}
 
 	public function testPublishValue()
 	{
-		$objectProvider = new DefaultObjectProvider($this->typeRegistry);
-		$endpoint = Endpoint::create("//", $objectProvider);
-		$objectProvider->setEndpoint($endpoint);
+		$objectProvider = new DefaultObjectProvider();
+		$endpoint = Endpoint::create("//", $objectProvider, $this->typeProvider);
 
 		$simpleValue = 123;
 		$complexValue = new Author(1010, "John Doe");
@@ -39,47 +39,33 @@ class DefaultObjectProviderTest extends \PHPUnit_Framework_TestCase
 		$objectProvider->publishValue("resource/simple", $simpleValue);
 		$objectProvider->publishValue("resource/complex", $complexValue);
 
-		$resource = $objectProvider->getResource("resource/simple");
+		$factory = $objectProvider->getResourceFactory("resource/simple");
+		$resource = $factory->createResource($endpoint);
+
 		$this->assertInstanceOf(ResolvedScalar::class, $resource);
 		$this->assertEquals($simpleValue, $resource->getValue());
 		$this->assertEquals("integer", $resource->getTypeHelper()->getName());
 		$this->assertEquals("//resource/simple", $resource->getAddress()->getAsString());
 
-		$resource = $objectProvider->getResource("resource/complex");
+		$factory = $objectProvider->getResourceFactory("resource/complex");
+		$resource = $factory->createResource($endpoint);
 		$this->assertInstanceOf(ResolvedObject::class, $resource);
 		$this->assertSame($complexValue, $resource->getValue());
 		$this->assertEquals(Author::class, $resource->getTypeHelper()->getName());
 		$this->assertEquals("//resource/complex", $resource->getAddress()->getAsString());
 	}
 
-	/**
-	 * @expectedException 			\Light\ObjectAccess\Exception\ResourceException
-	 * @expectedExceptionMessage	Resource must have an address that is a subclass of Light\ObjectService\Resource\Addressing\EndpointRelativeAddress
-	 */
-	public function testPublishResourceWithInvalidAddress()
+	public function testPublishCollection()
 	{
-		$objectProvider = new DefaultObjectProvider($this->typeRegistry);
-		$endpoint = Endpoint::create("//", $objectProvider);
-		$objectProvider->setEndpoint($endpoint);
+		$objectProvider = new DefaultObjectProvider();
+		$endpoint = Endpoint::create("//", $objectProvider, $this->typeProvider);
 
-		$value = new Author(1010, "John Doe");
-		$resource = $this->typeRegistry->resolveValue($value);
-		$objectProvider->publishResource($resource);
-	}
+		$objectProvider->publishCollection("resource/posts", Post::class . '[]');
 
-	public function testPublishResource()
-	{
-		$objectProvider = new DefaultObjectProvider($this->typeRegistry);
-		$endpoint = Endpoint::create("//", $objectProvider);
-		$objectProvider->setEndpoint($endpoint);
+		$factory = $objectProvider->getResourceFactory("resource/posts");
+		$this->assertNotNull($factory);
+		$resource = $factory->createResource($endpoint);
 
-		$value = new Author(1010, "John Doe");
-		$resource = ResolvedValue::create($this->typeRegistry->getComplexTypeHelper(Author::class),
-										  $value,
-										  EndpointRelativeAddress::create($endpoint, "author"),
-										  Origin::unavailable());
-		$objectProvider->publishResource($resource);
-
-		$this->assertSame($resource, $objectProvider->getResource("author"));
+		$this->assertInstanceOf(ResolvedCollectionResource::class, $resource);
 	}
 }

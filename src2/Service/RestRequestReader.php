@@ -41,8 +41,8 @@ class RestRequestReader
 				// Find the EndpointRelativeAddress for the URL.
 				// Read the RelativeAddress corresponding to this EndpointRelativeAddress.
 				// (The RelativeAddress contains a published resource and the path to the target resource).
-				// Resolve the RelativeAddress to the target resource.
-				// The resolution must be successful.
+				// Resolve the RelativeAddress to the target resource using RelativeAddressReader.
+				// The resolution must be successful, i.e. not return a NULL.
 
 				// If the resource is a collection, then parse the request-body using a Update Collection format parser.
 				// If the resource is a resource, then parse the request-body using a Update Object format parser.

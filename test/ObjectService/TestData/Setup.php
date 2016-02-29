@@ -8,18 +8,15 @@ use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
-use Light\ObjectService\Service\Endpoint;
+use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
-use Light\ObjectService\Service\Util\DefaultObjectProvider;
+use Szyman\ObjectService\Configuration\Util\DefaultObjectProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 class Setup
 {
 	/** @var DefaultTypeProvider */
 	private $typeProvider;
-
-	/** @var TypeRegistry */
-	private $typeRegistry;
 
 	/** @var DefaultObjectProvider */
 	private $objectProvider;
@@ -59,9 +56,8 @@ class Setup
 		$this->typeProvider->addType($postType = new PostType($this->database));
 		$this->typeProvider->addType($postCollectionType = new PostCollectionType($this->database));
 
-		$this->typeRegistry = new TypeRegistry($this->typeProvider);
-		$this->objectProvider = new DefaultObjectProvider($this->typeRegistry);
-		$this->endpoint = Endpoint::create($endpointBase, $this->objectProvider);
+		$this->objectProvider = new DefaultObjectProvider();
+		$this->endpoint = Endpoint::create($endpointBase, $this->objectProvider, $this->typeProvider);
 
 		$this->endpointRegistry = new EndpointRegistry();
 		$this->endpointRegistry->addEndpoint($this->endpoint);
@@ -70,7 +66,7 @@ class Setup
 		$this->objectProvider->publishCollection("collections/post", $postCollectionType);
 
 		// Assign canonical base addresses to types
-		$postType->setCanonicalBase($this->objectProvider->getResource("collections/post")->getAddress());
+		$postType->setCanonicalBase($this->objectProvider->getResourceFactory("collections/post")->createResource($this->endpoint)->getAddress());
 	}
 
 	/**
@@ -94,7 +90,7 @@ class Setup
 	 */
 	public function getTypeRegistry()
 	{
-		return $this->typeRegistry;
+		return $this->endpoint->getTypeRegistry();
 	}
 
 	/**

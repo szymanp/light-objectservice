@@ -4,7 +4,8 @@ namespace Light\ObjectService\Service;
 use Light\ObjectAccess\Resource\Addressing\RelativeAddress;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
-use Light\ObjectService\Service\Util\DefaultObjectProvider;
+use Szyman\ObjectService\Configuration\Endpoint;
+use Szyman\ObjectService\Configuration\Util\DefaultObjectProvider;
 use Light\ObjectService\TestData\Author;
 use Light\ObjectService\TestData\Setup;
 
@@ -13,21 +14,35 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
 	public function testInstantiation()
 	{
 		$typeProvider = new DefaultTypeProvider();
-		$typeRegistry = new TypeRegistry($typeProvider);
-		$objectProvider = new DefaultObjectProvider($typeRegistry);
-		$endpoint = Endpoint::create("//", $objectProvider);
+		$objectProvider = new DefaultObjectProvider();
+		$endpoint = Endpoint::create("//", $objectProvider, $typeProvider);
 
 		$this->assertInstanceOf(Endpoint::class, $endpoint);
-		$this->assertSame($typeRegistry, $endpoint->getTypeRegistry());
-		$this->assertEquals("//", $endpoint->getUrl());
+		$this->assertSame($typeProvider, $endpoint->getTypeRegistry()->getTypeProvider());
+		$this->assertEquals("//", $endpoint->getPrimaryUrl());
+	}
+
+	public function testAlternativeUrls()
+	{
+		$typeProvider = new DefaultTypeProvider();
+		$objectProvider = new DefaultObjectProvider();
+		$endpoint = Endpoint::create("//", $objectProvider, $typeProvider);
+
+		$endpoint->addAlternativeUrl("//alt1");
+		$endpoint->addAlternativeUrl("//alt2");
+
+		$this->assertEquals("//", $endpoint->getPrimaryUrl());
+		$this->assertEquals(['//', '//alt1', '//alt2'], $endpoint->getUrls());
 	}
 
 	public function testFindResource()
 	{
 		$setup = Setup::create();
-		$objectProvider = new DefaultObjectProvider($setup->getTypeRegistry());
-		$endpoint = Endpoint::create("http://example.org/", $objectProvider);
-		$objectProvider->setEndpoint($endpoint);
+
+		$objectProvider = new DefaultObjectProvider();
+		$typeProvider = $setup->getTypeProvider();
+
+		$endpoint = Endpoint::create("http://example.org/", $objectProvider, $typeProvider);
 
 		$author = new Author(1010, "John Doe");
 		$objectProvider->publishValue("names/John-Doe", $author);
@@ -35,7 +50,7 @@ class EndpointTest extends \PHPUnit_Framework_TestCase
 		$result = $endpoint->findResource(array("names", "John-Doe", "age"));
 
 		$this->assertInstanceOf(RelativeAddress::class, $result);
-		$this->assertSame($objectProvider->getResource("names/John-Doe"), $result->getSourceResource());
+		$this->assertSame($author, $result->getSourceResource()->getValue());
 		$this->assertEquals(array("age"), $result->getPathElements());
 
 		$this->assertNull($endpoint->findResource(array("unknown", "path")));

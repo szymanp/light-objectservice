@@ -7,6 +7,7 @@ use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectAccess\Type\Complex\Create;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
+use Szyman\Exception\Exception;
 use Szyman\Exception\InvalidArgumentException;
 
 class PostType extends DefaultComplexType implements Create, CanonicalAddress
@@ -54,6 +55,11 @@ class PostType extends DefaultComplexType implements Create, CanonicalAddress
 	 */
 	public function getCanonicalAddress($object)
 	{
+		if (is_null($this->canonicalBase))
+		{
+			throw new Exception("Canonical base has not been set");
+		}
+
 		if ($object instanceof Post)
 		{
 			return $this->canonicalBase->appendElement($object->getId());

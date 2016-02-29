@@ -27,6 +27,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Light\\ObjectService\\": "src/ObjectService/" }
+        "psr-4": { "Light\\ObjectService\\": "src/ObjectService/",
+                   "Szyman\\ObjectService\\": "src2/" }
     }
 }

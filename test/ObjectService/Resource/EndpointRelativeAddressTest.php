@@ -21,7 +21,7 @@ class EndpointRelativeAddressTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertSame($this->setup->getEndpoint(), $addr->getEndpoint());
 		$this->assertTrue($addr->hasStringForm());
-		$this->assertEquals($this->setup->getEndpoint()->getUrl(), $addr->getAsString());
+		$this->assertEquals($this->setup->getEndpoint()->getPrimaryUrl(), $addr->getAsString());
 		$this->assertEquals("", $addr->getLocalAddressAsString());
 	}
 

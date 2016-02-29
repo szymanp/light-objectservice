@@ -3,14 +3,14 @@ namespace Light\ObjectService\Resource\Util;
 
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Resource\Operation\ExecutionParameters;
-use Light\ObjectService\Service\Endpoint;
+use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 
 class DefaultExecutionParameters implements ExecutionParameters
 {
 	/** @var EndpointRegistry */
 	private $endpointRegistry;
-	/** @var Endpoint */
+	/** @var \Szyman\ObjectService\Configuration\Endpoint */
 	private $endpoint;
 	/** @var Transaction */
 	private $transaction;

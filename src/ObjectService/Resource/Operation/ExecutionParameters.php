@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Resource\Operation;
 
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Service\Endpoint;
+use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 
 /**

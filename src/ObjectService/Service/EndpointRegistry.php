@@ -3,6 +3,7 @@ namespace Light\ObjectService\Service;
 use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
+use Szyman\ObjectService\Configuration\Endpoint;
 
 /**
  * A registry storing service endpoints.
@@ -30,10 +31,12 @@ final class EndpointRegistry
 	{
 		foreach($this->endpoints as $endpoint)
 		{
-			$endpointUrl = $endpoint->getUrl();
-			if (substr($url, 0, strlen($endpointUrl)) === $endpointUrl)
+			foreach($endpoint->getUrls() as $endpointUrl)
 			{
-				return $endpoint;
+				if (substr($url, 0, strlen($endpointUrl)) === $endpointUrl)
+				{
+					return $endpoint;
+				}
 			}
 		}
 		return null;
@@ -50,7 +53,7 @@ final class EndpointRegistry
 		$endpoint = $this->findEndpoint($url);
 		if (!is_null($endpoint))
 		{
-			return EndpointRelativeAddress::create($endpoint, substr($url, strlen($endpoint->getUrl())));
+			return EndpointRelativeAddress::create($endpoint, substr($url, strlen($endpoint->getPrimaryUrl())));
 		}
 		else
 		{
