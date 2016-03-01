@@ -121,8 +121,11 @@ final class Endpoint
 	 * if a path like ["models", "post", "12", "title"] is specified.
 	 *
 	 * @param array $path
-	 * @return RelativeAddress	A RelativeAddress object, if the path prefix resolved to a published resource;
-	 *                         	otherwise, NULL.
+	 * @return RelativeAddress	This method returns a RelativeAddress object, which contains
+	 *                          the resource matching the shortest prefix in the address
+	 *                          and the unmatched remainder of the address. 
+	 *                          The RelativeAddress object is returned if the path prefix resolved resource;
+	 *                         	otherwise, NULL is returned.
 	 */
 	public function findResource(array $path)
 	{
