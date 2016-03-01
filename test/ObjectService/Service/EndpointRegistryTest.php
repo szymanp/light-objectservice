@@ -35,4 +35,33 @@ class EndpointRegistryTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNull($registry->getResourceAddress("http://unknown.net"));
 	}
+
+	public function testGetResourceAddressWithAlternativeUrl()
+	{
+		$setup = Setup::create();
+
+		$typeProvider = new DefaultTypeProvider();
+		$objectProvider = new DefaultObjectProvider();
+
+		$registry = new EndpointRegistry();
+		$endpoint1 = Endpoint::create("http://example.org/", $objectProvider, $typeProvider);
+		$endpoint1->addAlternativeUrl("https://example.org/");
+
+		$registry->addEndpoint($endpoint1);
+
+		// The address objects returned when resolving https or http is similar.
+		// From that object it is not possible to see if the address resolved was one or the other.
+
+		$address = $registry->getResourceAddress("https://example.org/resource/path");
+		$this->assertInstanceOf(EndpointRelativeAddress::class, $address);
+		$this->assertSame($endpoint1, $address->getEndpoint());
+		$this->assertEquals("resource/path", $address->getLocalAddressAsString());
+		$this->assertEquals("http://example.org/resource/path", $address->getAsString());
+
+		$address = $registry->getResourceAddress("http://example.org/resource/path");
+		$this->assertInstanceOf(EndpointRelativeAddress::class, $address);
+		$this->assertSame($endpoint1, $address->getEndpoint());
+		$this->assertEquals("resource/path", $address->getLocalAddressAsString());
+		$this->assertEquals("http://example.org/resource/path", $address->getAsString());
+	}
 }
