@@ -25,9 +25,11 @@ final class EndpointRegistry
 	/**
 	 * Finds an Endpoint corresponding to the given URL.
 	 * @param string $url
+	 * @param string $actualEndpointUrl		This pass-by-reference parameter will be set to the endpoint
+	 *										URL that matched.
 	 * @return Endpoint	An Endpoint object, if found; otherwise, NULL.
 	 */
-	public function findEndpoint($url)
+	public function findEndpoint($url, & $actualEndpointUrl)
 	{
 		foreach($this->endpoints as $endpoint)
 		{
@@ -35,6 +37,7 @@ final class EndpointRegistry
 			{
 				if (substr($url, 0, strlen($endpointUrl)) === $endpointUrl)
 				{
+					$actualEndpointUrl = $endpointUrl;
 					return $endpoint;
 				}
 			}
@@ -43,17 +46,24 @@ final class EndpointRegistry
 	}
 
 	/**
-	 * Returns a resource address object corresponding to the given URL.
+	 * Finds an endpoint corresponding to the given URL and translates that URL into an endpoint-relative address.
+	 *
+	 * Note that an EndpointRelativeAddress will always resolve to the primary URL of the endpoint,
+	 * even if the supplied URL was an alternative URL. In other words, based on the returned address object
+	 * it is impossible to determine the actual URL that was used as it could have been replaced by the primary URL.
+	 *
 	 * @param string $url
 	 * @return EndpointRelativeAddress	A resource address object, if the URL corresponds to a known endpoint;
 	 *                                  otherwise, NULL.
 	 */
 	public function getResourceAddress($url)
 	{
-		$endpoint = $this->findEndpoint($url);
+		$actualEndpointUrl = null;
+		
+		$endpoint = $this->findEndpoint($url, $actualEndpointUrl);
 		if (!is_null($endpoint))
 		{
-			return EndpointRelativeAddress::create($endpoint, substr($url, strlen($endpoint->getPrimaryUrl())));
+			return EndpointRelativeAddress::create($endpoint, substr($url, strlen($actualEndpointUrl)));
 		}
 		else
 		{
@@ -62,12 +72,12 @@ final class EndpointRegistry
 	}
 
 	/**
-	 * Returns a resource identified by the given URL.
-	 * @param string	$url
-	 * @return \Light\ObjectAccess\Resource\ResolvedResource
-	 * @throws AddressResolutionException	If the resource cannot be found.
+	 * Returns a  
+	 * @param string $url
+	 * @return RelativeAddress
+	 * @throws AddressResolutionException	If the resource does not match an endpoint or a resource within the endpoint.
 	 */
-	public function getResource($url)
+	public function getResourceRelativeAddress($url)
 	{
 		$address = $this->getResourceAddress($url);
 		if (is_null($address))
@@ -82,7 +92,18 @@ final class EndpointRegistry
 			throw new AddressResolutionException("Address <%1> could not be resolved to any resource", $url);
 		}
 
-		$relativeAddressReader = new RelativeAddressReader($relativeAddress);
+		return $relativeAddress;
+	}
+
+	/**
+	 * Returns a resource identified by the given URL.
+	 * @param string	$url
+	 * @return \Light\ObjectAccess\Resource\ResolvedResource
+	 * @throws AddressResolutionException	If the resource does not match any endpoint or published resource.
+	 */
+	public function getResource($url)
+	{
+		$relativeAddressReader = new RelativeAddressReader($this->getResourceRelativeAddress($url));
 		return $relativeAddressReader->read();
 	}
 }
