@@ -4,8 +4,9 @@ namespace Szyman\ObjectService\Configuration;
 /**
  * An interface for classes that resolve addresses to resources.
  *
- * The ObjectProvider operates with addresses that are relative to a service endpoint.
- * The addresses should not include a host name and a path to the root of the web API,
+ * An ObjectProvider maps addresses to resources (or rather, resource factories).
+ * The addresses used by this interface are relative to a service endpoint.
+ * This means that they should _not_ include a host name and a path to the root of the web API,
  * as that information is captured by the Endpoint class.
  */
 interface ObjectProvider
