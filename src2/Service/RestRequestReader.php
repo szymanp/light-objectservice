@@ -1,10 +1,13 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
+use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
+use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
+use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\EndpointRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -52,6 +55,33 @@ class RestRequestReader
 
 				// Find the
 
+				$relativeAddressReader = $this->newRelativeAddressReader($this->getResourceAddress($request));
+				try
+				{
+					// Find the resource specified in the URL.
+					$resource = $relativeAddressReader->read();
+
+					if (is_null($resource))
+					{
+						// One of the resources in the URL path chain resolved to a NULL.
+						throw new NotFound($request->getUri());
+					}
+
+					// TODO In addition to determining the resource, the code in this class should
+					//      determine the action to be taken, i.e. choose a general deserializer for the format
+					//      (whether this should be an update-object-format, update-collection-format, action-format, etc.)
+
+					// TODO: Maybe the entire code should be extracted to a method?
+					//       Note that for the PUT method the target resource may not exist, then we should
+					//       rely on the penultimate resource in the path.
+					return $resource;
+				}
+				catch (AddressResolutionException $e)
+				{
+					// This exception indicates that the path in the URL didn't match the type structure of the resources.
+					// For example, an attempt to access an element of a resource that was not a collection was made.
+					throw new NotFound($request->getUri(), $e);
+				}
 
 				break;
 			case 'DELETE':
@@ -92,6 +122,11 @@ class RestRequestReader
 		}
 	}
 
+	/**
+	 * @param Request $request
+	 * @return \Light\ObjectService\Resource\Addressing\EndpointRelativeAddress
+	 * @throws NotFound
+	 */
 	private function getResourceAddress(Request $request)
 	{
 		$address = $this->endpointRegistry->getResourceAddress($this->getUriWithoutQuery($request));
@@ -110,5 +145,17 @@ class RestRequestReader
 		}
 
 		return $address;
+	}
+
+	private function newRelativeAddressReader(EndpointRelativeAddress $address)
+	{
+		$relativeAddress = $address->getEndpoint()->findResource($address->getPathElements());
+
+		if (is_null($relativeAddress))
+		{
+			throw new NotFound($address->getAsString(), "No endpoint matching this address was found");
+		}
+
+		return new RelativeAddressReader($relativeAddress);
 	}
 }
