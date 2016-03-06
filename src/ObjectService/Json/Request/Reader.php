@@ -1,6 +1,6 @@
 <?php
 namespace Light\ObjectService\Json\Request;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 /**
  * Base class for readers.

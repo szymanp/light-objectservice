@@ -2,6 +2,7 @@
 namespace Light\ObjectService\Resource\Operation;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 /**
  * An operation encapsulates the parameters and the logic of an action to be performed on a resource.

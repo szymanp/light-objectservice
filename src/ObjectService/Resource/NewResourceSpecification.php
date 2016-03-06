@@ -3,7 +3,7 @@ namespace Light\ObjectService\Resource;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 use Light\ObjectService\Resource\Operation\UpdateOperation;
 
 class NewResourceSpecification extends ResourceSpecification
@@ -22,7 +22,7 @@ class NewResourceSpecification extends ResourceSpecification
 
 	/**
 	 * Returns the new resource.
-	 * @param ExecutionParameters $parameters
+	 * @param \Szyman\ObjectService\Service\ExecutionParameters $parameters
 	 * @return ResolvedResource	A new resource, which does not have any address nor origin associated with it.
 	 */
 	public function resolve(ExecutionParameters $parameters)

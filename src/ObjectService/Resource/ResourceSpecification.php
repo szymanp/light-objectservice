@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Resource;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 /**
  * Returns a resource object.

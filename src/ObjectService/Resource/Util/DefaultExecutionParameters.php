@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Resource\Util;
 
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 

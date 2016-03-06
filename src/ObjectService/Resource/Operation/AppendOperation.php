@@ -5,6 +5,7 @@ use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 /**
  * Appends a resource to a collection.

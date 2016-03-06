@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service\Protocol;
 
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

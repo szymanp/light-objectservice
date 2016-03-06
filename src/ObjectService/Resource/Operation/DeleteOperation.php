@@ -8,6 +8,7 @@ use Light\ObjectAccess\Resource\ResolvedCollectionValue;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Exception\MalformedRequest;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 /**
  * Deletes an object or removes a resource from a collection.

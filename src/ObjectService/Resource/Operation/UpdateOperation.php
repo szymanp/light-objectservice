@@ -9,6 +9,7 @@ use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectService\Resource\ResourceSpecification;
 use Szyman\Exception\InvalidArgumentException;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 final class UpdateOperation extends Operation
 {

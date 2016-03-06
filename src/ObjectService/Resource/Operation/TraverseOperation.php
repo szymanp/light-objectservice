@@ -6,6 +6,7 @@ use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\UrlRelativeAddress;
 use Szyman\Exception\InvalidArgumentException;
+use Szyman\ObjectService\Service\ExecutionParameters;
 
 class TraverseOperation extends Operation
 {

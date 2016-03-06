@@ -1,5 +1,5 @@
 <?php
-namespace Light\ObjectService\Resource\Operation;
+namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Transaction\Transaction;
 use Szyman\ObjectService\Configuration\Endpoint;

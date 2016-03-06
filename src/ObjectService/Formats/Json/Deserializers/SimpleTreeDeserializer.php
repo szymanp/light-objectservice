@@ -4,7 +4,7 @@ namespace Light\ObjectService\Formats\Json\Deserializers;
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Json\Request\Operation\AppendOperationReader;
 use Light\ObjectService\Json\Request\Operation\UpdateOperationReader;
-use Light\ObjectService\Resource\Operation\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionParameters;
 use Light\ObjectService\Service\Protocol\DeserializedResult;
 use Light\ObjectService\Service\Protocol\Deserializer;
 use Symfony\Component\HttpFoundation\Request;
