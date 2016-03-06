@@ -36,4 +36,16 @@ interface RequestBodyDeserializerFactory
 	 * @return ComplexValueModificationDeserializer
 	 */
 	public function newComplexValueModificationDeserializer($contentType, ComplexType $complexType);
+
+	/* TODO
+	public function newCollectionValueRepresentationDeserializer($contentType, CollectionType $type);
+
+	public function newCollectionValueModificationDeserializer($contentType, CollectionType $type);
+
+	public function newCollectionElementSelectionDeserializer($contentType, CollectionType $type);
+
+	public function newComplexValueActionDeserializer($contentType, ComplexType $type);
+
+	public function newCollectionxValueActionDeserializer($contentType, CollectionType $type);
+	 */
 }
