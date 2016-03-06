@@ -2,7 +2,7 @@
 namespace Light\ObjectService\Protocol;
 
 use Light\ObjectAccess\Transaction\Transaction;
-use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
+use Light\ObjectService\Resource\Util\DefaultExecutionEnvironment;
 use Light\ObjectService\Service\Protocol\SerializationHelper;
 use Light\ObjectService\Service\Request;
 use Light\ObjectService\Service\Util\SettableRequest;
@@ -33,7 +33,7 @@ class TreeUpdateProtocolInstance extends AbstractProtocolInstance
 			$request->setSelection($selection);
 		}
 
-		$executionParameters = new DefaultExecutionParameters();
+		$executionParameters = new DefaultExecutionEnvironment();
 		$executionParameters->setEndpointRegistry($this->protocol->getEndpointRegistry());
 		$executionParameters->setEndpoint($address->getEndpoint());
 		$executionParameters->setTransaction($this->transaction);

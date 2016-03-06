@@ -7,7 +7,7 @@ use Light\ObjectAccess\Resource\Addressing\RelativeAddress;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 class ExistingResourceSpecification extends ResourceSpecification
 {
@@ -21,11 +21,11 @@ class ExistingResourceSpecification extends ResourceSpecification
 
 	/**
 	 * Returns the resource described by this specification.
-	 * @param \Szyman\ObjectService\Service\ExecutionParameters $parameters
+	 * @param \Szyman\ObjectService\Service\ExecutionEnvironment $parameters
 	 * @return ResolvedResource
 	 * @throws AddressResolutionException
 	 */
-	public function resolve(ExecutionParameters $parameters)
+	public function resolve(ExecutionEnvironment $parameters)
 	{
 		$address = $this->address;
 

@@ -5,7 +5,7 @@ use Light\ObjectAccess\Exception\ResourceException;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 /**
  * Appends a resource to a collection.
@@ -35,11 +35,11 @@ class AppendOperation extends Operation
 	/**
 	 * Executes the operation.
 	 * @param ResolvedResource    $resource
-	 * @param ExecutionParameters $parameters
+	 * @param ExecutionEnvironment $parameters
 	 * @throws ResourceException
 	 * @throws \Light\ObjectAccess\Exception\TypeException
 	 */
-	public function execute(ResolvedResource $resource, ExecutionParameters $parameters)
+	public function execute(ResolvedResource $resource, ExecutionEnvironment $parameters)
 	{
 		if ($resource instanceof ResolvedCollection)
 		{

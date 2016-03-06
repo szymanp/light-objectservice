@@ -9,7 +9,7 @@ use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectService\Resource\ResourceSpecification;
 use Szyman\Exception\InvalidArgumentException;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 final class UpdateOperation extends Operation
 {
@@ -43,11 +43,11 @@ final class UpdateOperation extends Operation
 	/**
 	 * Executes the update operation.
 	 * @param ResolvedResource    $resource
-	 * @param ExecutionParameters $parameters
+	 * @param ExecutionEnvironment $parameters
 	 * @throws ResourceException
 	 * @throws TypeException
 	 */
-	public function execute(ResolvedResource $resource, ExecutionParameters $parameters)
+	public function execute(ResolvedResource $resource, ExecutionEnvironment $parameters)
 	{
 		if ($resource instanceof ResolvedObject)
 		{
@@ -66,7 +66,7 @@ final class UpdateOperation extends Operation
 		}
 	}
 
-	protected function performUpdate(ResolvedObject $resource, ExecutionParameters $parameters)
+	protected function performUpdate(ResolvedObject $resource, ExecutionEnvironment $parameters)
 	{
 		$typeHelper = $resource->getTypeHelper();
 

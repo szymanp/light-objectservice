@@ -6,9 +6,9 @@ use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 
 /**
- * Parameters for the execution of an operation.
+ * Provides access to objects relevant to the execution of a service request.
  */
-interface ExecutionParameters
+interface ExecutionEnvironment
 {
 	/**
 	 * @return Transaction

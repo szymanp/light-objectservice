@@ -5,14 +5,14 @@ use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Light\ObjectService\Resource\Projection\Projector;
 use Light\ObjectService\Resource\Selection\RootSelectionProxy;
 use Szyman\Exception\UnexpectedValueException;
 
 class RequestProcessor
 {
-	/** @var \Szyman\ObjectService\Service\ExecutionParameters */
+	/** @var \Szyman\ObjectService\Service\ExecutionEnvironment */
 	protected $executionParameters;
 	/** @var Request */
 	protected $request;
@@ -25,7 +25,7 @@ class RequestProcessor
 	/** @var bool */
 	private $errorHandling = true;
 
-	public function __construct(ExecutionParameters $executionParams, Request $request)
+	public function __construct(ExecutionEnvironment $executionParams, Request $request)
 	{
 		$this->executionParameters = $executionParams;
 		$this->request = $request;

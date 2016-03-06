@@ -1,7 +1,7 @@
 <?php
 namespace Light\ObjectService\Service\Protocol;
 
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -18,8 +18,8 @@ interface Deserializer
 	/**
 	 * Deserializes the request entity.
 	 * @param Request 				$httpRequest
-	 * @param ExecutionParameters 	$executionParameters
+	 * @param ExecutionEnvironment 	$executionParameters
 	 * @return DeserializedResult
 	 */
-	public function deserialize(Request $httpRequest, ExecutionParameters $executionParameters);
+	public function deserialize(Request $httpRequest, ExecutionEnvironment $executionParameters);
 }

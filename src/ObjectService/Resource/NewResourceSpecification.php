@@ -3,7 +3,7 @@ namespace Light\ObjectService\Resource;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Light\ObjectService\Resource\Operation\UpdateOperation;
 
 class NewResourceSpecification extends ResourceSpecification
@@ -22,10 +22,10 @@ class NewResourceSpecification extends ResourceSpecification
 
 	/**
 	 * Returns the new resource.
-	 * @param \Szyman\ObjectService\Service\ExecutionParameters $parameters
+	 * @param \Szyman\ObjectService\Service\ExecutionEnvironment $parameters
 	 * @return ResolvedResource	A new resource, which does not have any address nor origin associated with it.
 	 */
-	public function resolve(ExecutionParameters $parameters)
+	public function resolve(ExecutionEnvironment $parameters)
 	{
 		$resource = $this->complexTypeHelper->createResource($parameters->getTransaction());
 

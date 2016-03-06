@@ -8,7 +8,7 @@ use Light\ObjectAccess\Resource\ResolvedCollectionValue;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Exception\MalformedRequest;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 /**
  * Deletes an object or removes a resource from a collection.
@@ -30,9 +30,9 @@ class DeleteOperation extends Operation
 	/**
 	 * Executes the operation.
 	 * @param ResolvedResource    $resource
-	 * @param ExecutionParameters $parameters
+	 * @param ExecutionEnvironment $parameters
 	 */
-	public function execute(ResolvedResource $resource, ExecutionParameters $parameters)
+	public function execute(ResolvedResource $resource, ExecutionEnvironment $parameters)
 	{
 		if ($resource instanceof ResolvedCollectionResource)
 		{

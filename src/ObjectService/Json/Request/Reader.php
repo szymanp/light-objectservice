@@ -1,22 +1,22 @@
 <?php
 namespace Light\ObjectService\Json\Request;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 /**
  * Base class for readers.
  */
 abstract class Reader
 {
-	/** @var ExecutionParameters */
+	/** @var ExecutionEnvironment */
 	protected $executionParameters;
 
-	public function __construct(ExecutionParameters $executionParameters)
+	public function __construct(ExecutionEnvironment $executionParameters)
 	{
 		$this->executionParameters = $executionParameters;
 	}
 
 	/**
-	 * @return ExecutionParameters
+	 * @return ExecutionEnvironment
 	 */
 	public function getExecutionParameters()
 	{

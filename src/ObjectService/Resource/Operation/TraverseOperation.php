@@ -6,7 +6,7 @@ use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\UrlRelativeAddress;
 use Szyman\Exception\InvalidArgumentException;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 class TraverseOperation extends Operation
 {
@@ -30,9 +30,9 @@ class TraverseOperation extends Operation
 	/**
 	 * Executes the operation.
 	 * @param ResolvedResource    $resource
-	 * @param ExecutionParameters $parameters
+	 * @param ExecutionEnvironment $parameters
 	 */
-	public function execute(ResolvedResource $resource, ExecutionParameters $parameters)
+	public function execute(ResolvedResource $resource, ExecutionEnvironment $parameters)
 	{
 		foreach($this->traversals as $addressFragment => $operations)
 		{

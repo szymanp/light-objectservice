@@ -4,7 +4,7 @@ namespace Light\ObjectService\Service;
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectService\Formats\Html\HtmlExceptionSerializer;
-use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
+use Light\ObjectService\Resource\Util\DefaultExecutionEnvironment;
 use Light\ObjectService\Service\Protocol\ExceptionSerializer;
 use Light\ObjectService\Service\Protocol\Protocol;
 use Symfony\Component\HttpFoundation;
@@ -160,7 +160,7 @@ class EndpointContainer
 		{
 			$request = $protocolInstance->readRequest();
 
-			$executionParameters = new DefaultExecutionParameters();
+			$executionParameters = new DefaultExecutionEnvironment();
 			$executionParameters->setEndpoint($request->getResourceAddress()->getEndpoint());
 			$executionParameters->setTransaction($transaction);
 			$executionParameters->setEndpointRegistry($this->endpointRegistry);

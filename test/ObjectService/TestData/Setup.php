@@ -7,7 +7,7 @@ use Light\ObjectAccess\Transaction\Util\DummyTransaction;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Light\ObjectService\Resource\Util\DefaultExecutionParameters;
+use Light\ObjectService\Resource\Util\DefaultExecutionEnvironment;
 use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 use Szyman\ObjectService\Configuration\Util\DefaultObjectProvider;
@@ -119,11 +119,11 @@ class Setup
 
 	/**
 	 * Returns a new ExecutionParameters object.
-	 * @return DefaultExecutionParameters
+	 * @return DefaultExecutionEnvironment
 	 */
 	public function getExecutionParameters()
 	{
-		$ep = new DefaultExecutionParameters();
+		$ep = new DefaultExecutionEnvironment();
 		$ep->setEndpointRegistry($this->endpointRegistry);
 		$ep->setTransaction(new DummyTransaction());
 		$ep->setEndpoint($this->getEndpoint());

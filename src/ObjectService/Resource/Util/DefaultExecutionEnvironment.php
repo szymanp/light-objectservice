@@ -2,11 +2,11 @@
 namespace Light\ObjectService\Resource\Util;
 
 use Light\ObjectAccess\Transaction\Transaction;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
 
-class DefaultExecutionParameters implements ExecutionParameters
+class DefaultExecutionEnvironment implements ExecutionEnvironment
 {
 	/** @var EndpointRegistry */
 	private $endpointRegistry;

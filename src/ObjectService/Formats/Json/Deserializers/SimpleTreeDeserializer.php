@@ -4,7 +4,7 @@ namespace Light\ObjectService\Formats\Json\Deserializers;
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Json\Request\Operation\AppendOperationReader;
 use Light\ObjectService\Json\Request\Operation\UpdateOperationReader;
-use Szyman\ObjectService\Service\ExecutionParameters;
+use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Light\ObjectService\Service\Protocol\DeserializedResult;
 use Light\ObjectService\Service\Protocol\Deserializer;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,11 +23,11 @@ class SimpleTreeDeserializer implements Deserializer
 	/**
 	 * Deserializes the request entity.
 	 * @param Request             $httpRequest
-	 * @param ExecutionParameters $executionParameters
+	 * @param ExecutionEnvironment $executionParameters
 	 * @return DeserializedResult
 	 * @throws MalformedRequest
 	 */
-	public function deserialize(Request $httpRequest, ExecutionParameters $executionParameters)
+	public function deserialize(Request $httpRequest, ExecutionEnvironment $executionParameters)
 	{
 		$result = new DeserializedResult();
 
