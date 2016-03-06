@@ -22,6 +22,30 @@ class RestRequestReader
 	public function readRequest(Request $request)
 	{
 		$address = $this->getResourceAddress($request);
+		
+		// GET: All types of resources (Simple, Complex, Collections) can be read (GET).
+		// PUT: All types or resources can be PUT:
+		// - for Simple values, PUT sets a new value
+		// - for Complex values, PUT sets all specified fields while unspecified are set to default/null values
+		// - for Collections, PUT removes all elements from the collection and adds only the specified ones
+		// PATCH: Only Complex and Collection resources can be patched.
+		// - Patching Simple values would require some specialized protocol on how to modify them.
+		// - For Complex values, PATCH sets only the fields specified in the request
+		// - For Collections, PATCH specifies which elements to remove and which to add
+		// DELETE: Only Complex and Collection resources can be deleted.
+		// - For Complex values, DELETE removes the object from its underlying collection.
+		//   Depending on the underlying implementation, this might mean that the object is physically deleted.
+		//   The API does not specify the behavior.
+		// - For Collections, DELETE removes the elements from the collection.
+		//   The collection itself cannot be deleted.
+		//   The body might contain the scope of elements to be deleted.
+		// POST: Only Complex and Collection resources can be used with POST.
+		// - For Complex values, POST is used to perform an action on the resource.
+		// - For Collections, POST can either:
+		//   - Append a new element to the collection and return the URL of the added element.
+		//     The body of the request is the specification of the new element.
+		//   - Perform an action on the collection.
+		//     The body of the request is the specification of the action.
 
 		switch($request->getMethod())
 		{
