@@ -7,17 +7,24 @@ use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\CollectionType;
 use Light\ObjectService\Exception\UnsupportedMediaType;
 use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\UnexpectedValueException;
+use Szyman\ObjectService\Service\ComplexValueModification;
+use Szyman\ObjectService\Service\ComplexValueModificationDeserializer;
+use Szyman\ObjectService\Service\ComplexValueRepresentation;
+use Szyman\ObjectService\Service\ComplexValueRepresentationDeserializer;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
+use Szyman\ObjectService\Service\SimpleValueRepresentation;
+use Szyman\ObjectService\Service\SimpleValueRepresentationDeserializer;
 
 /**
  * A <kbd>RequestBodyDeserializerFactory</kbd> that can route request to other factories based on content-type.
  */
 class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializerFactory
 {
-	const SIMPLE_VALUE_REPRESENTATION 		= "SimpleValueRepresentation";
-	const COMPLEX_VALUE_REPRESENTATION		= "ComplexValueRepresentation";
-	const COMPLEX_VALUE_MODIFICATION		= "ComplexValueModification";
-	const COLLECTION_VALUE_REPRESENTATION	= "CollectionValueRepresentation";
+	const SIMPLE_VALUE_REPRESENTATION 		= SimpleValueRepresentation::class;
+	const COMPLEX_VALUE_REPRESENTATION		= ComplexValueRepresentation::class;
+	const COMPLEX_VALUE_MODIFICATION		= ComplexValueModification::class;
+	const COLLECTION_VALUE_REPRESENTATION	= "CollectionValueRepresentation::class";	// TODO
 	
 	/** @var PluggableRequestBodyDeserializerFactory_Base[] */
 	protected $registrations = array();
@@ -31,7 +38,7 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 */
 	public function registerDeserializer($representation, $contentType, \Closure $factoryFn)
 	{
-		$this->registrations[] = new PluggableRequestBodyDeserializerFactory_Deserializer($representation, $contentType, $factoryFn);
+		$this->registrations[] = new PluggableRequestBodyDeserializerFactory_Deserializer($contentType, $representation, $factoryFn);
 		return $this;
 	}
 	
@@ -57,7 +64,7 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 */
 	public function newSimpleValueRepresentationDeserializer($contentType, SimpleType $simpleType)
 	{
-		return $this->findOrThrow(self::SIMPLE_VALUE_REPRESENTATION, $simpleType);
+		return $this->findOrThrow(self::SIMPLE_VALUE_REPRESENTATION, $contentType, $simpleType);
 	}
 
 	/**
@@ -69,7 +76,7 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 */
 	public function newComplexValueRepresentationDeserializer($contentType, ComplexType $complexType)
 	{
-		return $this->findOrThrow(self::COMPLEX_VALUE_REPRESENTATION, $complexType);
+		return $this->findOrThrow(self::COMPLEX_VALUE_REPRESENTATION, $contentType, $complexType);
 	}
 
 	/**
@@ -81,7 +88,7 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 */
 	public function newComplexValueModificationDeserializer($contentType, ComplexType $complexType)
 	{
-		return $this->findOrThrow(self::COMPLEX_VALUE_MODIFICATION, $complexType);
+		return $this->findOrThrow(self::COMPLEX_VALUE_MODIFICATION, $contentType, $complexType);
 	}
 
 	/* TODO
@@ -102,7 +109,14 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 		{
 			if (!is_null($dsz = $reg->getDeserializerIfMatches($representation, $contentType, $type)))
 			{
-				return $dsz;
+				if ($dsz instanceof $representation)
+				{
+					return $dsz;
+				}
+				else
+				{
+					throw UnexpectedValueException::newInvalidReturnValue($reg, 'getDeserializerIfMatches', $dsz, "Expecting " . $representation);
+				}
 			}
 		}
 		throw new UnsupportedMediaType($contentType);
@@ -173,9 +187,10 @@ final class PluggableRequestBodyDeserializerFactory_Deserializer extends Pluggab
 
 final class PluggableRequestBodyDeserializerFactory_Factory extends PluggableRequestBodyDeserializerFactory_Base
 {
+	/** @var RequestBodyDeserializerFactory */
 	private $factory;
 
-	public function __construct($contentType, $factory)
+	public function __construct($contentType, RequestBodyDeserializerFactory $factory)
 	{
 		parent::__construct($contentType);
 		$this->factory = $factory;
@@ -188,13 +203,13 @@ final class PluggableRequestBodyDeserializerFactory_Factory extends PluggableReq
 			switch ($representation)
 			{
 				case PluggableRequestBodyDeserializerFactory::SIMPLE_VALUE_REPRESENTATION:
-					return $this->factory->newSimpleValueRepresentation($contentType, $type);
+					return $this->factory->newSimpleValueRepresentationDeserializer($contentType, $type);
 				case PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_REPRESENTATION:
-					return $this->factory->newComplexValueRepresentation($contentType, $type);
+					return $this->factory->newComplexValueRepresentationDeserializer($contentType, $type);
 				case PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_MODIFICATION:
-					return $this->factory->newComplexValueModification($contentType, $type);
+					return $this->factory->newComplexValueModificationDeserializer($contentType, $type);
 				case PluggableRequestBodyDeserializerFactory::COLLECTION_VALUE_REPRESENTATION:
-					return $this->factory->newCollectionValueRepresentation($contentType, $type);
+					return $this->factory->newCollectionValueRepresentationDeserializer($contentType, $type);
 			}
 		}
 		return NULL;

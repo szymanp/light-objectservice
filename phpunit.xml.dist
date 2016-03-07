@@ -6,10 +6,12 @@
 	<testsuites>
 		<testsuite name="ObjectService">
 			<directory>test</directory>
+			<directory>test2</directory>
 		</testsuite>
 	</testsuites>
 	<php>
 		<includePath>test</includePath>
+		<includePath>test2</includePath>
 		<!--
 		<var name="test.url" value="http://localhost/light-objectservice-github/test/" />
 		-->
