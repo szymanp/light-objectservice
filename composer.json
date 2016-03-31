@@ -14,6 +14,7 @@
         "szyman/common-exceptions": "dev-master",
         "light/objectaccess": "dev-master",
         "symfony/http-foundation": "@stable",
+        "marc-mabe/php-enum": "@stable",
         "php": ">=5.5.0"
     },
     "require-dev": {

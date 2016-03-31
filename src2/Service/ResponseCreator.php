@@ -10,10 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 interface ResponseCreator
 {
 	/**
-	 * Creates a new Response object,
+	 * Creates a new Response object.
 	 * @param ResolvedResource $requestResource
-	 * @param ResolvedResource $responseResource
+	 * @param RequestResult    $requestResult
 	 * @return Response
 	 */
-	public function newResponse(ResolvedResource $requestResource, ResolvedResource $responseResource);
+	public function newResponse(ResolvedResource $requestResource, RequestResult $requestResult);
 }

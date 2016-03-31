@@ -10,6 +10,9 @@ use Light\ObjectService\Exception\UnsupportedMediaType;
  */
 interface RequestBodyDeserializerFactory
 {
+	// TODO We shouldn't throw an exception, just return NULL.
+	//      For example, Java's HashMap::get() returns NULL if the map doesn't contain the key.
+
 	/**
 	 * Creates a new deserializer for a full representation of a simple value.
 	 * @param string     $contentType
