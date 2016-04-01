@@ -144,6 +144,13 @@ final class RequestComponents_Builder
 	 */
 	public function build()
 	{
+		// Check that mandatory arguments are specified.
+		$mandatory = ['subjectResource', 'requestHandler', 'endpointAddress', 'responseCreator', 'requestHandler'];
+		foreach($mandatory as $name)
+		{
+			if (is_null($this->values->$name)) throw new \LogicException("$name not set");
+		}
+
 		$fn = $this->fn;
 		return $fn($this->values);
 	}
