@@ -31,10 +31,13 @@ final class RequestComponents
 	 */
 	public static function newBuilder()
 	{
-		return new RequestComponents_Builder(function($vals)
+		return new RequestComponents_Builder(function(\stdClass $vals)
 		{
 			$rc = new self;
 			$rc->subjectResource = $vals->subjectResource;
+			$rc->requestHandler  = $vals->requestHandler;
+			$rc->responseCreator = $vals->responseCreator;
+			$rc->endpointAddress = $vals->endpointAddress;
 			return $rc;
 		});
 	}
@@ -47,6 +50,38 @@ final class RequestComponents
 	public function getSubjectResource()
 	{
 		return $this->subjectResource;
+	}
+
+	/**
+	 * @return RequestHandler
+	 */
+	public function getRequestHandler()
+	{
+		return $this->requestHandler;
+	}
+
+	/**
+	 * @return ResponseCreator
+	 */
+	public function getResponseCreator()
+	{
+		return $this->responseCreator;
+	}
+
+	/**
+	 * @return EndpointRelativeAddress
+	 */
+	public function getEndpointAddress()
+	{
+		return $this->endpointAddress;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getDeserializer()
+	{
+		return $this->deserializer;
 	}
 }
 
@@ -63,9 +98,43 @@ final class RequestComponents_Builder
 		$this->fn = $fn;
 	}
 
+	/**
+	 * @param ResolvedResource $subjectResource
+	 * @return $this
+	 */
 	public function subjectResource(ResolvedResource $subjectResource)
 	{
 		$this->values->subjectResource = $subjectResource;
+		return $this;
+	}
+
+	/**
+	 * @param RequestHandler $requestHandler
+	 * @return $this
+	 */
+	public function requestHandler(RequestHandler $requestHandler)
+	{
+		$this->values->requestHandler = $requestHandler;
+		return $this;
+	}
+
+	/**
+	 * @param ResponseCreator $responseCreator
+	 * @return $this
+	 */
+	public function responseCreator(ResponseCreator $responseCreator)
+	{
+		$this->values->responseCreator = $responseCreator;
+		return $this;
+	}
+
+	/**
+	 * @param EndpointRelativeAddress $endpointRelativeAddress
+	 * @return $this
+	 */
+	public function endpointAddress(EndpointRelativeAddress $endpointRelativeAddress)
+	{
+		$this->values->endpointAddress = $endpointRelativeAddress;
 		return $this;
 	}
 	
