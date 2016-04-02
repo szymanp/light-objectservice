@@ -5,24 +5,67 @@ use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
+use Light\ObjectAccess\Resource\ResolvedCollection;
+use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\EndpointRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use Szyman\ObjectService\Configuration\RestRequestReaderConfiguration;
 
 /**
  * Reads a HTTP Request according to REST rules.
  */
 class RestRequestReader
 {
+	/** @var RestRequestReaderConfiguration */
+	private $conf;
 	/** @var EndpointRegistry */
 	private $endpointRegistry;
 
+	public function __construct(EndpointRegistry $endpointRegistry, RestRequestReaderConfiguration $conf)
+	{
+		$this->conf = $conf;
+		$this->endpointRegistry = $endpointRegistry;
+	}
+
 	public function readRequest(Request $request)
 	{
+		$result = RequestComponents::newBuilder();
+
+		// Determine the endpoint-relative address of the resource at request-uri.
 		$address = $this->getResourceAddress($request);
-		
+		$result->endpointAddress($address);
+
+		// Determine the subject resource and the resource at request-uri.
+		$resources = $this->determineRequestResources($request, $address);
+		$result->subjectResource($resources->subjectResource);
+		if (!is_null($resources->requestResource))
+		{
+			$result->requestUriResource($resources->requestResource);
+		}
+
+		// Determine the request body type.
+		// Note that the result from RequestBodyTypeMap could be NULL.
+		// In this case we will have to determine the type later based on other factors.
+		$contentType = $request->headers->get('CONTENT_TYPE');
+		$requestBodyType = empty($contentType) ?
+			RequestBodyType::get(RequestBodyType::NONE) :
+			$this->conf->getRequestBodyTypeMap()->getRequestBodyType($contentType);
+
+		if (is_null($requestBodyType))
+		{
+			$requestBodyType = $this->getDefaultRequestBodyType($request->getMethod());
+		}
+
+		// Determine the request type
+		$requestType = $this->determineRequestType($request->getMethod(), $requestBodyType, $resources->requestResource);
+
+		// Instantiate the request handler and response creator.
+		$result->requestHandler($this->conf->getRequestHandlerFactory()->newRequestHandler($requestType));
+		$result->responseCreator($this->conf->getResponseCreatorFactory()->newResponseCreator($request, $requestType, $resources->requestResource->getType()));
+
 		// GET: All types of resources (Simple, Complex, Collections) can be read (GET).
 		// PUT: All types or resources can be PUT:
 		// - for Simple values, PUT sets a new value
@@ -104,7 +147,11 @@ class RestRequestReader
 				{
 					// This exception indicates that the path in the URL didn't match the type structure of the resources.
 					// For example, an attempt to access an element of a resource that was not a collection was made.
-					throw new NotFound($request->getUri(), $e);
+					throw new NotFound(
+						$request->getUri(),
+						"Static type resolution failed",
+						0,
+						$e);
 				}
 
 				break;
@@ -124,6 +171,8 @@ class RestRequestReader
 			default:
 				throw new MethodNotAllowed();
 		}
+
+		return $result->build();
 	}
 
 	/**
@@ -171,6 +220,12 @@ class RestRequestReader
 		return $address;
 	}
 
+	/**
+	 * Creates a new RelativeAddressReader with the given address.
+	 * @param EndpointRelativeAddress $address
+	 * @return RelativeAddressReader
+	 * @throws NotFound
+	 */
 	private function newRelativeAddressReader(EndpointRelativeAddress $address)
 	{
 		$relativeAddress = $address->getEndpoint()->findResource($address->getPathElements());
@@ -181,5 +236,174 @@ class RestRequestReader
 		}
 
 		return new RelativeAddressReader($relativeAddress);
+	}
+
+	/**
+	 * Finds the subject resource and request-uri resource of this request.
+	 *
+	 * @param Request                 $request
+	 * @param EndpointRelativeAddress $address
+	 * @return \stdClass
+	 * @throws MethodNotAllowed
+	 * @throws NotFound
+	 */
+	private function determineRequestResources(Request $request, EndpointRelativeAddress $address)
+	{
+		$relativeAddressReader = $this->newRelativeAddressReader($address);
+
+		$result = new \stdClass;
+
+		try
+		{
+			// Find the resource specified in the URL.
+			$resource = $relativeAddressReader->read();
+
+			switch($request->getMethod())
+			{
+				// For these methods, the subject resource is always identified by the request-uri.
+				case 'GET':
+				case 'PATCH':
+				case 'DELETE':
+				case 'POST':
+					if (is_null($resource))
+					{
+						// One of the resources in the URL path chain resolved to a NULL.
+						throw new NotFound($request->getUri());
+					}
+
+					$result->subjectResource = $resource;
+					$result->requestResource = $resource;
+					return $result;
+
+				// For the PUT method, the subject resource is always a collection.
+				case 'PUT':
+					if (is_null($resource))
+					{
+						$result->requestResource = null;
+						$result->subjectResource = $relativeAddressReader->getLastResolutionTrace()->last()->getResource();
+
+						if ($result->subjectResource instanceof ResolvedCollection)
+						{
+							return $result;
+						}
+						else
+						{
+							throw new MethodNotAllowed("Parent of requested resource is not a collection");
+						}
+					}
+					elseif ($resource instanceof ResolvedCollection)
+					{
+						$result->subjectResource = $resource;
+						$result->requestResource = $resource;
+						return $result;
+					}
+					else // Resource is a value
+					{
+						$result->requestResource = $resource;
+						$result->subjectResource = $relativeAddressReader->getLastResolutionTrace()->last()->getResource();
+
+						if ($result->subjectResource instanceof ResolvedCollection)
+						{
+							return $result;
+						}
+						else
+						{
+							throw new MethodNotAllowed("Parent of requested resource is not a collection");
+						}
+					}
+			}
+		}
+		catch (AddressResolutionException $e)
+		{
+			// This exception indicates that the path in the URL didn't match the type structure of the resources.
+			// For example, an attempt to access an element of a resource that was not a collection was made.
+			throw new NotFound(
+				$request->getUri(),
+				"Static type resolution failed",
+				0,
+				$e);
+		}
+	}
+
+	/**
+	 * Returns the default request body type corresponding to the HTTP method.
+	 * @param string $method	A HTTP method.
+	 * @return RequestBodyType
+	 * @throws MethodNotAllowed
+	 */
+	private function getDefaultRequestBodyType($method)
+	{
+		switch($method)
+		{
+			case 'GET':
+				return RequestBodyType::get(RequestBodyType::NONE);
+
+			case 'PUT':
+				return RequestBodyType::get(RequestBodyType::REPRESENTATION);
+
+			case 'PATCH':
+				return RequestBodyType::get(RequestBodyType::MODIFICATION);
+
+			case 'DELETE':
+				return RequestBodyType::get(RequestBodyType::SELECTION);
+
+			case 'POST':
+				return RequestBodyType::get(RequestBodyType::REPRESENTATION);
+
+			default:
+				throw new MethodNotAllowed("Cannot determine default body type for method " . $method);
+
+		}
+	}
+
+	/**
+	 * Determines the type of the requested action.
+	 *
+	 * @param string           $method
+	 * @param RequestBodyType  $requestBodyType
+	 * @param ResolvedResource $requestUriResource
+	 * @return RequestType
+	 * @throws MethodNotAllowed
+	 */
+	private function determineRequestType($method, RequestBodyType $requestBodyType, ResolvedResource $requestUriResource = null)
+	{
+		switch($method)
+		{
+			case 'GET':
+				assert($requestBodyType->is(RequestBodyType::NONE));
+				return RequestType::get(RequestType::READ);
+
+			case 'PUT':
+				assert($requestBodyType->is(RequestBodyType::REPRESENTATION));
+				if (is_null($requestUriResource))
+				{
+					return RequestType::get(RequestType::CREATE);
+				}
+				else
+				{
+					return RequestType::get(RequestType::REPLACE);
+				}
+
+			case 'PATCH':
+				assert($requestBodyType->is(RequestBodyType::MODIFICATION));
+				return RequestType::get(RequestType::MODIFY);
+
+			case 'DELETE':
+				return RequestType::get(RequestType::DELETE);
+
+			case 'POST':
+				if ($requestBodyType->is(RequestBodyType::ACTION))
+				{
+					return RequestType::get(RequestType::ACTION);
+				}
+				else
+				{
+					assert($requestBodyType->is(RequestBodyType::REPRESENTATION));
+					return RequestType::get(RequestType::CREATE);
+				}
+
+			default:
+				throw new MethodNotAllowed();
+		}
 	}
 }
