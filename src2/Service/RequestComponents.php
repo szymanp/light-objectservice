@@ -10,7 +10,7 @@ use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 final class RequestComponents
 {
 	/** @var ResolvedResource */
-	private $subjectResource;
+	private $subjectResource, $requestUriResource;
 	/** @var RequestHandler */
 	private $requestHandler;
 	/** @var ResponseCreator */
@@ -34,10 +34,11 @@ final class RequestComponents
 		return new RequestComponents_Builder(function(\stdClass $vals)
 		{
 			$rc = new self;
-			$rc->subjectResource = $vals->subjectResource;
-			$rc->requestHandler  = $vals->requestHandler;
-			$rc->responseCreator = $vals->responseCreator;
-			$rc->endpointAddress = $vals->endpointAddress;
+			$rc->subjectResource 	= $vals->subjectResource;
+			$rc->requestUriResource = $vals->requestUriResource;
+			$rc->requestHandler  	= $vals->requestHandler;
+			$rc->responseCreator 	= $vals->responseCreator;
+			$rc->endpointAddress 	= $vals->endpointAddress;
 			return $rc;
 		});
 	}
@@ -50,6 +51,15 @@ final class RequestComponents
 	public function getSubjectResource()
 	{
 		return $this->subjectResource;
+	}
+
+	/**
+	 * Returns the resource that corresponds to the request-uri.
+	 * @return ResolvedResource	A resource, if the request-uri identified an existing resource; otherwise, NULL.
+	 */
+	public function getRequestUriResource()
+	{
+		return $this->requestUriResource;
 	}
 
 	/**
@@ -69,6 +79,8 @@ final class RequestComponents
 	}
 
 	/**
+	 * Returns the endpoint-relative address of the resource at the request-uri.
+	 * This address will usually correspond to the subject resource, but in some cases may be different.
 	 * @return EndpointRelativeAddress
 	 */
 	public function getEndpointAddress()
@@ -105,6 +117,16 @@ final class RequestComponents_Builder
 	public function subjectResource(ResolvedResource $subjectResource)
 	{
 		$this->values->subjectResource = $subjectResource;
+		return $this;
+	}
+
+	/**
+	 * @param ResolvedResource $requestUriResource
+	 * @return $this
+	 */
+	public function requestUriResource(ResolvedResource $requestUriResource)
+	{
+		$this->values->requestUriResource = $requestUriResource;
 		return $this;
 	}
 
