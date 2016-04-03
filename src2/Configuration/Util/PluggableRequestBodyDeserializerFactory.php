@@ -2,43 +2,30 @@
 namespace Szyman\ObjectService\Configuration\Util;
 
 use Light\ObjectAccess\Type\Type;
-use Light\ObjectAccess\Type\SimpleType;
-use Light\ObjectAccess\Type\ComplexType;
-use Light\ObjectAccess\Type\CollectionType;
-use Light\ObjectService\Exception\UnsupportedMediaType;
 use Szyman\Exception\InvalidArgumentException;
 use Szyman\Exception\UnexpectedValueException;
-use Szyman\ObjectService\Service\ComplexValueModification;
-use Szyman\ObjectService\Service\ComplexValueModificationDeserializer;
-use Szyman\ObjectService\Service\ComplexValueRepresentation;
-use Szyman\ObjectService\Service\ComplexValueRepresentationDeserializer;
+use Szyman\ObjectService\Service\RequestBodyDeserializer;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
-use Szyman\ObjectService\Service\SimpleValueRepresentation;
-use Szyman\ObjectService\Service\SimpleValueRepresentationDeserializer;
+use Szyman\ObjectService\Service\RequestBodyDeserializerType;
 
 /**
  * A <kbd>RequestBodyDeserializerFactory</kbd> that can route request to other factories based on content-type.
  */
 class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializerFactory
 {
-	const SIMPLE_VALUE_REPRESENTATION 		= SimpleValueRepresentation::class;
-	const COMPLEX_VALUE_REPRESENTATION		= ComplexValueRepresentation::class;
-	const COMPLEX_VALUE_MODIFICATION		= ComplexValueModification::class;
-	const COLLECTION_VALUE_REPRESENTATION	= "CollectionValueRepresentation::class";	// TODO
-	
 	/** @var PluggableRequestBodyDeserializerFactory_Base[] */
 	protected $registrations = array();
 
 	/**
 	 * Register a new deserializer factory closure.
-	 * @param string	$representation	One of the representation constants defined on this class.
-	 * @param string	$contentType	MIME content-type supported by the deserializer.
-	 * @param \Closure	$factoryFn		A function taking a Type object and returning an appropriate deserializer instance.
+	 * @param RequestBodyDeserializerType $deserializerType
+	 * @param string					  $contentType		MIME content-type supported by the deserializer.
+	 * @param \Closure					  $factoryFn		A function taking a Type object and returning an appropriate deserializer instance.
 	 * @return $this
 	 */
-	public function registerDeserializer($representation, $contentType, \Closure $factoryFn)
+	public function registerDeserializer(RequestBodyDeserializerType $deserializerType, $contentType, \Closure $factoryFn)
 	{
-		$this->registrations[] = new PluggableRequestBodyDeserializerFactory_Deserializer($contentType, $representation, $factoryFn);
+		$this->registrations[] = new PluggableRequestBodyDeserializerFactory_Deserializer($contentType, $deserializerType, $factoryFn);
 		return $this;
 	}
 	
@@ -54,72 +41,33 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 		$this->registrations[] = new PluggableRequestBodyDeserializerFactory_Factory($contentType, $factory);
 		return $this;
 	}
-	
-	/**
-	 * Creates a new deserializer for a full representation of a simple value.
-	 * @param string     $contentType
-	 * @param SimpleType $simpleType
-	 * @throws UnsupportedMediaType	If the factory cannot handle the specified content-type.
-	 * @return SimpleValueRepresentationDeserializer
-	 */
-	public function newSimpleValueRepresentationDeserializer($contentType, SimpleType $simpleType)
-	{
-		return $this->findOrThrow(self::SIMPLE_VALUE_REPRESENTATION, $contentType, $simpleType);
-	}
 
 	/**
-	 * Creates a new deserializer for a full representation of an object.
-	 * @param string      $contentType
-	 * @param ComplexType $complexType
-	 * @throws UnsupportedMediaType	If the factory cannot handle the specified content-type.
-	 * @return ComplexValueRepresentationDeserializer
+	 * Creates a new deserializer for the specified body type and resource type.
+	 * @param RequestBodyDeserializerType $deserializerType
+	 * @param string         			  $contentType
+	 * @param Type           			  $type
+	 * @return RequestBodyDeserializer    A deserializer, if this factory supports creating deserializers matching
+	 *                                    the specified parameters; otherwise, NULL.
 	 */
-	public function newComplexValueRepresentationDeserializer($contentType, ComplexType $complexType)
-	{
-		return $this->findOrThrow(self::COMPLEX_VALUE_REPRESENTATION, $contentType, $complexType);
-	}
-
-	/**
-	 * Creates a new deserializer for a partial representation of an object.
-	 * @param string      $contentType
-	 * @param ComplexType $complexType
-	 * @throws UnsupportedMediaType	If the factory cannot handle the specified content-type.
-	 * @return ComplexValueModificationDeserializer
-	 */
-	public function newComplexValueModificationDeserializer($contentType, ComplexType $complexType)
-	{
-		return $this->findOrThrow(self::COMPLEX_VALUE_MODIFICATION, $contentType, $complexType);
-	}
-
-	/* TODO
-	public function newCollectionValueRepresentationDeserializer($contentType, CollectionType $type);
-
-	public function newCollectionValueModificationDeserializer($contentType, CollectionType $type);
-
-	public function newCollectionElementSelectionDeserializer($contentType, CollectionType $type);
-
-	public function newComplexValueActionDeserializer($contentType, ComplexType $type);
-
-	public function newCollectionxValueActionDeserializer($contentType, CollectionType $type);
-	*/
-
-	protected function findOrThrow($representation, $contentType, Type $type)
+	public function newRequestBodyDeserializer(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
 	{
 		foreach($this->registrations as $reg)
 		{
-			if (!is_null($dsz = $reg->getDeserializerIfMatches($representation, $contentType, $type)))
+			if (!is_null($dsz = $reg->getDeserializerIfMatches($deserializerType, $contentType, $type)))
 			{
-				if ($dsz instanceof $representation)
+				if ($dsz instanceof RequestBodyDeserializer)
 				{
 					return $dsz;
 				}
 				else
 				{
-					throw UnexpectedValueException::newInvalidReturnValue($reg, 'getDeserializerIfMatches', $dsz, "Expecting " . $representation);
+					throw UnexpectedValueException::newInvalidReturnValue($reg, 'getDeserializerIfMatches', $dsz, "Expecting " . RequestBodyDeserializer::class);
 				}
+
 			}
 		}
-		throw new UnsupportedMediaType($contentType);
+		return null;
 	}
 }
 
@@ -148,34 +96,24 @@ abstract class PluggableRequestBodyDeserializerFactory_Base
 		return strtolower($this->contentType) === strtolower($contentType);
 	}
 
-	abstract public function getDeserializerIfMatches($representation, $contentType, Type $type);
+	abstract public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type);
 }
 
 final class PluggableRequestBodyDeserializerFactory_Deserializer extends PluggableRequestBodyDeserializerFactory_Base
 {
-	private $representation;
+	private $deserializerType;
 	private $factoryFn;
 	
-	private static $representations = array(
-		PluggableRequestBodyDeserializerFactory::SIMPLE_VALUE_REPRESENTATION,
-		PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_REPRESENTATION,
-		PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_MODIFICATION,
-		PluggableRequestBodyDeserializerFactory::COLLECTION_VALUE_REPRESENTATION);
-
-	public function __construct($contentType, $representation, \Closure $factoryFn)
+	public function __construct($contentType, RequestBodyDeserializerType $deserializerType, \Closure $factoryFn)
 	{
 		parent::__construct($contentType);
-		if (!in_array($representation, self::$representations))
-		{
-			throw InvalidArgumentException::newInvalidValue('$representation', $representation);
-		}
-		$this->representation = $representation;
+		$this->deserializerType = $deserializerType;
 		$this->factoryFn = $factoryFn;
 	}
 	
-	public function getDeserializerIfMatches($representation, $contentType, Type $type)
+	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
 	{
-		if ($representation === $this->representation
+		if ($deserializerType === $this->deserializerType
 			&& $this->contentTypeMatches($contentType))
 		{
 			$fn = $this->factoryFn;
@@ -196,21 +134,11 @@ final class PluggableRequestBodyDeserializerFactory_Factory extends PluggableReq
 		$this->factory = $factory;
 	}
 
-	public function getDeserializerIfMatches($representation, $contentType, Type $type)
+	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
 	{
 		if ($this->contentTypeMatches($contentType))
 		{
-			switch ($representation)
-			{
-				case PluggableRequestBodyDeserializerFactory::SIMPLE_VALUE_REPRESENTATION:
-					return $this->factory->newSimpleValueRepresentationDeserializer($contentType, $type);
-				case PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_REPRESENTATION:
-					return $this->factory->newComplexValueRepresentationDeserializer($contentType, $type);
-				case PluggableRequestBodyDeserializerFactory::COMPLEX_VALUE_MODIFICATION:
-					return $this->factory->newComplexValueModificationDeserializer($contentType, $type);
-				case PluggableRequestBodyDeserializerFactory::COLLECTION_VALUE_REPRESENTATION:
-					return $this->factory->newCollectionValueRepresentationDeserializer($contentType, $type);
-			}
+			return $this->factory->newRequestBodyDeserializer($deserializerType, $contentType, $type);
 		}
 		return NULL;
 	}

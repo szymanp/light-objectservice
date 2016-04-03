@@ -6,7 +6,7 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 /**
  * A class implementing this interface replaces an existing complex value with a new one.
  */
-interface ComplexValueRepresentation
+interface ComplexValueRepresentation extends DeserializedBody
 {
 	// TODO: What exceptions does the method throw?
 

@@ -17,7 +17,7 @@ final class RequestComponents
 	private $responseCreator;
 	/** @var EndpointRelativeAddress */
 	private $endpointAddress;
-	/** @var */
+	/** @var RequestBodyDeserializer */
 	private $deserializer;
 	
 	private function __construct()
@@ -39,6 +39,7 @@ final class RequestComponents
 			$rc->requestHandler  	= $vals->requestHandler;
 			$rc->responseCreator 	= $vals->responseCreator;
 			$rc->endpointAddress 	= $vals->endpointAddress;
+			$rc->deserializer		= $vals->deserializer;
 			return $rc;
 		});
 	}
@@ -89,7 +90,8 @@ final class RequestComponents
 	}
 
 	/**
-	 * @return mixed
+	 * Returns the deserializer that is compatible with the format of the request-body.
+	 * @return RequestBodyDeserializer	A deserializer, if the request-body is set; otherwise, NULL.
 	 */
 	public function getDeserializer()
 	{
@@ -157,6 +159,16 @@ final class RequestComponents_Builder
 	public function endpointAddress(EndpointRelativeAddress $endpointRelativeAddress)
 	{
 		$this->values->endpointAddress = $endpointRelativeAddress;
+		return $this;
+	}
+
+	/**
+	 * @param RequestBodyDeserializer $requestBodyDeserializer
+	 * @return $this
+	 */
+	public function deserializer(RequestBodyDeserializer $requestBodyDeserializer)
+	{
+		$this->values->deserializer = $requestBodyDeserializer;
 		return $this;
 	}
 	

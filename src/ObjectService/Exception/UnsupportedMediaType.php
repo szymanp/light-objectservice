@@ -7,10 +7,11 @@ class UnsupportedMediaType extends \Exception implements HttpExceptionInformatio
 {
 	/**
 	 * @param string $mediaType	The media type that was requested.
+	 * @param string $message	An optional message explaining the context for the use of this the media type.
 	 */
-	public function __construct($mediaType = "")
+	public function __construct($mediaType = "", $message = "")
 	{
-		parent::__construct($mediaType);
+		parent::__construct($mediaType . (empty($message) ? "" : " - " . $message));
 	}
 
 	public function getHttpStatusCode()

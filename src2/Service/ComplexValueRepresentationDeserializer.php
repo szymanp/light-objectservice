@@ -1,7 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
-interface ComplexValueRepresentationDeserializer
+interface ComplexValueRepresentationDeserializer extends RequestBodyDeserializer
 {
 	/**
 	 * Deserializes a complex value.

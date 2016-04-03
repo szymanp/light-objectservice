@@ -4,7 +4,7 @@ namespace Szyman\ObjectService\Service;
 /**
  * An interface for classes that can deserialize simple values.
  */
-interface SimpleValueRepresentationDeserializer
+interface SimpleValueRepresentationDeserializer extends RequestBodyDeserializer
 {
 	/**
 	 * Deserializes a simple value.

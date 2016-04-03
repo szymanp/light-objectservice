@@ -9,6 +9,7 @@ use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
+use Light\ObjectService\Exception\UnsupportedMediaType;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\EndpointRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,6 +62,21 @@ class RestRequestReader
 
 		// Determine the request type
 		$requestType = $this->determineRequestType($request->getMethod(), $requestBodyType, $resources->requestResource);
+
+		// Instantiate the deserializer
+		if (!$requestBodyType->is(RequestBodyType::NONE))
+		{
+			$deserializer = $this->conf->getRequestBodyDeserializerFactory()->newRequestBodyDeserializer(
+				$deserializerType = RequestBodyDeserializerType::fromBodyAndResourceType($requestBodyType, $resources->subjectResource->getType()),
+				$contentType,
+				$resources->subjectResource->getType()
+			);
+			if (is_null($deserializer))
+			{
+				throw new UnsupportedMediaType($contentType, "No deserializer of type " . $deserializerType->getName() . " found");
+			}
+			$result->deserializer($deserializer);
+		}
 
 		// Instantiate the request handler and response creator.
 		$result->requestHandler($this->conf->getRequestHandlerFactory()->newRequestHandler($requestType));
@@ -311,6 +327,8 @@ class RestRequestReader
 							throw new MethodNotAllowed("Parent of requested resource is not a collection");
 						}
 					}
+				default:
+					throw new \LogicException($request->getMethod());
 			}
 		}
 		catch (AddressResolutionException $e)
