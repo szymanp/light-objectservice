@@ -17,6 +17,62 @@ use Szyman\ObjectService\Configuration\RestRequestReaderConfiguration;
 
 /**
  * Reads a HTTP Request according to REST rules.
+ *
+ * Below is the general explanation of the handling of requests.
+ * Not all of the functionality described depends on this class alone.
+ *
+ * GET: 
+ * All types of resources (Simple, Complex, Collections) can be read.
+ * The resource to be read is identified by the URL. The resource MUST exist.
+ * There is no request body, so the body content-type does not matter.
+ *
+ * PUT:
+ * All types or resources can be PUT:
+ * - for Simple values, PUT sets a new value
+ * - for Complex values, PUT sets all specified fields while those not specified are set to default/null values
+ * - for Collections, PUT removes all elements from the collection and adds only the specified ones
+ *
+ * This method generally creates or replaces the resource specified at URL. The resource MAY NOT exist.
+ * The body content-type MUST be in a "update" format.
+ * The underlying resource may be an object or a collection.
+ *
+ * PATCH:
+ * Only Complex and Collection resources can be patched.
+ * - Patching Simple values would require some specialized protocol on how to modify them.
+ * - For Complex values, PATCH sets only the fields specified in the request
+ * - For Collections, PATCH specifies which elements to remove and which to add
+ *
+ * The resource to be patched is identified by the request-uri. The resource MUST exist.
+ * The body content-type MUST be in a "update" format.
+ * The underlying resource may be an object or a collection.
+ *
+ * DELETE:
+ * Only Complex and Collection resources can be deleted.
+ * - For Complex values, DELETE removes the object from its underlying collection.
+ *   Depending on the underlying implementation, this might mean that the object is physically deleted.
+ *   The API does not specify the behavior.
+ * - For Collections, DELETE removes the elements from the collection.
+ *   The collection itself cannot be deleted.
+ *   The body might contain the scope of elements to be deleted.
+ *
+ * This method deletes the resource at the specified URL. The resource MUST exist.
+ * The body is optional. It can contain extra arguments for the deletion,
+ * such as the scope of elements to be deleted from a collection.
+ *
+ * POST:
+ * Only Complex and Collection resources can be used with POST.
+ * - For Complex values, POST is used to perform an action on the resource.
+ * - For Collections, POST can either:
+ *   - Append a new element to the collection and return the URL of the added element.
+ *     The body of the request is the specification of the new element.
+ *   - Perform an action on the collection.
+ *     The body of the request is the specification of the action.
+ *
+ * Post can execute one of the following actions:
+ * - If content-type of the body is in "update" format, then it adds a resource to a collection.
+ *   The resource identified by the URL MUST exist and MUST be a collection.
+ * - If content-type of the body is in an "action" format, then the specified action is executed.
+ *	 The underlying resource MUST exist and may be either an object or a collection.
  */
 class RestRequestReader
 {
@@ -81,112 +137,6 @@ class RestRequestReader
 		// Instantiate the request handler and response creator.
 		$result->requestHandler($this->conf->getRequestHandlerFactory()->newRequestHandler($requestType));
 		$result->responseCreator($this->conf->getResponseCreatorFactory()->newResponseCreator($request, $requestType, $resources->requestResource->getType()));
-
-		// GET: All types of resources (Simple, Complex, Collections) can be read (GET).
-		// PUT: All types or resources can be PUT:
-		// - for Simple values, PUT sets a new value
-		// - for Complex values, PUT sets all specified fields while unspecified are set to default/null values
-		// - for Collections, PUT removes all elements from the collection and adds only the specified ones
-		// PATCH: Only Complex and Collection resources can be patched.
-		// - Patching Simple values would require some specialized protocol on how to modify them.
-		// - For Complex values, PATCH sets only the fields specified in the request
-		// - For Collections, PATCH specifies which elements to remove and which to add
-		// DELETE: Only Complex and Collection resources can be deleted.
-		// - For Complex values, DELETE removes the object from its underlying collection.
-		//   Depending on the underlying implementation, this might mean that the object is physically deleted.
-		//   The API does not specify the behavior.
-		// - For Collections, DELETE removes the elements from the collection.
-		//   The collection itself cannot be deleted.
-		//   The body might contain the scope of elements to be deleted.
-		// POST: Only Complex and Collection resources can be used with POST.
-		// - For Complex values, POST is used to perform an action on the resource.
-		// - For Collections, POST can either:
-		//   - Append a new element to the collection and return the URL of the added element.
-		//     The body of the request is the specification of the new element.
-		//   - Perform an action on the collection.
-		//     The body of the request is the specification of the action.
-
-		switch($request->getMethod())
-		{
-			case 'GET':
-				// Read the resource at URL. The resource MUST exist.
-				// There is no body, so the body content-type does not matter.
-
-				break;
-			case 'PUT':
-				// Create or replace a resource specified at URL. The resource MAY NOT exist.
-				// The body content-type MUST be in a "update" format.
-				// The underlying resource may be an object or a collection.
-				break;
-			case 'PATCH':
-				// Update a resource at the specified URL. The resource MUST exist.
-				// The body content-type MUST be in a "update" format.
-				// The underlying resource may be an object or a collection.
-
-				// Procedure:
-				// Find the EndpointRelativeAddress for the URL.
-				// Read the RelativeAddress corresponding to this EndpointRelativeAddress.
-				// (The RelativeAddress contains a published resource and the path to the target resource).
-				// Resolve the RelativeAddress to the target resource using RelativeAddressReader.
-				// The resolution must be successful, i.e. not return a NULL.
-
-				// If the resource is a collection, then parse the request-body using a Update Collection format parser.
-				// If the resource is a resource, then parse the request-body using a Update Object format parser.
-
-				// The parsing returns an Operation object.
-				// Execute the Operation object on the resource.
-
-				// Find the
-
-				$relativeAddressReader = $this->newRelativeAddressReader($this->getResourceAddress($request));
-				try
-				{
-					// Find the resource specified in the URL.
-					$resource = $relativeAddressReader->read();
-
-					if (is_null($resource))
-					{
-						// One of the resources in the URL path chain resolved to a NULL.
-						throw new NotFound($request->getUri());
-					}
-
-					// TODO In addition to determining the resource, the code in this class should
-					//      determine the action to be taken, i.e. choose a general deserializer for the format
-					//      (whether this should be an update-object-format, update-collection-format, action-format, etc.)
-
-					// TODO: Maybe the entire code should be extracted to a method?
-					//       Note that for the PUT method the target resource may not exist, then we should
-					//       rely on the penultimate resource in the path.
-					return $resource;
-				}
-				catch (AddressResolutionException $e)
-				{
-					// This exception indicates that the path in the URL didn't match the type structure of the resources.
-					// For example, an attempt to access an element of a resource that was not a collection was made.
-					throw new NotFound(
-						$request->getUri(),
-						"Static type resolution failed",
-						0,
-						$e);
-				}
-
-				break;
-			case 'DELETE':
-				// Delete the resource at the specified URL. The resource MUST exist.
-				// The body is optional. It can contain extra arguments for the deletion,
-				// such as the scope of elements to be deleted from a collection.
-				// What should be the content-type of the body?
-				break;
-			case 'POST':
-				// Post can execute one of the following actions:
-				// - If content-type of the body is in "update" format, then it adds a resource to a collection.
-				//   The resource identified by the URL MUST exist and MUST be a collection.
-				// - If content-type of the body is in an "action" format, then the specified action is executed.
-				//	 The underlying resource MUST exist and may be either an object or a collection.
-				break;
-			default:
-				throw new MethodNotAllowed();
-		}
 
 		return $result->build();
 	}
