@@ -238,8 +238,14 @@ class RestRequestReader
 				case 'PUT':
 					if (is_null($resource))
 					{
+						$trace = $relativeAddressReader->getLastResolutionTrace();
+						if (count($trace) == 0)
+						{
+							throw new MethodNotAllowed("Requested resource has no parent collection");
+						}
+
 						$result->requestResource = null;
-						$result->subjectResource = $relativeAddressReader->getLastResolutionTrace()->last()->getResource();
+						$result->subjectResource = $trace->last()->getResource();
 
 						if ($result->subjectResource instanceof ResolvedCollection)
 						{
@@ -256,10 +262,16 @@ class RestRequestReader
 						$result->requestResource = $resource;
 						return $result;
 					}
-					else // Resource is a value
+					else // Resource at URL is a value
 					{
+						$trace = $relativeAddressReader->getLastResolutionTrace();
+						if (count($trace) < 2)
+						{
+							throw new MethodNotAllowed("Requested resource has no parent collection");
+						}
+
 						$result->requestResource = $resource;
-						$result->subjectResource = $relativeAddressReader->getLastResolutionTrace()->last()->getResource();
+						$result->subjectResource = $trace->last()->previous()->getResource();
 
 						if ($result->subjectResource instanceof ResolvedCollection)
 						{

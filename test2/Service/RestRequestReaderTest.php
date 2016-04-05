@@ -55,6 +55,16 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($this->database->getAuthor(1010), $result->getSubjectResource()->getValue());
 	}
 
+	public function testPutRequest()
+	{
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4040", 'PUT');
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+
+	}
+
 	/**
 	 * @expectedException		 Light\ObjectService\Exception\NotFound
 	 * @expectedExceptionMessage No endpoint matching this address was found
