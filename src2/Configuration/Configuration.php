@@ -1,14 +1,21 @@
 <?php
 namespace Szyman\ObjectService\Configuration;
+use Light\ObjectService\Service\EndpointRegistry;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
 
 /**
- * Configuration for the RestRequestReader.
+ * Configuration settings.
  */
-interface RestRequestReaderConfiguration
+interface Configuration
 {
+	/**
+	 * Returns the endpoint registry.
+	 * @return EndpointRegistry
+	 */
+	public function getEndpointRegistry();
+
 	/**
 	 * Returns a RequestBodyTypeMap to be used with the RestRequestReader.
 	 * @return RequestBodyTypeMap

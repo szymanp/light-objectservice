@@ -13,7 +13,7 @@ use Light\ObjectService\Exception\UnsupportedMediaType;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Light\ObjectService\Service\EndpointRegistry;
 use Symfony\Component\HttpFoundation\Request;
-use Szyman\ObjectService\Configuration\RestRequestReaderConfiguration;
+use Szyman\ObjectService\Configuration\Configuration;
 
 /**
  * Reads a HTTP Request according to REST rules.
@@ -76,15 +76,12 @@ use Szyman\ObjectService\Configuration\RestRequestReaderConfiguration;
  */
 class RestRequestReader
 {
-	/** @var RestRequestReaderConfiguration */
+	/** @var Configuration */
 	private $conf;
-	/** @var EndpointRegistry */
-	private $endpointRegistry;
 
-	public function __construct(EndpointRegistry $endpointRegistry, RestRequestReaderConfiguration $conf)
+	public function __construct(Configuration $conf)
 	{
 		$this->conf = $conf;
-		$this->endpointRegistry = $endpointRegistry;
 	}
 
 	public function readRequest(Request $request)
@@ -165,7 +162,7 @@ class RestRequestReader
 	 */
 	private function getResourceAddress(Request $request)
 	{
-		$address = $this->endpointRegistry->getResourceAddress($this->getUriWithoutQuery($request));
+		$address = $this->conf->getEndpointRegistry->getResourceAddress($this->getUriWithoutQuery($request));
 
 		if (is_null($address))
 		{
