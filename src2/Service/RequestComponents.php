@@ -11,10 +11,8 @@ final class RequestComponents
 {
 	/** @var ResolvedResource */
 	private $subjectResource, $requestUriResource;
-	/** @var RequestHandler */
-	private $requestHandler;
-	/** @var ResponseCreator */
-	private $responseCreator;
+	/** @var RequestType */
+	private $requestType;
 	/** @var EndpointRelativeAddress */
 	private $endpointAddress;
 	/** @var RequestBodyDeserializer */
@@ -36,8 +34,7 @@ final class RequestComponents
 			$rc = new self;
 			$rc->subjectResource 	= $vals->subjectResource;
 			$rc->requestUriResource = $vals->requestUriResource;
-			$rc->requestHandler  	= $vals->requestHandler;
-			$rc->responseCreator 	= $vals->responseCreator;
+			$rc->requestType		= $vals->requestType;
 			$rc->endpointAddress 	= $vals->endpointAddress;
 			$rc->deserializer		= $vals->deserializer;
 			return $rc;
@@ -64,19 +61,12 @@ final class RequestComponents
 	}
 
 	/**
-	 * @return RequestHandler
+	 * Returns the type of this request.
+	 * @return RequestType
 	 */
-	public function getRequestHandler()
+	public function getRequestType()
 	{
-		return $this->requestHandler;
-	}
-
-	/**
-	 * @return ResponseCreator
-	 */
-	public function getResponseCreator()
-	{
-		return $this->responseCreator;
+		return $this->requestType;
 	}
 
 	/**
@@ -133,22 +123,12 @@ final class RequestComponents_Builder
 	}
 
 	/**
-	 * @param RequestHandler $requestHandler
+	 * @param RequestType $requestType
 	 * @return $this
 	 */
-	public function requestHandler(RequestHandler $requestHandler)
+	public function requestType(RequestType $requestType)
 	{
-		$this->values->requestHandler = $requestHandler;
-		return $this;
-	}
-
-	/**
-	 * @param ResponseCreator $responseCreator
-	 * @return $this
-	 */
-	public function responseCreator(ResponseCreator $responseCreator)
-	{
-		$this->values->responseCreator = $responseCreator;
+		$this->values->requestType = $requestType;
 		return $this;
 	}
 
@@ -179,7 +159,7 @@ final class RequestComponents_Builder
 	public function build()
 	{
 		// Check that mandatory arguments are specified.
-		$mandatory = ['subjectResource', 'requestHandler', 'endpointAddress', 'responseCreator', 'requestHandler'];
+		$mandatory = ['subjectResource', 'endpointAddress', 'requestType'];
 		foreach($mandatory as $name)
 		{
 			if (is_null($this->values->$name)) throw new \LogicException("$name not set");

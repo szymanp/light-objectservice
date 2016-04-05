@@ -118,6 +118,7 @@ class RestRequestReader
 
 		// Determine the request type
 		$requestType = $this->determineRequestType($request->getMethod(), $requestBodyType, $resources->requestResource);
+		$result->requestType($requestType);
 
 		// Instantiate the deserializer
 		if (!$requestBodyType->is(RequestBodyType::NONE))
@@ -133,10 +134,6 @@ class RestRequestReader
 			}
 			$result->deserializer($deserializer);
 		}
-
-		// Instantiate the request handler and response creator.
-		$result->requestHandler($this->conf->getRequestHandlerFactory()->newRequestHandler($requestType));
-		$result->responseCreator($this->conf->getResponseCreatorFactory()->newResponseCreator($request, $requestType, $resources->requestResource->getType()));
 
 		return $result->build();
 	}

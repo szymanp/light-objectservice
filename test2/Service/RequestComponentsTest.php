@@ -25,12 +25,12 @@ class RequestComponentsTest extends \PHPUnit_Framework_TestCase
 
 		$rcb->subjectResource($resource);
 		$rcb->endpointAddress($this->getMockBuilder(EndpointRelativeAddress::class)->disableOriginalConstructor()->getMock());
-		$rcb->requestHandler($this->getMockBuilder(RequestHandler::class)->getMock());
-		$rcb->responseCreator($this->getMockBuilder(ResponseCreator::class)->getMock());
-		
+		$rcb->requestType(RequestType::get(RequestType::CREATE));
+
 		$rc = $rcb->build();
 		$this->assertInstanceOf(RequestComponents::class, $rc);
 		
 		$this->assertSame($resource, $rc->getSubjectResource());
+		$this->assertSame(RequestType::get(RequestType::CREATE), $rc->getRequestType());
 	}
 }
