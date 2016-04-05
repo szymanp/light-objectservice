@@ -11,7 +11,6 @@ use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Exception\UnsupportedMediaType;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Light\ObjectService\Service\EndpointRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Szyman\ObjectService\Configuration\Configuration;
 
@@ -162,7 +161,7 @@ class RestRequestReader
 	 */
 	private function getResourceAddress(Request $request)
 	{
-		$address = $this->conf->getEndpointRegistry->getResourceAddress($this->getUriWithoutQuery($request));
+		$address = $this->conf->getEndpointRegistry()->getResourceAddress($this->getUriWithoutQuery($request));
 
 		if (is_null($address))
 		{
