@@ -191,7 +191,7 @@ class RestRequestReader
 
 		if (is_null($relativeAddress))
 		{
-			throw new NotFound($address->getAsString(), "No endpoint matching this address was found");
+			throw new NotFound($address->getAsString(), "No matching resource found");
 		}
 
 		return new RelativeAddressReader($relativeAddress);
@@ -227,7 +227,7 @@ class RestRequestReader
 					if (is_null($resource))
 					{
 						// One of the resources in the URL path chain resolved to a NULL.
-						throw new NotFound($request->getUri());
+						throw new NotFound($request->getUri(), 'Target resource not found');
 					}
 
 					$result->subjectResource = $resource;

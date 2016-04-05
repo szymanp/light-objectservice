@@ -37,6 +37,9 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 			->build();
 	}
 
+	/**
+	 * Test a successful GET request.
+	 */
 	public function testGetRequest()
 	{
 		$reader = new RestRequestReader($this->conf);
@@ -52,6 +55,38 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($this->database->getAuthor(1010), $result->getSubjectResource()->getValue());
 	}
 
+	/**
+	 * @expectedException		 Light\ObjectService\Exception\NotFound
+	 * @expectedExceptionMessage No endpoint matching this address was found
+	 */
+	public function testEndpointNotFound()
+	{
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example-bad.org/resources/john");
+		$reader->readRequest($request);
+	}
+
+	/**
+	 * @expectedException		 Light\ObjectService\Exception\NotFound
+	 * @expectedExceptionMessage No matching resource found
+	 */
+	public function testPublishedResourceNotFound()
+	{
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/resources/john");
+		$reader->readRequest($request);
+	}
+
+	/**
+	 * @expectedException		 Light\ObjectService\Exception\NotFound
+	 * @expectedExceptionMessage Target resource not found
+	 */
+	public function testResourceInCollectionNotFound()
+	{
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4090");
+		$reader->readRequest($request);
+	}
 }
 
 // Dummy class, not used by RestRequestReader.
