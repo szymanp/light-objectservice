@@ -152,7 +152,57 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("http://example.org/collections/post/4040/title", $result->getEndpointAddress()->getAsString());
 		// We replace an existing value, therefore the resource at uri is the simple value to be replaced.
 		$this->assertInstanceOf(ResolvedScalar::class, $result->getRequestUriResource());
-		// Note that we cannot do "same" comparisons as the objects are different instances.
+		$this->assertSame($this->database->getPost(4040), $result->getSubjectResource()->getValue());
+	}
+
+	/**
+	 * Modify an object via PATCH
+	 * PATCH http://example.org/collections/post/4040
+	 */
+	public function testModifyComplexValueViaPATCH()
+	{
+		// Configure a deserializer
+		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
+		
+		$this->dszFactory->registerDeserializer(
+			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_MODIFICATION),
+			'application/json',
+			function(Type $type) use ($mockDeserializer)
+			{
+				return $mockDeserializer;
+			});
+
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4040", 'PATCH', [], [], [], ['CONTENT_TYPE' => 'application/json']);
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+
+		$this->assertSame($mockDeserializer, $result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::MODIFY), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post/4040", $result->getEndpointAddress()->getAsString());
+		// We modify an existing object, therefore the resource at uri is the object to be modified, and it is also the subject.
+		$this->assertSame($result->getRequestUriResource(), $result->getSubjectResource());
+		$this->assertSame($this->database->getPost(4040), $result->getSubjectResource()->getValue());
+	}
+
+	/**
+	 * Delete an element without any selection:
+	 * DELETE http://example.org/collections/post/4040
+	 */
+	public function testDeleteElementWithoutSelectionViaDELETE()
+	{
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4040", 'DELETE');
+		$request->headers->remove("CONTENT_TYPE");	// We do not provide a request body
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+		
+		$this->assertNull($result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::DELETE), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post/4040", $result->getEndpointAddress()->getAsString());
+		$this->assertSame($result->getRequestUriResource(), $result->getSubjectResource());
 		$this->assertSame($this->database->getPost(4040), $result->getSubjectResource()->getValue());
 	}
 
