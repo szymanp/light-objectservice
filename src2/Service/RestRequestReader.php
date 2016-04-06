@@ -8,6 +8,7 @@ use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Resource\Util\DefaultRelativeAddress;
 use Light\ObjectAccess\Type\Type;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
@@ -99,6 +100,10 @@ class RestRequestReader
 		if (!is_null($resources->requestResource))
 		{
 			$result->requestUriResource($resources->requestResource);
+		}
+		if (!is_null($resources->relativeAddress))
+		{
+			$result->relativeAddress($resources->relativeAddress);
 		}
 
 		// Determine the request body type.
@@ -240,6 +245,7 @@ class RestRequestReader
 
 					$result->subjectResource = $resource;
 					$result->requestResource = $resource;
+					$result->relativeAddress = null;
 					return $result;
 
 				// For the PUT method, the subject resource is a collection (if we replace or create a collection element),
@@ -257,6 +263,8 @@ class RestRequestReader
 
 						$result->requestResource = null;
 						$result->subjectResource = $trace->last()->getResource();
+						$result->relativeAddress = new DefaultRelativeAddress($result->subjectResource);
+						$result->relativeAddress->appendElement(end($address->getPathElements()));
 
 						if ($result->subjectResource instanceof ResolvedCollection)
 						{
@@ -273,6 +281,7 @@ class RestRequestReader
 						// This is the case where we replace an entire collection.
 						$result->subjectResource = $resource;
 						$result->requestResource = $resource;
+						$result->relativeAddress = null;
 						return $result;
 					}
 					else // Resource at URL is a value
@@ -285,6 +294,8 @@ class RestRequestReader
 
 						$result->requestResource = $resource;
 						$result->subjectResource = $trace->last()->previous()->getResource();
+						$result->relativeAddress = new DefaultRelativeAddress($result->subjectResource);
+						$result->relativeAddress->appendElement($trace->last()->getPathElement());
 
 						if ($result->subjectResource instanceof ResolvedCollection
 							|| $result->subjectResource instanceof ResolvedObject)

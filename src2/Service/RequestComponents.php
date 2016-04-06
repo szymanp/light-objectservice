@@ -2,7 +2,9 @@
 namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Resource\Addressing\RelativeAddress;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
+use Szyman\Exception\InvalidArgumentException;
 
 /**
  * A container holding the decoded components of a request.
@@ -17,6 +19,8 @@ final class RequestComponents
 	private $endpointAddress;
 	/** @var RequestBodyDeserializer */
 	private $deserializer;
+	/** @var RelativeAddress */
+	private $relativeAddress;
 	
 	private function __construct()
 	{
@@ -37,6 +41,7 @@ final class RequestComponents
 			$rc->requestType		= $vals->requestType;
 			$rc->endpointAddress 	= $vals->endpointAddress;
 			$rc->deserializer		= $vals->deserializer;
+			$rc->relativeAddress	= $vals->relativeAddress;
 			return $rc;
 		});
 	}
@@ -86,6 +91,17 @@ final class RequestComponents
 	public function getDeserializer()
 	{
 		return $this->deserializer;
+	}
+	
+	/**
+	 * Returns the relative address from the subject resource to the resource identified by the request URI.
+	 * 
+	 * @return RelativeAddress	A RelativeAddress, if the subject resource and request resource are different;
+	 *							otherwise, NULL.
+	 */
+	public function getRelativeAddress()
+	{
+		return $this->relativeAddress;
 	}
 }
 
@@ -149,6 +165,26 @@ final class RequestComponents_Builder
 	public function deserializer(RequestBodyDeserializer $requestBodyDeserializer)
 	{
 		$this->values->deserializer = $requestBodyDeserializer;
+		return $this;
+	}
+	
+	/**
+	 * @param RelativeAddress $relativeAddress
+	 * @return $this
+	 */
+	public function relativeAddress(RelativeAddress $relativeAddress)
+	{
+		if ($relativeAddress->getSourceResource() === $this->values->subjectResource)
+		{
+			$this->values->relativeAddress = $relativeAddress;
+		}
+		else
+		{
+			throw InvalidArgumentException::newInvalidValue(
+				'$relativeAddress',
+				$relativeAddress,
+				'The source resource must match the subject resource');
+		}
 		return $this;
 	}
 	

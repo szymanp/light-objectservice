@@ -58,6 +58,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("http://example.org/resources/max", $result->getEndpointAddress()->getAsString());
 		$this->assertSame($result->getRequestUriResource(), $result->getSubjectResource());
 		$this->assertSame($this->database->getAuthor(1010), $result->getSubjectResource()->getValue());
+		$this->assertNull($result->getRelativeAddress());
 	}
 
 	/**
@@ -87,6 +88,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(RequestType::get(RequestType::REPLACE), $result->getRequestType());
 		$this->assertEquals("http://example.org/collections/post/4040", $result->getEndpointAddress()->getAsString());
 		// We replace an existing object, therefore the resource at uri is the post to be replaced.
+		$this->assertEquals([4040], $result->getRelativeAddress()->getPathElements());
 		$this->assertSame($this->database->getPost(4040), $result->getRequestUriResource()->getValue());
 		// Note that we cannot do "same" comparisons as the objects are different instances.
 		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
@@ -119,6 +121,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(RequestType::get(RequestType::CREATE), $result->getRequestType());
 		$this->assertEquals("http://example.org/collections/post/4049", $result->getEndpointAddress()->getAsString());
 		// We create a new object, therefore the resource at uri does not exist.
+		$this->assertEquals([4049], $result->getRelativeAddress()->getPathElements());
 		$this->assertNull($result->getRequestUriResource());
 		// Note that we cannot do "same" comparisons as the objects are different instances.
 		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
@@ -151,6 +154,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(RequestType::get(RequestType::REPLACE), $result->getRequestType());
 		$this->assertEquals("http://example.org/collections/post/4040/title", $result->getEndpointAddress()->getAsString());
 		// We replace an existing value, therefore the resource at uri is the simple value to be replaced.
+		$this->assertEquals(['title'], $result->getRelativeAddress()->getPathElements());
 		$this->assertInstanceOf(ResolvedScalar::class, $result->getRequestUriResource());
 		$this->assertSame($this->database->getPost(4040), $result->getSubjectResource()->getValue());
 	}
@@ -181,6 +185,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($mockDeserializer, $result->getDeserializer());
 		$this->assertEquals(RequestType::get(RequestType::CREATE), $result->getRequestType());
 		$this->assertEquals("http://example.org/collections/post", $result->getEndpointAddress()->getAsString());
+		$this->assertNull($result->getRelativeAddress());
 		$this->assertSame($result->getRequestUriResource(), $result->getSubjectResource());
 		// Note that we cannot do "same" comparisons as the objects are different instances.
 		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
