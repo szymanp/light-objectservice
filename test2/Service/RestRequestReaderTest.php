@@ -15,6 +15,9 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 {
 	/** @var Configuration */
 	private $conf;
+	
+	/** @var PluggableRequestBodyDeserializerFactory */
+	private $dszFactory;
 
 	/** @var Database */
 	private $database;
@@ -26,11 +29,11 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$setup = Setup::create();
 		$this->database = $setup->getDatabase();
 		$typeMap = new DefaultRequestBodyTypeMap();
-		$dszFactory = new PluggableRequestBodyDeserializerFactory();
+		$this->dszFactory = new PluggableRequestBodyDeserializerFactory();
 
 		$this->conf = DefaultConfiguration::newBuilder()
 			->endpointRegistry($setup->getEndpointRegistry())
-			->requestBodyDeserializerFactory($dszFactory)
+			->requestBodyDeserializerFactory($this->dszFactory)
 			->requestBodyTypeMap($typeMap)
 			->requestHandlerFactory(new RestRequestReaderTest_RequestHandlerFactory)
 			->responseCreatorFactory(new RestRequestReaderTest_ResponseCreatorFactory)
@@ -55,14 +58,31 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($this->database->getAuthor(1010), $result->getSubjectResource()->getValue());
 	}
 
-	public function testPutRequest()
+	public function testPutReplaceRequest()
 	{
+		// Configure a deserializer
+		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
+		
+		$this->dszFactory->registerDeserializer(
+			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
+			'application/json',
+			function(Type $type) use ($mockDeserializer)
+			{
+				return $mockDeserializer;
+			});
+
 		$reader = new RestRequestReader($this->conf);
-		$request = Request::create("http://example.org/collections/post/4040", 'PUT');
+		$request = Request::create("http://example.org/collections/post/4040", 'PUT', [], [], [], ['CONTENT_TYPE' => 'application/json']);
 
 		$result = $reader->readRequest($request);
 		$this->assertInstanceOf(RequestComponents::class, $result);
 
+		$this->assertSame($mockDeserializer, $result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::REPLACE), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post/4040", $result->getEndpointAddress()->getAsString());
+		$this->assertSame($this->database->getPost(4040), $result->getRequestUriResource()->getValue());
+		// Note that we cannot do "same" comparisons as the objects are different instances.
+		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
 	}
 
 	/**

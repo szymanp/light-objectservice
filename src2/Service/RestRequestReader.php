@@ -7,6 +7,7 @@ use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Type\Type;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Exception\UnsupportedMediaType;
@@ -119,8 +120,14 @@ class RestRequestReader
 		// Instantiate the deserializer
 		if (!$requestBodyType->is(RequestBodyType::NONE))
 		{
+			$resourceType = $this->determineBodyResourceType(
+				$requestType,
+				$requestBodyType,
+				$resources->subjectResource,
+				$resources->requestResource);
+		
 			$deserializer = $this->conf->getRequestBodyDeserializerFactory()->newRequestBodyDeserializer(
-				$deserializerType = RequestBodyDeserializerType::fromBodyAndResourceType($requestBodyType, $resources->subjectResource->getType()),
+				$deserializerType = RequestBodyDeserializerType::fromBodyAndResourceType($requestBodyType, $resourceType),
 				$contentType,
 				$resources->subjectResource->getType()
 			);
@@ -377,6 +384,58 @@ class RestRequestReader
 
 			default:
 				throw new MethodNotAllowed();
+		}
+	}
+
+	/**
+	 * Determines the type of the resource of the body.
+	 *
+	 * @param RequestTye       $requestType
+	 * @param RequestBodyType  $requestBodyType
+	 * @param ResolvedResource $subjectResource
+	 * @param ResolvedResource $requestResource
+	 * @return Type
+	 */
+	private function determineBodyResourceType(RequestType $requestType, RequestBodyType $requestBodyType, ResolvedResource $subjectResource, ResolvedResource $requestResource)
+	{
+		switch($requestBodyType->getValue())
+		{
+			case RequestBodyType::NONE:
+				throw new \LogicException();
+			
+			case RequestBodyType::REPRESENTATION:
+				if ($requestType->is(RequestType::CREATE))
+				{
+					// Example requests:
+					// PUT /users/1020 (where user 1020 does not exist)
+					// POST /users     (creates a new user in the collection)
+					if ($subjectResource instanceof ResolvedCollection)
+					{
+						return $subjectResource->getTypeHelper()->getBaseTypeHelper()->getType();
+					}
+					else
+					{
+						throw new \LogicException('The subject resource for creation of a new element must be a collection');
+					}
+				}
+				elseif ($requestType->is(RequestType::REPLACE))
+				{
+					// Example requests:
+					// PUT /users/1020      (where user 1020 does exist)
+					// PUT /users           (replaces the collection)
+					// PUT /users/1020/name (replaces the field value)
+					return $requestResource->getType();
+				}
+				throw new \LogicException();
+			
+			case RequestBodyType::MODIFICATION:
+			case RequestBodyType::ACTION:
+			case RequestBodyType::SELECTION:
+				// TODO: Is this correct?
+				return $subjectResource->getType();
+
+			default:
+				throw new \LogicException();
 		}
 	}
 }
