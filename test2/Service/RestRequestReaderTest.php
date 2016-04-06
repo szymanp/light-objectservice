@@ -2,6 +2,7 @@
 namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Type\Type;
+use Light\ObjectAccess\Resource\ResolvedScalar;
 use Light\ObjectService\TestData\Database;
 use Light\ObjectService\TestData\Setup;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,9 +42,10 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test a successful GET request.
+	 * Tests a successful read request
+	 * GET http://example.org/resources/max
 	 */
-	public function testGetRequest()
+	public function testReadComplexValueViaGET()
 	{
 		$reader = new RestRequestReader($this->conf);
 		$request = Request::create("http://example.org/resources/max");
@@ -58,7 +60,11 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($this->database->getAuthor(1010), $result->getSubjectResource()->getValue());
 	}
 
-	public function testPutReplaceRequest()
+	/**
+	 * Replaces a complex object via PUT
+	 * PUT http://example.org/collections/post/4040
+	 */
+	public function testReplaceComplexValueViaPUT()
 	{
 		// Configure a deserializer
 		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
@@ -80,9 +86,74 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($mockDeserializer, $result->getDeserializer());
 		$this->assertEquals(RequestType::get(RequestType::REPLACE), $result->getRequestType());
 		$this->assertEquals("http://example.org/collections/post/4040", $result->getEndpointAddress()->getAsString());
+		// We replace an existing object, therefore the resource at uri is the post to be replaced.
 		$this->assertSame($this->database->getPost(4040), $result->getRequestUriResource()->getValue());
 		// Note that we cannot do "same" comparisons as the objects are different instances.
 		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
+	}
+
+	/**
+	 * Creates a complex object via PUT
+	 * PUT http://example.org/collections/post/4049
+	 */
+	public function testCreateComplexValueViaPUT()
+	{
+		// Configure a deserializer
+		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
+		
+		$this->dszFactory->registerDeserializer(
+			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
+			'application/json',
+			function(Type $type) use ($mockDeserializer)
+			{
+				return $mockDeserializer;
+			});
+
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4049", 'PUT', [], [], [], ['CONTENT_TYPE' => 'application/json']);
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+
+		$this->assertSame($mockDeserializer, $result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::CREATE), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post/4049", $result->getEndpointAddress()->getAsString());
+		// We create a new object, therefore the resource at uri does not exist.
+		$this->assertNull($result->getRequestUriResource());
+		// Note that we cannot do "same" comparisons as the objects are different instances.
+		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
+	}
+
+	/**
+	 * Replaces a simple value via PUT
+	 * PUT http://example.org/collections/post/4040/title
+	 */
+	public function testReplaceSimpleValueViaPUT()
+	{
+		// Configure a deserializer
+		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
+		
+		$this->dszFactory->registerDeserializer(
+			RequestBodyDeserializerType::get(RequestBodyDeserializerType::SIMPLE_VALUE_REPRESENTATION),
+			'text/plain',
+			function(Type $type) use ($mockDeserializer)
+			{
+				return $mockDeserializer;
+			});
+
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post/4040/title", 'PUT', [], [], [], ['CONTENT_TYPE' => 'text/plain']);
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+
+		$this->assertSame($mockDeserializer, $result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::REPLACE), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post/4040/title", $result->getEndpointAddress()->getAsString());
+		// We replace an existing value, therefore the resource at uri is the simple value to be replaced.
+		$this->assertInstanceOf(ResolvedScalar::class, $result->getRequestUriResource());
+		// Note that we cannot do "same" comparisons as the objects are different instances.
+		$this->assertSame($this->database->getPost(4040), $result->getSubjectResource()->getValue());
 	}
 
 	/**

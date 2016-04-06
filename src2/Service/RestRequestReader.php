@@ -6,6 +6,7 @@ use Light\ObjectAccess\Query\Query;
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedCollection;
+use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Type\Type;
 use Light\ObjectService\Exception\MethodNotAllowed;
@@ -241,10 +242,13 @@ class RestRequestReader
 					$result->requestResource = $resource;
 					return $result;
 
-				// For the PUT method, the subject resource is always a collection.
+				// For the PUT method, the subject resource is a collection (if we replace or create a collection element),
+				// or a complex object (if we replace a simple value of a field).
 				case 'PUT':
 					if (is_null($resource))
 					{
+						// There resource at uri does not exist, therefore this is the case when we create a new one.
+						// We can only create a collection element.
 						$trace = $relativeAddressReader->getLastResolutionTrace();
 						if (count($trace) == 0)
 						{
@@ -265,6 +269,8 @@ class RestRequestReader
 					}
 					elseif ($resource instanceof ResolvedCollection)
 					{
+						// The resource at uri is a collection.
+						// This is the case where we replace an entire collection.
 						$result->subjectResource = $resource;
 						$result->requestResource = $resource;
 						return $result;
@@ -274,19 +280,20 @@ class RestRequestReader
 						$trace = $relativeAddressReader->getLastResolutionTrace();
 						if (count($trace) < 2)
 						{
-							throw new MethodNotAllowed("Requested resource has no parent collection");
+							throw new MethodNotAllowed("Requested resource has no parent collection or object");
 						}
 
 						$result->requestResource = $resource;
 						$result->subjectResource = $trace->last()->previous()->getResource();
 
-						if ($result->subjectResource instanceof ResolvedCollection)
+						if ($result->subjectResource instanceof ResolvedCollection
+							|| $result->subjectResource instanceof ResolvedObject)
 						{
 							return $result;
 						}
 						else
 						{
-							throw new MethodNotAllowed("Parent of requested resource is not a collection");
+							throw new MethodNotAllowed("Parent of requested resource is not a collection nor an object");
 						}
 					}
 				default:
@@ -396,7 +403,7 @@ class RestRequestReader
 	 * @param ResolvedResource $requestResource
 	 * @return Type
 	 */
-	private function determineBodyResourceType(RequestType $requestType, RequestBodyType $requestBodyType, ResolvedResource $subjectResource, ResolvedResource $requestResource)
+	private function determineBodyResourceType(RequestType $requestType, RequestBodyType $requestBodyType, ResolvedResource $subjectResource, ResolvedResource $requestResource = null)
 	{
 		switch($requestBodyType->getValue())
 		{
