@@ -156,6 +156,38 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Creates a complex object via POST
+	 * POST http://example.org/collections/post
+	 */
+	public function testCreateComplexValueViaPOST()
+	{
+		// Configure a deserializer
+		$mockDeserializer = $this->getMockBuilder(RequestBodyDeserializer::class)->getMock();
+		
+		$this->dszFactory->registerDeserializer(
+			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
+			'application/json',
+			function(Type $type) use ($mockDeserializer)
+			{
+				return $mockDeserializer;
+			});
+
+		$reader = new RestRequestReader($this->conf);
+		$request = Request::create("http://example.org/collections/post", 'POST', [], [], [], ['CONTENT_TYPE' => 'application/json']);
+
+		$result = $reader->readRequest($request);
+		$this->assertInstanceOf(RequestComponents::class, $result);
+
+		$this->assertSame($mockDeserializer, $result->getDeserializer());
+		$this->assertEquals(RequestType::get(RequestType::CREATE), $result->getRequestType());
+		$this->assertEquals("http://example.org/collections/post", $result->getEndpointAddress()->getAsString());
+		$this->assertSame($result->getRequestUriResource(), $result->getSubjectResource());
+		// Note that we cannot do "same" comparisons as the objects are different instances.
+		$this->assertEquals($this->conf->getEndpointRegistry()->getResource("http://example.org/collections/post"), $result->getSubjectResource());
+	}
+
+
+	/**
 	 * Modify an object via PATCH
 	 * PATCH http://example.org/collections/post/4040
 	 */
