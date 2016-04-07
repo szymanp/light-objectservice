@@ -16,6 +16,8 @@ interface RequestHandler
 	 * @param Request			$request			The HTTP request object.
 	 * @param RequestComponents	$requestComponents
 	 * @return RequestResult
+	 * @throws \Light\ObjectAccess\Exception\TypeCapabilityException	If the requested action cannot be taken due to missing
+	 *																	capabilities of a type.
 	 */
 	public function handle(Request $request, RequestComponents $requestComponents);
 }
