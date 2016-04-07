@@ -115,6 +115,14 @@ class Database
 	{
 		return current($this->posts);
 	}
+	
+	/**
+	 * @return int
+	 */
+	public function getNextPostId()
+	{
+		return $this->nextPostId++;
+	}
 
 	/**
 	 * Returns a new post.
@@ -122,10 +130,10 @@ class Database
 	 */
 	public function createPost()
 	{
-		$this->addPost($post = new Post($this->nextPostId++));
+		$this->addPost($post = new Post($this->getNextPostId()));
 		return $post;
 	}
-
+	
 	/**
 	 * Returns a new author.
 	 * @return Author

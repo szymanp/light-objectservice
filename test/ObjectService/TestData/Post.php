@@ -8,10 +8,22 @@ class Post
 	private $author;
 	private $title;
 	private $text;
-
-	public function __construct($id)
+	
+	public function __construct($id = null)
 	{
 		$this->id = $id;
+	}
+	
+	public function setId($id)
+	{
+		if (is_null($this->id))
+		{
+			$this->id = $id;
+		}
+		else
+		{
+			throw new \Exception("Post already has ID=" . $this->id . ", cannot set new one ($id)");
+		}
 	}
 
 	/**

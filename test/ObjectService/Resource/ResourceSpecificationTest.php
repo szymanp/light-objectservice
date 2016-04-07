@@ -43,7 +43,6 @@ class ResourceSpecificationTest extends \PHPUnit_Framework_TestCase
 		$post = $resource->getValue();
 		$this->assertInstanceOf(Post::class, $post);
 		$this->assertEquals("A new post", $post->getTitle());
-		$this->assertEquals(5050, $post->getId());
-		$this->assertSame($this->setup->getDatabase()->getAuthor(1010), $post->getAuthor());
+		$this->assertNull($post->getId());	// The post was not added to the collection, so it does not have an ID.
 	}
 }

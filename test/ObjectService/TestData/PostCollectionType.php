@@ -16,11 +16,12 @@ use Light\ObjectAccess\Type\Collection\Iterate;
 use Light\ObjectAccess\Type\Collection\Property;
 use Light\ObjectAccess\Type\Collection\Search;
 use Light\ObjectAccess\Type\Collection\SearchContext;
+use Light\ObjectAccess\Type\Collection\SetElementAtKey;
 use Light\ObjectAccess\Type\Util\CollectionPropertyHost;
 use Light\ObjectAccess\Type\Util\DefaultCollectionType;
 use Light\ObjectAccess\Type\Util\DefaultFilterableProperty;
 
-class PostCollectionType extends DefaultCollectionType implements Iterate, Append, Search
+class PostCollectionType extends DefaultCollectionType implements Iterate, Append, Search, SetElementAtKey
 {
 	/** @var Database */
 	private $database;
@@ -83,6 +84,17 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 	 */
 	public function appendValue(ResolvedCollection $collection, $value, Transaction $transaction)
 	{
+		// If the Post does not have an ID, then we generate a new one.
+		if (is_null($value->getId()))
+		{
+			$value->setId($this->database->getNextPostId());
+		}
+
+		$this->savePostToDatabase($collection, $value);
+	}
+	
+	protected function savePostToDatabase(ResolvedCollection $collection, Post $value)
+	{
 		$origin = $collection->getOrigin();
 		if ($origin instanceof Origin_Unavailable)
 		{
@@ -97,6 +109,7 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 				$this->database->addPost($value);
 			}
 		}
+	
 	}
 
 	protected function getElementAtKeyFromResource(ResolvedCollectionResource $coll, $key)
@@ -148,5 +161,11 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 		$innerIterator = new \ArrayIterator($this->read($collection));
 		$iterator = new \LimitIterator(new QueryFilterIterator($innerIterator, $scope->getQuery()), $offset, $count);
 		return iterator_to_array($iterator);
+	}
+	
+	public function setElementAtKey(ResolvedCollection $collection, $key, $value, Transaction $transaction)
+	{
+		$value->setId($key);
+		$this->savePostToDatabase($collection, $value);
 	}
 }

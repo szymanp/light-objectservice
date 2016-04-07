@@ -45,7 +45,7 @@ class PostType extends DefaultComplexType implements Create, CanonicalAddress
 	 */
 	public function createObject(Transaction $transaction)
 	{
-		return $this->database->createPost();
+		return new Post();
 	}
 
 	/**
