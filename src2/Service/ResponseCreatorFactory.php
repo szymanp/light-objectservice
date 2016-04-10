@@ -12,13 +12,13 @@ interface ResponseCreatorFactory
 	/**
 	 * Returns a new ResponseCreator for building a response to a request.
 	 *
-	 * @param Request 		$request				The HTTP request for which the response will be created.
-	 * @param RequestType	$requestType			The type of the request (Read, Create, Modify, etc.)
-	 * @param Type    		$subjectResourceType	The type of the resource at the request-uri.
+	 * @param Request           $request			The HTTP request for which a response is to be created.
+	 * @param RequestResult     $requestResult		The content of the response.
+	 * @param RequestComponents $requestComponents	Additional information about the request. In some cases
+	 *                                              this information might not be available.
 	 *
-	 * TODO: Can it return NULL? What does it throw?
-	 *
-	 * @return ResponseCreator
+	 * @return ResponseCreator A <kbd>ResponseCreator</kbd> object, if the factory is capable of producing a creator
+	 *                         for this request; otherwise, NULL.
 	 */
-	public function newResponseCreator(Request $request, RequestType $requestType, Type $subjectResourceType);
+	public function newResponseCreator(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null);
 }

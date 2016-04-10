@@ -1,7 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
-use Light\ObjectAccess\Resource\ResolvedResource;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -11,9 +11,12 @@ interface ResponseCreator
 {
 	/**
 	 * Creates a new Response object.
-	 * @param ResolvedResource $requestResource
-	 * @param RequestResult    $requestResult
+	 * @param Request           $request			The HTTP request for which a response is being made.
+	 * @param RequestResult     $requestResult		The content of the response.
+	 * @param RequestComponents $requestComponents	Additional information about the request. In some cases
+	 *                                              this information might not be available.
 	 * @return Response
+	 * @throws \InvalidArgumentException	Thrown if <kbd>$requestResult</kbd> is not of a supported type.
 	 */
-	public function newResponse(ResolvedResource $requestResource, RequestResult $requestResult);
+	public function newResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null);
 }
