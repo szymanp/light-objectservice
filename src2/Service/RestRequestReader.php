@@ -264,7 +264,8 @@ class RestRequestReader
 						$result->requestResource = null;
 						$result->subjectResource = $trace->last()->getResource();
 						$result->relativeAddress = new DefaultRelativeAddress($result->subjectResource);
-						$result->relativeAddress->appendElement(end($address->getPathElements()));
+						$elements = $address->getPathElements();
+						$result->relativeAddress->appendElement(end($elements));
 
 						if ($result->subjectResource instanceof ResolvedCollection)
 						{
