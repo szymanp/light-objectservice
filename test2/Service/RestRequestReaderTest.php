@@ -290,7 +290,7 @@ class RestRequestReaderTest_RequestHandlerFactory implements RequestHandlerFacto
 // Dummy class, not used by RestRequestReader.
 class RestRequestReaderTest_ResponseCreatorFactory implements ResponseCreatorFactory
 {
-	public function newResponseCreator(Request $request, RequestType $requestType, Type $subjectResourceType)
+	public function newResponseCreator(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null)
 	{
 		throw new NotImplementedException;
 	}

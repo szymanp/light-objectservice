@@ -20,4 +20,11 @@ interface DataSerializer
 	 * @throws \DomainException	Thrown if the object does not adhere to the above conditions.
 	 */
 	public function serializeData(\stdClass $data);
+	
+	/**
+	 * Returns the name of the output data format.
+	 * @return string	A name for the format of the output data returned by this serializer;
+	 *					it could be a string such as "XML", "JSON", "YAML", etc.
+	 */
+	public function getFormatName();
 }
