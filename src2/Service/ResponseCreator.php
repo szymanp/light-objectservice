@@ -1,6 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
+use Light\ObjectService\Exception\SerializationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,6 +18,7 @@ interface ResponseCreator
 	 *                                              this information might not be available.
 	 * @return Response
 	 * @throws \InvalidArgumentException	Thrown if <kbd>$requestResult</kbd> is not of a supported type.
+	 * @throws SerializationException		Thrown if a problem was encountered while creating the response body.
 	 */
 	public function newResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null);
 }

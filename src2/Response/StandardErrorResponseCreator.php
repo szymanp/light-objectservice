@@ -1,10 +1,22 @@
 <?php
 namespace Szyman\ObjectService\Response;
 
+use Light\ObjectAccess\Resource\Origin;
+use Light\ObjectAccess\Resource\ResolvedObject;
+use Light\ObjectAccess\Resource\Util\EmptyResourceAddress;
+use Light\ObjectAccess\Type\ComplexTypeHelper;
+use Light\ObjectAccess\Type\TypeProvider;
+use Light\ObjectAccess\Type\TypeRegistry;
+use Light\ObjectAccess\Type\Util\DefaultComplexType;
+use Light\ObjectAccess\Type\Util\DefaultProperty;
+use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
 use Light\ObjectService\Exception\HttpExceptionInformation;
+use Light\ObjectService\Exception\SerializationException;
+use Light\ObjectService\Resource\Projection\Projector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Szyman\Exception\InvalidArgumentException;
+use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Service\ExceptionRequestResult;
 use Szyman\ObjectService\Service\RequestComponents;
 use Szyman\ObjectService\Service\RequestResult;
@@ -16,6 +28,8 @@ class StandardErrorResponseCreator implements ResponseCreator
 	private $structureSerializer;
 	/** @var DataSerializer */
 	private $dataSerializer;
+	/** @var ResponseContentTypeMap */
+	private $responseContentTypeMap;
 
 	/**
 	 * Creates a new Response object.
@@ -24,6 +38,7 @@ class StandardErrorResponseCreator implements ResponseCreator
 	 * @param RequestComponents $requestComponents
 	 * @return Response
 	 * @throws \InvalidArgumentException	Thrown if <kbd>$requestResult</kbd> is not of a supported type.
+	 * @throws SerializationException		Thrown if a problem was encountered while creating the response body.
 	 */
 	final public function newResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null)
 	{
@@ -32,6 +47,30 @@ class StandardErrorResponseCreator implements ResponseCreator
 		{
 			throw InvalidArgumentException::newInvalidType('$requestResult', $requestResult, ExceptionRequestResult::class);
 		}
+
+		// Build the exception resource.
+		$typeRegistry = new TypeRegistry($this->getTypeProvider());
+		$typeHelper = $typeRegistry->getTypeHelperByValue($requestResult->getException());
+		if (!($typeHelper instanceof ComplexTypeHelper))
+		{
+			throw new \Exception(""); // TODO What kind of exception to throw?
+		}
+		$resource = new ResolvedObject($typeHelper, $requestResult->getException(), EmptyResourceAddress::create(), Origin::unavailable());
+
+		// Project and serialize the resource.
+		$projector = new Projector();
+		$projected = $projector->project($resource);
+		$intermediate = $this->structureSerializer->serializeStructure($projected);
+		$content = $this->dataSerializer->serializeData($intermediate);
+
+		// Prepare the headers.
+		$headers = array();
+		$contentType = $this->responseContentTypeMap->getContentType($resource, $this->structureSerializer);
+		if (is_null($contentType))
+		{
+			throw new \Exception("");	// TODO
+		}
+		$headers['CONTENT_TYPE'] = $contentType;
 
 		// Prepare the response object.
 		$status = $this->getStatusCode($requestResult->getException());
@@ -65,5 +104,20 @@ class StandardErrorResponseCreator implements ResponseCreator
 		{
 			return Response::HTTP_INTERNAL_SERVER_ERROR;
 		}
+	}
+
+	/**
+	 * Return a type provider for handling <kbd>Exception</kbd> classes.
+	 * @return TypeProvider
+	 */
+	protected function getTypeProvider()
+	{
+		$provider = new DefaultTypeProvider();
+
+		$exceptionType = new DefaultComplexType(\Exception::class);
+		$exceptionType->addProperty(new DefaultProperty('message', 'string'));
+		$provider->addType($exceptionType);
+
+		return $provider;
 	}
 }
