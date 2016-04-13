@@ -29,6 +29,17 @@ class ResourceReferenceTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("http://example.org/resources/max", $resource->getAddress()->getAsString());
 	}
 
+	/**
+	 * @expectedException Szyman\ObjectService\Resource\ResourceReferenceException
+	 * @expectedExceptionMessage Address "http://example.org/resources/hello/world" could not be resolved to a resource
+	 */
+	public function testExistingResourceNotFound()
+	{
+		$address = EndpointRelativeAddress::create($this->setup->getEndpoint(), "resources/hello/world");
+		$ref = new ExistingResourceReference($address);
+		$resource = $ref->resolve($this->setup->getExecutionParameters());
+	}
+
 	public function testNewComplexResourceReference()
 	{
 		$representation = new KeyValueComplexValueRepresentation();
