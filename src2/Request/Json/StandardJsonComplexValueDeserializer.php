@@ -3,27 +3,28 @@ namespace Szyman\ObjectService\Request\Json;
 
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 use Light\ObjectService\Exception\MalformedRequest;
+use Szyman\ObjectService\Resource\ExistingResourceReference;
 use Szyman\ObjectService\Resource\KeyValueComplexValueRepresentation;
+use Szyman\ObjectService\Resource\NewComplexResourceReference;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\ComplexValueModificationDeserializer;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
 use Szyman\ObjectService\Service\ComplexValueRepresentationDeserializer;
 
-class StandardJsonComplexValueDeserializer implements ComplexValueRepresentationDeserializer, ComplexValueModificationDeserializer
+final class StandardJsonComplexValueDeserializer implements ComplexValueRepresentationDeserializer, ComplexValueModificationDeserializer
 {
 	const REPLACE = 1;
 	const UPDATE = 2;
-
-	// TODO: Maybe it would be better to implement this class as an abstract class with two concrete ones.
 
 	/** @var ComplexTypeHelper */
 	private $typeHelper;
 
 	private $mode;
 
-	protected function __construct(ComplexTypeHelper $typeHelper, $mode)
+	private function __construct(ComplexTypeHelper $typeHelper, $mode)
 	{
-		// TODO
+		$this->typeHelper = $typeHelper;
+		$this->mode = $mode;
 	}
 
 	/**
@@ -60,19 +61,22 @@ class StandardJsonComplexValueDeserializer implements ComplexValueRepresentation
 			if ($content === false) throw new \RuntimeException("Could not read from stream");
 		}
 		
-		$json = json_decode($content)
+		$json = json_decode($content);
 		if (is_null($json))
 		{
 			throw new MalformedRequest("Could not convert request body to JSON");
 		}
-		
-		
-		$result = $this->readJson($json);
+
+		$result = $this->readObject($json);
 		
 		return $result;
 	}
-	
-	private function readJson($json)
+
+	/**
+	 * @param \stdClass $json
+	 * @return KeyValueComplexValueRepresentation
+	 */
+	private function readObject(\stdClass $json)
 	{
 		$result = new KeyValueComplexValueRepresentation();
 
@@ -82,7 +86,65 @@ class StandardJsonComplexValueDeserializer implements ComplexValueRepresentation
 			{
 				$result->setValue($fieldName, $fieldValue);
 			}
-			// TODO
+			elseif (is_array($fieldValue))
+			{
+				$result->setArray($fieldName, $this->readList($fieldValue));
+			}
+			elseif (is_object($fieldValue))
+			{
+				$result->setResource($fieldName, $this->readReference($fieldValue));
+			}
+			else
+			{
+				throw new \LogicException(gettype($fieldValue));
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param array $list
+	 * @return array
+	 */
+	private function readList(array $list)
+	{
+		$result = array();
+
+		foreach($list as $element)
+		{
+			if (is_scalar($element))
+			{
+				$result[] = $element;
+			}
+			elseif (is_array($element))
+			{
+				$result[] = $this->readList($element);
+			}
+			elseif (is_object($element))
+			{
+				$result[] = $this->readReference($element);
+			}
+			else
+			{
+				throw new \LogicException(gettype($element));
+			}
+		}
+
+		return $result;
+	}
+
+	private function readReference($json)
+	{
+		if (isset($json->_href))
+		{
+			// FIXME: We need an address class that accepts a full URL.
+	//		return new ExistingResourceReference()
+		}
+		else
+		{
+			// FIXME: We don't have a TypeHelper at this point. Change the deserializer interface?
+	//		return new NewComplexResourceReference()$this->readObject($json);
 		}
 	}
 }

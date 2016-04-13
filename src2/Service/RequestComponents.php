@@ -24,7 +24,7 @@ final class RequestComponents
 	
 	private function __construct()
 	{
-		// Private construtor - cannot be instantiated by itself, use the builder instead.
+		// Private constructor - cannot be instantiated by itself, use the builder instead.
 	}
 	
 	/**
