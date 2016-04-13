@@ -1,8 +1,11 @@
 <?php
 namespace Szyman\ObjectService\Resource;
 
+use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Resource\ResolvedObject;
+use Light\ObjectAccess\Resource\ResolvedValue;
 use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\NotImplementedException;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
@@ -12,8 +15,6 @@ use Szyman\ObjectService\Service\ExecutionEnvironment;
  */
 final class KeyValueComplexValueRepresentation implements ComplexValueRepresentation, ComplexValueModification
 {
-	// TODO Rename ResourceSpecification to ResourceReference.
-	
 	/** @var array<string, mixed> */
 	private $values = array();
 
@@ -63,7 +64,18 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 	 */
 	public function updateObject(ResolvedObject $target, ExecutionEnvironment $environment)
 	{
-		$this->updateFields($target, $environment);
+		try
+		{
+			$this->updateFields($target, $environment);
+		}
+		catch (TypeException $e)
+		{
+			throw new RepresentationTransferException(
+				'Cannot update resource "%1": %2',
+				$target->getAddress()->getAsString(),
+				$e->getMessage(),
+				$e);
+		}
 	}
 
 	/**
@@ -75,7 +87,13 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 	{
 		// TODO: Implement replaceObject() method.
 	}
-	
+
+	/**
+	 * @param ResolvedObject       $target
+	 * @param ExecutionEnvironment $environment
+	 * @throws NotImplementedException
+	 * @throws \Light\ObjectAccess\Exception\TypeException
+	 */
 	private function updateFields(ResolvedObject $target, ExecutionEnvironment $environment)
 	{
 		$typeHelper = $target->getTypeHelper();
@@ -92,12 +110,11 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 				}
 				else
 				{
-					// TODO What exception should that be?
-					throw new ResourceException(
-						"Resource \"%1\" does not have a value that can be assigned to property \"%2\" of \"%3\"",
-						$targetResource->getAddress()->getAsString(),
+					throw new RepresentationTransferException(
+						'Resource "%1" cannot be assigned to property "%2" of resource "%3"',
+						$valueResource->getAddress()->getAsString(),
 						$fieldName,
-						$resource->getAddress()->getAsString());
+						$target->getAddress()->getAsString());
 				}
 
 				$typeHelper->writeProperty($target, $fieldName, $value, $environment->getTransaction());
@@ -108,7 +125,7 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 			}
 			else
 			{
-				$typeHelper->writeProperty($resource, $fieldName, $fieldValue, $environment->getTransaction());
+				$typeHelper->writeProperty($target, $fieldName, $fieldValue, $environment->getTransaction());
 			}
 		}
 	}

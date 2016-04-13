@@ -2,6 +2,7 @@
 namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Resource\ResolvedObject;
+use Szyman\ObjectService\Resource\RepresentationTransferException;
 
 /**
  * A class implementing this interface transforms an existing complex value.
@@ -15,6 +16,7 @@ interface ComplexValueModification extends DeserializedBody
 	 *
 	 * @param ResolvedObject       $target		The resource to be updated.
 	 * @param ExecutionEnvironment $environment
+	 * @throws RepresentationTransferException    Thrown if a problem updating the object is encountered.
 	 */
 	public function updateObject(ResolvedObject $target, ExecutionEnvironment $environment);
 }
