@@ -1,7 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Configuration\Util;
 
-use Light\ObjectAccess\Type\Type;
+use Light\ObjectAccess\Type\TypeHelper;
 use Szyman\Exception\InvalidArgumentException;
 use Szyman\Exception\UnexpectedValueException;
 use Szyman\ObjectService\Service\RequestBodyDeserializer;
@@ -20,7 +20,7 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 * Register a new deserializer factory closure.
 	 * @param RequestBodyDeserializerType $deserializerType
 	 * @param string					  $contentType		MIME content-type supported by the deserializer.
-	 * @param \Closure					  $factoryFn		A function taking a Type object and returning an appropriate deserializer instance.
+	 * @param \Closure					  $factoryFn		A function taking a TypeHelper object and returning an appropriate deserializer instance.
 	 * @return $this
 	 */
 	public function registerDeserializer(RequestBodyDeserializerType $deserializerType, $contentType, \Closure $factoryFn)
@@ -46,15 +46,15 @@ class PluggableRequestBodyDeserializerFactory implements RequestBodyDeserializer
 	 * Creates a new deserializer for the specified body type and resource type.
 	 * @param RequestBodyDeserializerType $deserializerType
 	 * @param string         			  $contentType
-	 * @param Type           			  $type
+	 * @param TypeHelper      			  $typeHelper
 	 * @return RequestBodyDeserializer    A deserializer, if this factory supports creating deserializers matching
 	 *                                    the specified parameters; otherwise, NULL.
 	 */
-	public function newRequestBodyDeserializer(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
+	public function newRequestBodyDeserializer(RequestBodyDeserializerType $deserializerType, $contentType, TypeHelper $typeHelper)
 	{
 		foreach($this->registrations as $reg)
 		{
-			if (!is_null($dsz = $reg->getDeserializerIfMatches($deserializerType, $contentType, $type)))
+			if (!is_null($dsz = $reg->getDeserializerIfMatches($deserializerType, $contentType, $typeHelper)))
 			{
 				if ($dsz instanceof RequestBodyDeserializer)
 				{
@@ -96,7 +96,7 @@ abstract class PluggableRequestBodyDeserializerFactory_Base
 		return strtolower($this->contentType) === strtolower($contentType);
 	}
 
-	abstract public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type);
+	abstract public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, TypeHelper $typeHelper);
 }
 
 final class PluggableRequestBodyDeserializerFactory_Deserializer extends PluggableRequestBodyDeserializerFactory_Base
@@ -111,13 +111,13 @@ final class PluggableRequestBodyDeserializerFactory_Deserializer extends Pluggab
 		$this->factoryFn = $factoryFn;
 	}
 	
-	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
+	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, TypeHelper $typeHelper)
 	{
 		if ($deserializerType === $this->deserializerType
 			&& $this->contentTypeMatches($contentType))
 		{
 			$fn = $this->factoryFn;
-			return $fn($type);
+			return $fn($typeHelper);
 		}
 		return NULL;
 	}
@@ -134,11 +134,11 @@ final class PluggableRequestBodyDeserializerFactory_Factory extends PluggableReq
 		$this->factory = $factory;
 	}
 
-	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, Type $type)
+	public function getDeserializerIfMatches(RequestBodyDeserializerType $deserializerType, $contentType, TypeHelper $typeHelper)
 	{
 		if ($this->contentTypeMatches($contentType))
 		{
-			return $this->factory->newRequestBodyDeserializer($deserializerType, $contentType, $type);
+			return $this->factory->newRequestBodyDeserializer($deserializerType, $contentType, $typeHelper);
 		}
 		return NULL;
 	}

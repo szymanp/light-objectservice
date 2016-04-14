@@ -10,6 +10,7 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\Util\DefaultRelativeAddress;
 use Light\ObjectAccess\Type\Type;
+use Light\ObjectAccess\Type\TypeHelper;
 use Light\ObjectService\Exception\MethodNotAllowed;
 use Light\ObjectService\Exception\NotFound;
 use Light\ObjectService\Exception\UnsupportedMediaType;
@@ -126,17 +127,17 @@ class RestRequestReader
 		// Instantiate the deserializer
 		if (!$requestBodyType->is(RequestBodyType::NONE))
 		{
-			$resourceType = $this->determineBodyResourceType(
+			$resourceTypeHelper = $this->determineBodyResourceType(
 				$requestType,
 				$requestBodyType,
 				$resources->subjectResource,
 				$resources->requestResource);
 		
 			$deserializer = $this->conf->getRequestBodyDeserializerFactory()->newRequestBodyDeserializer(
-				$deserializerType = RequestBodyDeserializerType::fromBodyAndResourceType($requestBodyType, $resourceType),
+				$deserializerType = RequestBodyDeserializerType::fromBodyAndResourceType($requestBodyType, $resourceTypeHelper->getType()),
 				$contentType,
-				$resources->subjectResource->getType()
-			);
+				$resourceTypeHelper);
+
 			if (is_null($deserializer))
 			{
 				throw new UnsupportedMediaType($contentType, "No deserializer of type " . $deserializerType->getName() . " found");
@@ -413,7 +414,7 @@ class RestRequestReader
 	 * @param RequestBodyType  $requestBodyType
 	 * @param ResolvedResource $subjectResource
 	 * @param ResolvedResource $requestResource
-	 * @return Type
+	 * @return TypeHelper
 	 */
 	private function determineBodyResourceType(RequestType $requestType, RequestBodyType $requestBodyType, ResolvedResource $subjectResource, ResolvedResource $requestResource = null)
 	{
@@ -430,7 +431,7 @@ class RestRequestReader
 					// POST /users     (creates a new user in the collection)
 					if ($subjectResource instanceof ResolvedCollection)
 					{
-						return $subjectResource->getTypeHelper()->getBaseTypeHelper()->getType();
+						return $subjectResource->getTypeHelper()->getBaseTypeHelper();
 					}
 					else
 					{
@@ -443,7 +444,7 @@ class RestRequestReader
 					// PUT /users/1020      (where user 1020 does exist)
 					// PUT /users           (replaces the collection)
 					// PUT /users/1020/name (replaces the field value)
-					return $requestResource->getType();
+					return $requestResource->getTypeHelper();
 				}
 				throw new \LogicException();
 			
@@ -451,10 +452,11 @@ class RestRequestReader
 			case RequestBodyType::ACTION:
 			case RequestBodyType::SELECTION:
 				// TODO: Is this correct?
-				return $subjectResource->getType();
+				return $subjectResource->getTypeHelper();
 
 			default:
 				throw new \LogicException();
 		}
 	}
+
 }

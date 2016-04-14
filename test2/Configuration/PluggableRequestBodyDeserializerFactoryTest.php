@@ -1,9 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Configuration\Util;
 
-use Light\ObjectAccess\Type\ComplexType;
-use Light\ObjectService\TestData\AuthorType;
-use Light\ObjectService\TestData\Database;
+use Light\ObjectAccess\Type\ComplexTypeHelper;
 use Szyman\ObjectService\Service\RequestBodyDeserializerType;
 
 class PluggableRequestBodyDeserializerFactoryTest extends \PHPUnit_Framework_TestCase
@@ -25,12 +23,13 @@ class PluggableRequestBodyDeserializerFactoryTest extends \PHPUnit_Framework_Tes
 		$this->factory->registerDeserializer(
 			RequestBodyDeserializerType::COLLECTION_VALUE_REPRESENTATION(),
 			"application/json",
-			function(ComplexType $type)
+			function(ComplexTypeHelper $typeHelper)
 			{
 				return "hello world";
 			});
 
 		// This should throw an exception as the closure above returns "hello world" instead of a deserializer.
-		$this->factory->newRequestBodyDeserializer(RequestBodyDeserializerType::COLLECTION_VALUE_REPRESENTATION(), "application/json", new AuthorType(new Database()));
+		$typeHelper = $this->getMockBuilder(ComplexTypeHelper::class)->disableOriginalConstructor()->getMock();
+		$this->factory->newRequestBodyDeserializer(RequestBodyDeserializerType::COLLECTION_VALUE_REPRESENTATION(), "application/json", $typeHelper);
 	}
 }

@@ -2,6 +2,7 @@
 namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Type\Type;
+use Light\ObjectAccess\Type\TypeHelper;
 use Light\ObjectAccess\Resource\ResolvedScalar;
 use Light\ObjectService\TestData\Database;
 use Light\ObjectService\TestData\Setup;
@@ -73,7 +74,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->dszFactory->registerDeserializer(
 			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
 			'application/json',
-			function(Type $type) use ($mockDeserializer)
+			function(TypeHelper $typeHelper) use ($mockDeserializer)
 			{
 				return $mockDeserializer;
 			});
@@ -106,7 +107,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->dszFactory->registerDeserializer(
 			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
 			'application/json',
-			function(Type $type) use ($mockDeserializer)
+			function(TypeHelper $typeHelper) use ($mockDeserializer)
 			{
 				return $mockDeserializer;
 			});
@@ -139,7 +140,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->dszFactory->registerDeserializer(
 			RequestBodyDeserializerType::get(RequestBodyDeserializerType::SIMPLE_VALUE_REPRESENTATION),
 			'text/plain',
-			function(Type $type) use ($mockDeserializer)
+			function(TypeHelper $typeHelper) use ($mockDeserializer)
 			{
 				return $mockDeserializer;
 			});
@@ -171,7 +172,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->dszFactory->registerDeserializer(
 			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION),
 			'application/json',
-			function(Type $type) use ($mockDeserializer)
+			function(TypeHelper $typeHelper) use ($mockDeserializer)
 			{
 				return $mockDeserializer;
 			});
@@ -204,7 +205,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 		$this->dszFactory->registerDeserializer(
 			RequestBodyDeserializerType::get(RequestBodyDeserializerType::COMPLEX_VALUE_MODIFICATION),
 			'application/json',
-			function(Type $type) use ($mockDeserializer)
+			function(TypeHelper $typeHelper) use ($mockDeserializer)
 			{
 				return $mockDeserializer;
 			});
