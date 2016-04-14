@@ -1,11 +1,16 @@
 <?php
 namespace Szyman\ObjectService\Request\Json;
 
+use Light\ObjectAccess\Exception\TypeException;
+use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
+use Light\ObjectAccess\Type\TypeHelper;
 use Light\ObjectService\Exception\MalformedRequest;
+use Light\ObjectService\Resource\Addressing\UrlUnresolvedAddress;
 use Szyman\ObjectService\Resource\ExistingResourceReference;
 use Szyman\ObjectService\Resource\KeyValueComplexValueRepresentation;
 use Szyman\ObjectService\Resource\NewComplexResourceReference;
+use Szyman\ObjectService\Resource\ResourceReference;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\ComplexValueModificationDeserializer;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
@@ -13,38 +18,16 @@ use Szyman\ObjectService\Service\ComplexValueRepresentationDeserializer;
 
 final class StandardJsonComplexValueDeserializer implements ComplexValueRepresentationDeserializer, ComplexValueModificationDeserializer
 {
-	const REPLACE = 1;
-	const UPDATE = 2;
-
 	/** @var ComplexTypeHelper */
 	private $typeHelper;
 
-	private $mode;
-
-	private function __construct(ComplexTypeHelper $typeHelper, $mode)
+	/**
+	 * Creates a new deserializer.
+	 * @param ComplexTypeHelper $typeHelper
+	 */
+	public function __construct(ComplexTypeHelper $typeHelper)
 	{
 		$this->typeHelper = $typeHelper;
-		$this->mode = $mode;
-	}
-
-	/**
-	 * Creates a new deserializer for a full object representation.
-	 * @param ComplexTypeHelper $typeHelper
-	 * @return StandardJsonComplexValueDeserializer
-	 */
-	public static function newRepresentationDeserializer(ComplexTypeHelper $typeHelper)
-	{
-		return new self($typeHelper, self::REPLACE);
-	}
-
-	/**
-	 * Creates a new deserializer for a partial object representation.
-	 * @param ComplexTypeHelper $typeHelper
-	 * @return StandardJsonComplexValueDeserializer
-	 */
-	public static function newModificationDeserializer(ComplexTypeHelper $typeHelper)
-	{
-		return new self($typeHelper, self::UPDATE);
 	}
 
 	/**
@@ -64,35 +47,52 @@ final class StandardJsonComplexValueDeserializer implements ComplexValueRepresen
 		$json = json_decode($content);
 		if (is_null($json))
 		{
-			throw new MalformedRequest("Could not convert request body to JSON");
+			throw new MalformedRequest('Could not convert request body to JSON: ' . json_last_error_msg());
 		}
 
-		$result = $this->readObject($json);
-		
+		try
+		{
+			$result = $this->readObject($json, $this->typeHelper);
+		}
+		catch (TypeException $e)
+		{
+			throw new MalformedRequest($e);
+		}
+
 		return $result;
 	}
 
 	/**
 	 * @param \stdClass $json
 	 * @return KeyValueComplexValueRepresentation
+	 * @throws TypeException
 	 */
-	private function readObject(\stdClass $json)
+	private function readObject(\stdClass $json, ComplexTypeHelper $typeHelper)
 	{
 		$result = new KeyValueComplexValueRepresentation();
 
 		foreach($json as $fieldName => $fieldValue)
 		{
+			$fieldTypeHelper = $typeHelper->getPropertyTypeHelper($fieldName);
+
 			if (is_scalar($fieldValue))
 			{
 				$result->setValue($fieldName, $fieldValue);
 			}
 			elseif (is_array($fieldValue))
 			{
-				$result->setArray($fieldName, $this->readList($fieldValue));
+				if ($fieldTypeHelper instanceof CollectionTypeHelper)
+				{
+					$result->setArray($fieldName, $this->readList($fieldValue, $fieldTypeHelper));
+				}
+				else
+				{
+					throw new TypeException('Property %1::%2 is not an collection', $typeHelper->getName(), $fieldName);
+				}
 			}
 			elseif (is_object($fieldValue))
 			{
-				$result->setResource($fieldName, $this->readReference($fieldValue));
+				$result->setResource($fieldName, $this->readReference($fieldValue, $fieldTypeHelper));
 			}
 			else
 			{
@@ -106,8 +106,9 @@ final class StandardJsonComplexValueDeserializer implements ComplexValueRepresen
 	/**
 	 * @param array $list
 	 * @return array
+	 * @throws TypeException
 	 */
-	private function readList(array $list)
+	private function readList(array $list, CollectionTypeHelper $typeHelper)
 	{
 		$result = array();
 
@@ -119,11 +120,19 @@ final class StandardJsonComplexValueDeserializer implements ComplexValueRepresen
 			}
 			elseif (is_array($element))
 			{
-				$result[] = $this->readList($element);
+				$baseTypeHelper = $typeHelper->getBaseTypeHelper();
+				if ($baseTypeHelper instanceof CollectionTypeHelper)
+				{
+					$result[] = $this->readList($element, $baseTypeHelper);
+				}
+				else
+				{
+					throw new TypeException('List element is not of a collection type');
+				}
 			}
 			elseif (is_object($element))
 			{
-				$result[] = $this->readReference($element);
+				$result[] = $this->readReference($element, $typeHelper->getBaseTypeHelper());
 			}
 			else
 			{
@@ -134,17 +143,33 @@ final class StandardJsonComplexValueDeserializer implements ComplexValueRepresen
 		return $result;
 	}
 
-	private function readReference($json)
+	/**
+	 * @param \stdClass  $json
+	 * @param TypeHelper $typeHelper
+	 * @return ResourceReference
+	 * @throws TypeException
+	 * @throws MalformedRequest
+	 */
+	private function readReference(\stdClass $json, TypeHelper $typeHelper)
 	{
 		if (isset($json->_href))
 		{
-			// FIXME: We need an address class that accepts a full URL.
-	//		return new ExistingResourceReference()
+			try
+			{
+				return new ExistingResourceReference(new UrlUnresolvedAddress($json->_href));
+			}
+			catch (\InvalidArgumentException $e)
+			{
+				throw new MalformedRequest($e);
+			}
+		}
+		elseif ($typeHelper instanceof ComplexTypeHelper)
+		{
+			return new NewComplexResourceReference($typeHelper, $this->readObject($json, $typeHelper));
 		}
 		else
 		{
-			// FIXME: We don't have a TypeHelper at this point. Change the deserializer interface?
-	//		return new NewComplexResourceReference()$this->readObject($json);
+			throw new TypeException('Only references to objects are supported');
 		}
 	}
 }

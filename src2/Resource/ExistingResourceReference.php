@@ -6,6 +6,7 @@ use Light\ObjectAccess\Resource\Addressing\RelativeAddress;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
+use Light\ObjectService\Resource\Addressing\UrlUnresolvedAddress;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 /**
@@ -30,6 +31,18 @@ final class ExistingResourceReference extends ResourceReference
 	public function resolve(ExecutionEnvironment $environment)
 	{
 		$address = $this->address;
+
+		if ($address instanceof UrlUnresolvedAddress)
+		{
+			$newAddress = $environment->getEndpointRegistry()->getResourceAddress($address->getUrl());
+
+			if (is_null($newAddress))
+			{
+				throw new ResourceReferenceException('Address ' . $address . ' could not be resolved to a resource');
+			}
+
+			$address = $newAddress;
+		}
 
 		if ($address instanceof EndpointRelativeAddress)
 		{

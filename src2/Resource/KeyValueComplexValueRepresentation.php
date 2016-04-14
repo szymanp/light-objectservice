@@ -58,6 +58,15 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 	}
 
 	/**
+	 * Returns a list of values defined in this representation.
+	 * @return array<string, mixed>
+	 */
+	public function getValues()
+	{
+		return $this->values;
+	}
+
+	/**
 	 * Updates the value of a complex resource to the one contained in this object.
 	 * @param ResolvedObject       $target The resource to be updated.
 	 * @param ExecutionEnvironment $environment
