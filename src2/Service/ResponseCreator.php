@@ -19,6 +19,7 @@ interface ResponseCreator
 	 * @return Response
 	 * @throws \InvalidArgumentException	Thrown if <kbd>$requestResult</kbd> is not of a supported type.
 	 * @throws SerializationException		Thrown if a problem was encountered while creating the response body.
+	 * @throws ConfigurationException		Thrown if a problem with the configuration prevents the creation of a response.
 	 */
 	public function newResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null);
 }

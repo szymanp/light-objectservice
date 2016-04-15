@@ -1,12 +1,10 @@
 <?php
 namespace Szyman\ObjectService\Request;
 
+use Light\ObjectAccess\Type\CollectionTypeHelper;
+use Light\ObjectAccess\Type\SimpleType;
 use Symfony\Component\HttpFoundation\Request;
-use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
-use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedObject;
-use Light\ObjectAccess\Resource\ResolvedCollection;
-use Light\ObjectAccess\Resource\ResolvedScalar;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\CollectionType;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
@@ -102,15 +100,16 @@ class StandardRequestHandler implements RequestHandler
 	{
 		$body = $this->deserialize($request, $requestComponents);
 		$subject = $requestComponents->getSubjectResource();
+		$subjectTypeHelper = $subject->getTypeHelper();
 		
 		// For 'create' requests, the subject resource is always a collection.
-		if (!($subject->getType() instanceof CollectionType))
+		if (!($subjectTypeHelper instanceof CollectionTypeHelper))
 		{
 			throw new \LogicException('Subject resource is not a collection');
 		}
 		
 		// Create the collection element.
-		$elementTypeHelper = $subject->getTypeHelper()->getBaseTypeHelper();
+		$elementTypeHelper = $subjectTypeHelper->getBaseTypeHelper();
 		if ($elementTypeHelper->getType() instanceof ComplexType)
 		{
 			$newElement = $elementTypeHelper->createResource($this->env->getTransaction());
@@ -122,6 +121,10 @@ class StandardRequestHandler implements RequestHandler
 		elseif ($elementTypeHelper->getType() instanceof CollectionType)
 		{
 			throw new NotImplementedException;	// TODO
+		}
+		else
+		{
+			throw new \LogicException('Unknown helper type');
 		}
 		
 		// Apply the deserialized representation to the element.
@@ -145,12 +148,12 @@ class StandardRequestHandler implements RequestHandler
 			}
 			
 			$key = $reladdr->getPathElements()[0];
-			$subject->getTypeHelper()->setValue($subject, $key, $newElement->getValue(), $this->env->getTransaction());
+			$subjectTypeHelper->setValue($subject, $key, $newElement->getValue(), $this->env->getTransaction());
 		}
 		else
 		{
 			// The new element should be appended at an arbitrary position.
-			$subject->getTypeHelper()->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
+			$subjectTypeHelper->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
 		}
 	
 		// TODO The $newElement object does not carry the proper Origin information.

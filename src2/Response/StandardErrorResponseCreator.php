@@ -10,6 +10,7 @@ use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
 use Light\ObjectAccess\Type\Util\DefaultTypeProvider;
+use Light\ObjectService\Exception\ConfigurationException;
 use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Exception\SerializationException;
 use Light\ObjectService\Resource\Projection\Projector;
@@ -31,6 +32,13 @@ class StandardErrorResponseCreator implements ResponseCreator
 	/** @var ResponseContentTypeMap */
 	private $responseContentTypeMap;
 
+	public function __construct(StructureSerializer $structureSerializer, DataSerializer $dataSerializer, ResponseContentTypeMap $responseContentTypeMap)
+	{
+		$this->structureSerializer = $structureSerializer;
+		$this->dataSerializer = $dataSerializer;
+		$this->responseContentTypeMap = $responseContentTypeMap;
+	}
+
 	/**
 	 * Creates a new Response object.
 	 * @param Request           $request
@@ -39,6 +47,7 @@ class StandardErrorResponseCreator implements ResponseCreator
 	 * @return Response
 	 * @throws \InvalidArgumentException	Thrown if <kbd>$requestResult</kbd> is not of a supported type.
 	 * @throws SerializationException		Thrown if a problem was encountered while creating the response body.
+	 * @throws ConfigurationException		Thrown if a problem with the configuration prevents the creation of a response.
 	 */
 	final public function newResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null)
 	{
@@ -53,7 +62,7 @@ class StandardErrorResponseCreator implements ResponseCreator
 		$typeHelper = $typeRegistry->getTypeHelperByValue($requestResult->getException());
 		if (!($typeHelper instanceof ComplexTypeHelper))
 		{
-			throw new \Exception(""); // TODO What kind of exception to throw?
+			throw new ConfigurationException('The configured type provider did not return a ComplexTypeHelper (but %1) for the requested exception', $typeHelper);
 		}
 		$resource = new ResolvedObject($typeHelper, $requestResult->getException(), EmptyResourceAddress::create(), Origin::unavailable());
 
@@ -65,10 +74,10 @@ class StandardErrorResponseCreator implements ResponseCreator
 
 		// Prepare the headers.
 		$headers = array();
-		$contentType = $this->responseContentTypeMap->getContentType($resource, $this->structureSerializer);
+		$contentType = $this->responseContentTypeMap->getContentType($resource, $this->dataSerializer);
 		if (is_null($contentType))
 		{
-			throw new \Exception("");	// TODO
+			throw new ConfigurationException('The configured content type map did not return a match');
 		}
 		$headers['CONTENT_TYPE'] = $contentType;
 
