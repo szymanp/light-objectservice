@@ -46,6 +46,19 @@ class KeyValueComplexValueRepresentationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @expectedException Szyman\ObjectService\Resource\ResourceReferenceException
+	 */
+	public function testUpdateWithMissingReference()
+	{
+		$rep = new KeyValueComplexValueRepresentation();
+		$rep->setResource('title', new ExistingResourceReference(new UrlUnresolvedAddress('http://example.org/resources/missing')));
+
+		$post = new Post();
+		$resource = $this->newResource($post);
+		$rep->updateObject($resource, $this->setup->getExecutionParameters());
+	}
+
+	/**
 	 * @param object $object
 	 * @return ResolvedObject
 	 */

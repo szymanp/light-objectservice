@@ -12,16 +12,40 @@ use Szyman\ObjectService\Response\DataSerializer;
  */
 final class TypeBasedResponseContentTypeMap implements ResponseContentTypeMap
 {
-	private $map = array();
+	private $types = array();
+	private $classes = array();
 
 	/**
-	 * Sets a new mapping.
-	 * @param string	$type			The type of the value underlying the resource. It can be a class name or a primitive type name.
+	 * Adds a new mapping for a PHP primitive type.
+	 * @param string	$type			The type of the value underlying the resource, e.g. "string".
 	 * @param string	$formatName		The name of the data serializer format.
 	 * @param string	$contentType	The MIME content-type.
 	 * @return $this
 	 */
-	public function set($type, $formatName, $contentType)
+	public function addPrimitiveType($type, $formatName, $contentType)
+	{
+		$this->validate($type, $formatName, $contentType);
+		$this->types[$type][$formatName] = $contentType;
+		return $this;
+	}
+
+	/**
+	 * Adds a new mapping for a class.
+	 * Note that an object of a subclasses will match a superclass that was added to the map.
+	 * The mappings that are added first are also checked first, therefore most specific entries should be added first,
+	 * while more generic ones last.
+	 * @param string	$type			The type of the value underlying the resource, i.e. a name of a PHP class.
+	 * @param string	$formatName		The name of the data serializer format.
+	 * @param string	$contentType	The MIME content-type.
+	 * @return $this
+	 */
+	public function addClass($type, $formatName, $contentType)
+	{
+		$this->classes[$type][$formatName] = $contentType;
+		return $this;
+	}
+
+	private function validate($type, $formatName, $contentType)
 	{
 		if (!is_string($contentType))
 		{
@@ -39,8 +63,6 @@ final class TypeBasedResponseContentTypeMap implements ResponseContentTypeMap
 		{
 			throw InvalidArgumentException::newInvalidType('$formatName', $formatName, 'string');
 		}
-		$this->map[$type][$formatName] = $contentType;
-		return $this;
 	}
 
 	public function getContentType(ResolvedResource $resource, DataSerializer $serializer)
@@ -48,11 +70,32 @@ final class TypeBasedResponseContentTypeMap implements ResponseContentTypeMap
 		if ($resource instanceof ResolvedValue)
 		{
 			$value = $resource->getValue();
-			$type = is_object($value) ? get_class($value) : gettype($value);
 
-			if (isset($this->map[$type][$serializer->getFormatName()]))
+			if (is_object($value))
 			{
-				return $this->map[$type][$serializer->getFormatName()];
+				foreach($this->classes as $type => $values)
+				{
+					if ($value instanceof $type)
+					{
+						if (isset($values[$serializer->getFormatName()]))
+						{
+							return $values[$serializer->getFormatName()];
+						}
+					}
+				}
+			}
+			else
+			{
+				foreach($this->types as $type => $values)
+				{
+					if (gettype($value) == $type)
+					{
+						if (isset($values[$serializer->getFormatName()]))
+						{
+							return $values[$serializer->getFormatName()];
+						}
+					}
+				}
 			}
 		}
 		return null;

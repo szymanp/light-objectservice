@@ -11,13 +11,13 @@ use Szyman\ObjectService\Response\DataSerializer;
 
 class TypeBasedResponseContentTypeMapTest extends \PHPUnit_Framework_TestCase
 {
-	public function testMap()
+	public function testMapWithOneValue()
 	{
 		$setup = Setup::create();
 		$typeHelper = $setup->getTypeRegistry()->getComplexTypeHelper(Post::class);
 
 		$map = new TypeBasedResponseContentTypeMap();
-		$map->set(Post::class, "JSON", "application/vnd.post+json");
+		$map->addClass(Post::class, "JSON", "application/vnd.post+json");
 
 		$serializer1 = $this->getMockBuilder(DataSerializer::class)->getMock();
 		$serializer1->method("getFormatName")->willReturn('JSON');
