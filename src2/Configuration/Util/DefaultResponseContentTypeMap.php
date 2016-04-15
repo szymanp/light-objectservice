@@ -2,6 +2,7 @@
 namespace Szyman\ObjectService\Configuration\Util;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
+use Light\ObjectAccess\Type\Type;
 use Szyman\Exception\InvalidArgumentException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Response\DataSerializer;
@@ -15,11 +16,11 @@ class DefaultResponseContentTypeMap implements ResponseContentTypeMap
 
 	/**
 	 * Adds a new content-type mapping.
-	 * @param ResolvedResource	$resource
+	 * @param Type				$type
 	 * @param DataSerializer	$serializer
 	 * @return $this
 	 */
-	public function set(ResolvedResource $resource, DataSerializer $serializer, $contentType)
+	public function set(Type $type, DataSerializer $serializer, $contentType)
 	{
 		if (!is_string($contentType))
 		{
@@ -29,7 +30,7 @@ class DefaultResponseContentTypeMap implements ResponseContentTypeMap
 		{
 			throw InvalidArgumentException::newInvalidValue('$contentType', $contentType, 'Invalid MIME type');
 		}
-		$this->map[$this->getKey($resource, $serializer)] = $contentType;
+		$this->map[$this->getKey($type, $serializer)] = $contentType;
 		return $this;
 	}
 
@@ -46,7 +47,7 @@ class DefaultResponseContentTypeMap implements ResponseContentTypeMap
 	 */
 	public function getContentType(ResolvedResource $resource, DataSerializer $serializer)
 	{
-		$key = $this->getKey($resource, $serializer);
+		$key = $this->getKey($resource->getType(), $serializer);
 		if (isset($this->map[$key]))
 		{
 			return $this->map[$key];
@@ -54,8 +55,8 @@ class DefaultResponseContentTypeMap implements ResponseContentTypeMap
 		return null;
 	}
 	
-	protected function getKey(ResolvedResource $resource, DataSerializer $serializer)
+	protected function getKey(Type $type, DataSerializer $serializer)
 	{
-		return spl_object_hash($resource) . '-' . spl_object_hash($serializer);
+		return spl_object_hash($type) . '-' . spl_object_hash($serializer);
 	}
 }
