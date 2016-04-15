@@ -2,11 +2,9 @@
 namespace Szyman\ObjectService\Response;
 
 use Light\ObjectService\Exception\MalformedRequest;
-use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Szyman\ObjectService\Configuration\Util\TypeBasedResponseContentTypeMap;
 use Szyman\ObjectService\Service\ExceptionRequestResult;
 
 class StandardErrorResponseCreatorTest extends AbstractResponseCreatorTest
