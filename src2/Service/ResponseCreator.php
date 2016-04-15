@@ -1,6 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
+use Light\ObjectService\Exception\ConfigurationException;
 use Light\ObjectService\Exception\SerializationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
