@@ -50,7 +50,7 @@ final class StandardRequestBodyDeserializerFactory implements RequestBodyDeseria
 				case RequestBodyDeserializerType::SIMPLE_VALUE_REPRESENTATION:
 					return null;	// TODO
 				case RequestBodyDeserializerType::COMPLEX_VALUE_REPRESENTATION:
-				case RequestBodyDeserializerType::COLLECTION_VALUE_MODIFICATION:
+				case RequestBodyDeserializerType::COMPLEX_VALUE_MODIFICATION:
 					if ($typeHelper instanceof ComplexTypeHelper)
 					{
 						return new StandardJsonComplexValueDeserializer($typeHelper);
