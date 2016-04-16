@@ -2,6 +2,7 @@
 namespace Szyman\ObjectService\Configuration\Util;
 
 use Light\ObjectService\Service\EndpointRegistry;
+use Light\ObjectService\TestData\DummyTransactionFactory;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
@@ -27,6 +28,7 @@ class DefaultConfigurationTest extends \PHPUnit_Framework_TestCase
 		$dcb->requestBodyDeserializerFactory($this->getMockBuilder(RequestBodyDeserializerFactory::class)->getMock());
 		$dcb->requestHandlerFactory($this->getMockBuilder(RequestHandlerFactory::class)->getMock());
 		$dcb->responseCreatorFactory($this->getMockBuilder(ResponseCreatorFactory::class)->getMock());
+		$dcb->transactionFactory(new DummyTransactionFactory());
 
 		$dc = $dcb->build();
 		$this->assertInstanceOf(DefaultConfiguration::class, $dc);

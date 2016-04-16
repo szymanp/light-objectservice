@@ -18,6 +18,7 @@ include_once "ObjectService/TestData/PostCollectionType.php";
 include_once "ObjectService/TestData/Database.php";
 include_once "ObjectService/TestData/Setup.php";
 include_once "ObjectService/TestData/RemoteJsonClient.php";
+include_once "ObjectService/TestData/DummyTransactionFactory.php";
 @include_once "config-local.php";
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);

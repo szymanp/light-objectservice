@@ -4,6 +4,7 @@ use Light\ObjectService\Service\EndpointRegistry;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
+use Szyman\ObjectService\Service\TransactionFactory;
 
 /**
  * Configuration settings.
@@ -39,4 +40,10 @@ interface Configuration
 	 * @return ResponseCreatorFactory
 	 */
 	public function getResponseCreatorFactory();
+
+	/**
+	 * Returns a TransactionFactory for transaction management.
+	 * @return TransactionFactory
+	 */
+	public function getTransactionFactory();
 }

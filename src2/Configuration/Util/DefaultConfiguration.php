@@ -7,6 +7,7 @@ use Szyman\ObjectService\Configuration\Configuration;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
+use Szyman\ObjectService\Service\TransactionFactory;
 
 final class DefaultConfiguration implements Configuration
 {
@@ -20,6 +21,8 @@ final class DefaultConfiguration implements Configuration
 	private $requestHandlerFactory;
 	/** @var ResponseCreatorFactory */
 	private $responseCreatorFactory;
+	/** @var TransactionFactory */
+	private $transactionFactory;
 
 	private function __construct()
 	{
@@ -40,6 +43,7 @@ final class DefaultConfiguration implements Configuration
 			$dc->requestBodyDeserializerFactory	= $vals->requestBodyDeserializerFactory;
 			$dc->requestHandlerFactory			= $vals->requestHandlerFactory;
 			$dc->responseCreatorFactory			= $vals->responseCreatorFactory;
+			$dc->transactionFactory				= $vals->transactionFactory;
 			return $dc;
 		});
 	}
@@ -88,6 +92,15 @@ final class DefaultConfiguration implements Configuration
 	public function getResponseCreatorFactory()
 	{
 		return $this->responseCreatorFactory;
+	}
+
+	/**
+	 * Returns a TransactionFactory for transaction management.
+	 * @return TransactionFactory
+	 */
+	public function getTransactionFactory()
+	{
+		return $this->transactionFactory;
 	}
 }
 
@@ -151,13 +164,26 @@ final class DefaultConfiguration_Builder
 	}
 
 	/**
+	 * @param TransactionFactory $transactionFactory
+	 * @return $this
+	 */
+	public function transactionFactory(TransactionFactory $transactionFactory)
+	{
+		$this->values->transactionFactory = $transactionFactory;
+		return $this;
+	}
+
+	/**
 	 * Builds a new <kbd>DefaultConfiguration</kbd> object.
 	 * @return DefaultConfiguration
 	 */
 	public function build()
 	{
 		// Check that mandatory arguments are specified.
-		$mandatory = ['endpointRegistry', 'requestBodyTypeMap', 'requestBodyDeserializerFactory', 'requestHandlerFactory', 'responseCreatorFactory'];
+		$mandatory = [
+			'endpointRegistry', 'requestBodyTypeMap', 'requestBodyDeserializerFactory', 'requestHandlerFactory',
+			'responseCreatorFactory', 'transactionFactory'
+		];
 		foreach($mandatory as $name)
 		{
 			if (is_null($this->values->$name)) throw new \LogicException("$name not set");

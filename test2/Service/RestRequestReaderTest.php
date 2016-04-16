@@ -5,6 +5,7 @@ use Light\ObjectAccess\Type\Type;
 use Light\ObjectAccess\Type\TypeHelper;
 use Light\ObjectAccess\Resource\ResolvedScalar;
 use Light\ObjectService\TestData\Database;
+use Light\ObjectService\TestData\DummyTransactionFactory;
 use Light\ObjectService\TestData\Setup;
 use Symfony\Component\HttpFoundation\Request;
 use Szyman\Exception\NotImplementedException;
@@ -39,6 +40,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 			->requestBodyTypeMap($typeMap)
 			->requestHandlerFactory(new RestRequestReaderTest_RequestHandlerFactory)
 			->responseCreatorFactory(new RestRequestReaderTest_ResponseCreatorFactory)
+			->transactionFactory(new DummyTransactionFactory())
 			->build();
 	}
 
