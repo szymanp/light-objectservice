@@ -283,7 +283,7 @@ class RestRequestReaderTest extends \PHPUnit_Framework_TestCase
 // Dummy class, not used by RestRequestReader.
 class RestRequestReaderTest_RequestHandlerFactory implements RequestHandlerFactory
 {
-	public function newRequestHandler(RequestType $requestType)
+	public function newRequestHandler(RequestType $requestType, ExecutionEnvironment $environment)
 	{
 		throw new NotImplementedException;
 	}

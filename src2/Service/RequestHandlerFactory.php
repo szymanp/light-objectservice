@@ -9,9 +9,10 @@ interface RequestHandlerFactory
 	/**
 	 * Creates a new <kbd>RequestHandler</kbd> appropriate for the request type.
 	 *
-	 * @param RequestType	$requestType
+	 * @param RequestType          $requestType
+	 * @param ExecutionEnvironment $environment
 	 * @return RequestHandler	A <kbd>RequestHandler</kbd> object, if the factory is capable for producing appropriate
 	 *							handlers; otherwise, NULL.
 	 */
-	public function newRequestHandler(RequestType $requestType);
+	public function newRequestHandler(RequestType $requestType, ExecutionEnvironment $environment);
 }
