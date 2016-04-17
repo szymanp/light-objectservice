@@ -4,6 +4,9 @@ namespace Szyman\ObjectService\Configuration;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Szyman\ObjectService\Response\DataSerializer;
 
+/**
+ * Provides a MIME content-type for the response based on the response resource and serialization format.
+ */
 interface ResponseContentTypeMap
 {
 	/**

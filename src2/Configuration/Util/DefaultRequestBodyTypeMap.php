@@ -7,7 +7,7 @@ use Szyman\ObjectService\Service\RequestBodyType;
 
 final class DefaultRequestBodyTypeMap implements RequestBodyTypeMap, \ArrayAccess
 {
-	/** @var string[] */
+	/** @var RequestBodyType[] */
 	private $map = array();
 	
 	public function offsetGet($offset)
