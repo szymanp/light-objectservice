@@ -1,6 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Response;
 
+use Light\ObjectAccess\Type\SimpleTypeHelper;
 use Light\ObjectService\Exception\SerializationException;
 use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
@@ -79,61 +80,66 @@ final class HalSerializer implements StructureSerializer
 		$document->_links->$rel = $link;
 	}
 
-	private function addEmbedded(\stdClass $document, $rel, DataEntity $dataEntity)
+	private function addEmbedded(\stdClass $document, $rel, DataEntity $dataEntity, $asList = false)
 	{
 		if (!isset($document->_embedded))
 		{
 			$document->_embedded = new \stdclass;
 		}
 
-		$document->_embedded->$rel = $this->serializeDocument($dataEntity);
+		if ($asList)
+		{
+			if (!isset($document->_embedded->$rel))
+			{
+				$document->_embedded->$rel = [$this->serializeDocument($dataEntity)];
+			}
+			elseif (is_array($document->_embedded->$rel))
+			{
+				array_push($document->_embedded->$rel, $this->serializeDocument($dataEntity));
+			}
+			else
+			{
+				throw new \LogicException;
+			}
+		}
+		else
+		{
+			$document->_embedded->$rel = $this->serializeDocument($dataEntity);
+		}
 	}
 
 	private function serializeCollection(\stdClass $document, DataCollection $dataCollection)
 	{
 		$data = $dataCollection->getData();
-		$processedData = array();
 
-		$hasScalars = false;
-		$hasResources = false;
-
-		// TODO
-
-		if (is_array($data))
+		if (is_array($data))	// Collection is a list
 		{
-			// The collection is a list
-			$elements = array();
-			foreach($data as $value)
+			if ($dataCollection->getTypeHelper()->getBaseTypeHelper() instanceof SimpleTypeHelper)
 			{
-				if ($value instanceof DataEntity)
+				// Collection contains scalar values
+				$document->elements = $data;
+			}
+			else
+			{
+				// Collection contains resources
+				$elements = array();
+
+				foreach($data as $value)
 				{
-					$hasResources = true;
-					$processedData[] = $this->serializeDocument($value);
-				}
-				else
-				{
-					$hasScalars = true;
-					$processedData[] = $value;
+					if ($value instanceof DataEntity)
+					{
+						$this->addEmbedded($document, 'elements', $value, true);
+					}
+					else
+					{
+						throw new SerializationException('Collection of resources contains scalar values');
+					}
 				}
 			}
 		}
 		elseif ($data instanceof \stdClass)
 		{
-			// The collection is a dictionary
-			$elements = array();
-			foreach($data as $key => $value)
-			{
-				if ($value instanceof DataEntity)
-				{
-					$hasResources = true;
-					$processedData->$key = $this->serializeDocument($value);
-				}
-				else
-				{
-					$hasScalars = true;
-					$processedData->$key = $value;
-				}
-			}
+			throw new SerializationException('Serialization of dictionaries is not supported');
 		}
 		else
 		{
@@ -141,7 +147,7 @@ final class HalSerializer implements StructureSerializer
 		}
 	}
 
-	protected function serializeObject(\stdClass $document, DataObject $dataObject)
+	private function serializeObject(\stdClass $document, DataObject $dataObject)
 	{
 		foreach($dataObject->getData() as $propertyName => $value)
 		{
@@ -150,14 +156,37 @@ final class HalSerializer implements StructureSerializer
 				throw new SerializationException("Property '$propertyName' is a reserved name in the HAL format'");
 			}
 
-			if ($value instanceof DataEntity)
+			if ($value instanceof DataObject)
 			{
 				$this->addEmbedded($document, $propertyName, $value);
+			}
+			elseif ($value instanceof DataCollection)
+			{
+				if ($value->getTypeHelper()->getBaseTypeHelper() instanceof SimpleTypeHelper)
+				{
+					// Collections of simple values are serialized inline.
+					 $document->$propertyName = $this->getInlineSimpleCollection($value);
+				}
+				else
+				{
+					// Collections of resources are serialized as embedded documents.
+					$this->addEmbedded($document, $propertyName, $value);
+				}
 			}
 			else
 			{
 				$document->$propertyName = $value;
 			}
 		}
+	}
+
+	private function getInlineSimpleCollection(DataCollection $collection)
+	{
+		if (is_object($collection->getData()))
+		{
+			throw new SerializationException('Serialization of dictionaries is not supported');
+		}
+
+		return $collection->getData();
 	}
 }
