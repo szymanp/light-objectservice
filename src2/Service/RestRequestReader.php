@@ -77,7 +77,7 @@ use Szyman\ObjectService\Configuration\Configuration;
  * - If content-type of the body is in an "action" format, then the specified action is executed.
  *	 The underlying resource MUST exist and may be either an object or a collection.
  */
-class RestRequestReader
+final class RestRequestReader
 {
 	/** @var Configuration */
 	private $conf;
@@ -87,6 +87,14 @@ class RestRequestReader
 		$this->conf = $conf;
 	}
 
+	/**
+	 * Decodes the Web API request into its components.
+	 * @param Request $request
+	 * @return RequestComponents
+	 * @throws MethodNotAllowed
+	 * @throws NotFound
+	 * @throws UnsupportedMediaType
+	 */
 	public function readRequest(Request $request)
 	{
 		$result = RequestComponents::newBuilder();
