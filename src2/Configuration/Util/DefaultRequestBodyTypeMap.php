@@ -1,7 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Configuration\Util;
 
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 use Szyman\ObjectService\Configuration\RequestBodyTypeMap;
 use Szyman\ObjectService\Service\RequestBodyType;
 
@@ -24,7 +24,7 @@ final class DefaultRequestBodyTypeMap implements RequestBodyTypeMap, \ArrayAcces
 	{
 		if (!is_string($contentType))
 		{
-			throw InvalidArgumentException::newInvalidType('$contentType', $contentType, "string");
+			throw new InvalidArgumentTypeException('$contentType', $contentType, "string");
 		}
 		unset($this->map[$contentType]);
 	}
@@ -33,11 +33,11 @@ final class DefaultRequestBodyTypeMap implements RequestBodyTypeMap, \ArrayAcces
 	{
 		if (!is_string($contentType))
 		{
-			throw InvalidArgumentException::newInvalidType('$contentType', $contentType, "string");
+			throw new InvalidArgumentTypeException('$contentType', $contentType, "string");
 		}
 		if (!($requestBodyType instanceof RequestBodyType))
 		{
-			throw InvalidArgumentException::newInvalidType('$requestBodyType', $requestBodyType, RequestBodyType::class);
+			throw new InvalidArgumentTypeException('$requestBodyType', $requestBodyType, RequestBodyType::class);
 		}
 		$this->map[$contentType] = $requestBodyType;
 	}

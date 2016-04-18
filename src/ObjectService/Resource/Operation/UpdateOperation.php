@@ -8,7 +8,7 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
 use Light\ObjectService\Resource\ResourceSpecification;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 final class UpdateOperation extends Operation
@@ -25,7 +25,7 @@ final class UpdateOperation extends Operation
 	{
 		if (!is_scalar($value) && !is_array($value))
 		{
-			throw InvalidArgumentException::newInvalidType('$value', $value, "scalar");
+			throw new InvalidArgumentTypeException('$value', $value, "scalar");
 		}
 		$this->values[$fieldName] = $value;
 	}

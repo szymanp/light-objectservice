@@ -3,8 +3,9 @@ namespace Light\ObjectService\Resource\Addressing;
 
 use Light\ObjectAccess\Query\Scope;
 use Light\ObjectAccess\Resource\Addressing\ResourceAddress;
+use Szyman\Exception\InvalidArgumentValueException;
 use Szyman\ObjectService\Configuration\Endpoint;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 /**
  * A resource address that is relative to a service endpoint.
@@ -104,7 +105,7 @@ class EndpointRelativeAddress implements ResourceAddress
 	{
 		if (strpos($pathElement, self::SEPARATOR) !== false)
 		{
-			throw InvalidArgumentException::newInvalidValue('$pathElement', $pathElement, "The path element cannot contain the separator character (" . self::SEPARATOR . ")");
+			throw new InvalidArgumentValueException('$pathElement', $pathElement, "The path element cannot contain the separator character (" . self::SEPARATOR . ")");
 		}
 
 		$newAddress = $this->getCopy();

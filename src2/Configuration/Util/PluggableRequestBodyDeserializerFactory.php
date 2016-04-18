@@ -2,7 +2,8 @@
 namespace Szyman\ObjectService\Configuration\Util;
 
 use Light\ObjectAccess\Type\TypeHelper;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\InvalidArgumentValueException;
 use Szyman\Exception\UnexpectedValueException;
 use Szyman\ObjectService\Service\RequestBodyDeserializer;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
@@ -79,11 +80,11 @@ abstract class PluggableRequestBodyDeserializerFactory_Base
 	{
 		if (!is_string($contentType))
 		{
-			throw InvalidArgumentException::newInvalidType('$contentType', $contentType, "string");
+			throw new InvalidArgumentTypeException('$contentType', $contentType, "string");
 		}
 		if (empty($contentType))
 		{
-			throw InvalidArgumentException::newInvalidValue('$contentType', $contentType, "Content-type cannot be empty");
+			throw new InvalidArgumentValueException('$contentType', $contentType, "Content-type cannot be empty");
 		}
 		$this->contentType = $contentType;
 	}

@@ -5,7 +5,8 @@ use Light\ObjectAccess\Exception\AddressResolutionException;
 use Light\ObjectAccess\Resource\RelativeAddressReader;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectService\Resource\Addressing\UrlRelativeAddress;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\InvalidArgumentValueException;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
 
 class TraverseOperation extends Operation
@@ -22,7 +23,7 @@ class TraverseOperation extends Operation
 	{
 		if (empty($addressFragment))
 		{
-			throw InvalidArgumentException::newInvalidValue('$addressFragment', $addressFragment, "Address fragment cannot be empty");
+			throw new InvalidArgumentValueException('$addressFragment', $addressFragment, "Address fragment cannot be empty");
 		}
 		$this->traversals[$addressFragment][] = $operation;
 	}

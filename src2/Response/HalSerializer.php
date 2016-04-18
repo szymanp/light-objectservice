@@ -6,7 +6,7 @@ use Light\ObjectService\Exception\SerializationException;
 use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 /**
  * Hypertext Application Language serializer.
@@ -61,7 +61,7 @@ final class HalSerializer implements StructureSerializer
 		}
 		else
 		{
-			throw InvalidArgumentException::newInvalidType('$dataEntity', $dataEntity);
+			throw new InvalidArgumentTypeException('$dataEntity', $dataEntity);
 		}
 
 		return $document;

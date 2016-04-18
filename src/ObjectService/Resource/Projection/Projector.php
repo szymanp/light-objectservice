@@ -13,7 +13,7 @@ use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
 use Light\ObjectService\Resource\Util\DefaultSearchContext;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 /**
  * Projects a resource object or collection into a DataEntity object according to selection expressions.
@@ -59,7 +59,7 @@ class Projector
 			}
 			else
 			{
-				throw InvalidArgumentException::newInvalidType('$resource', $resource);
+				throw new InvalidArgumentTypeException('$resource', $resource);
 			}
 		}
 		catch (ProjectorException $e)

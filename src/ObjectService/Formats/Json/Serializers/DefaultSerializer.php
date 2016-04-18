@@ -5,7 +5,7 @@ use Light\ObjectService\Resource\Projection\DataCollection;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Light\ObjectService\Resource\Projection\DataObject;
 use Light\ObjectService\Service\Protocol\ResourceSerializer;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 /**
  * Default serializer
@@ -50,7 +50,7 @@ class DefaultSerializer extends BaseSerializer implements ResourceSerializer
 		}
 		else
 		{
-			throw InvalidArgumentException::newInvalidType('$dataEntity', $dataEntity);
+			throw new InvalidArgumentTypeException('$dataEntity', $dataEntity);
 		}
 
 		return $document;

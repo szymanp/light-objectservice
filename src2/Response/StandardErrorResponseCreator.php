@@ -16,7 +16,7 @@ use Light\ObjectService\Exception\SerializationException;
 use Light\ObjectService\Resource\Projection\Projector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Service\ExceptionRequestResult;
 use Szyman\ObjectService\Service\RequestComponents;
@@ -54,7 +54,7 @@ class StandardErrorResponseCreator implements ResponseCreator
 		// Check if the request result is applicable.
 		if (!($requestResult instanceof ExceptionRequestResult))
 		{
-			throw InvalidArgumentException::newInvalidType('$requestResult', $requestResult, ExceptionRequestResult::class);
+			throw new InvalidArgumentTypeException('$requestResult', $requestResult, ExceptionRequestResult::class);
 		}
 
 		// Build the exception resource.

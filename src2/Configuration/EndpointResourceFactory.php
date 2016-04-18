@@ -12,7 +12,7 @@ use Light\ObjectAccess\Type\TypeHelper;
 use Light\ObjectAccess\Type\TypeRegistry;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
 use Szyman\Exception\Exception;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 /**
  * A factory that can create resources based on a supplied Endpoint.
@@ -52,7 +52,7 @@ abstract class EndpointResourceFactory
 
 	protected function __construct($address, Origin $origin = null)
 	{
-		if (!is_string($address)) throw InvalidArgumentException::newInvalidType('address', $address, 'string');
+		if (!is_string($address)) throw new InvalidArgumentTypeException('address', $address, 'string');
 
 		$this->address = $address;
 		$this->origin = $origin ? $origin : Origin::unavailable();

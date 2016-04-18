@@ -8,7 +8,7 @@ use Light\ObjectAccess\Type\Complex\Create;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
 use Szyman\Exception\Exception;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 class PostType extends DefaultComplexType implements Create, CanonicalAddress
 {
@@ -66,7 +66,7 @@ class PostType extends DefaultComplexType implements Create, CanonicalAddress
 		}
 		else
 		{
-			throw InvalidArgumentException::newInvalidType('$object', $object, Post::class);
+			throw new InvalidArgumentTypeException('$object', $object, Post::class);
 		}
 	}
 }

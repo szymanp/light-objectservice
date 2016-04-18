@@ -4,7 +4,7 @@ namespace Szyman\ObjectService\Resource;
 use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedValue;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 use Szyman\Exception\NotImplementedException;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
@@ -28,7 +28,7 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 	{
 		if (!is_scalar($value))
 		{
-			throw InvalidArgumentException::newInvalidType('$value', $value, "scalar");
+			throw new InvalidArgumentTypeException('$value', $value, "scalar");
 		}
 		$this->values[$fieldName] = $value;
 	}

@@ -5,7 +5,7 @@ use Light\ObjectAccess\Exception\TypeException;
 use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\ComplexTypeHelper;
 use Light\ObjectAccess\Type\SimpleTypeHelper;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 class RootSelection extends Selection
 {
@@ -56,7 +56,7 @@ class RootSelection extends Selection
 		}
 		else
 		{
-			throw InvalidArgumentException::newInvalidType('$fields', $fields, "string|array");
+			throw new InvalidArgumentTypeException('$fields', $fields, "string|array");
 		}
 		
 		return $this;

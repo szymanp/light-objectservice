@@ -8,14 +8,14 @@ use Light\ObjectAccess\Resource\Util\EmptyResourceAddress;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectService\TestData\Post;
 use Light\ObjectService\TestData\Setup;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Response\DataSerializer;
 
 class DefaultResponseContentTypeMapTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @expectedException Szyman\Exception\InvalidArgumentException
+	 * @expectedException Szyman\Exception\InvalidArgumentValueException
 	 */
 	public function testInvalidContentType()
 	{

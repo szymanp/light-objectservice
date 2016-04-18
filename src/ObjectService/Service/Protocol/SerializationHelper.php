@@ -4,7 +4,7 @@ namespace Light\ObjectService\Service\Protocol;
 use Light\ObjectService\Resource\Projection\DataEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Szyman\Exception\Exception;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
 
 class SerializationHelper
 {
@@ -118,7 +118,7 @@ class SerializationHelper
 			return $this->getValueSerializer($httpRequest);
 		}
 
-		throw InvalidArgumentException::newInvalidType('$value', $value, "Exception|DataEntity|scalar");
+		throw new InvalidArgumentTypeException('$value', $value, "Exception|DataEntity|scalar");
 	}
 
 	/**

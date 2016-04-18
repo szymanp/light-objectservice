@@ -11,7 +11,8 @@ use Light\ObjectService\Exception\ConfigurationException;
 use Light\ObjectService\Resource\Projection\Projector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\InvalidArgumentValueException;
 use Szyman\Exception\UnexpectedValueException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Response\StandardResourceResponseCreator\ResponseContent;
@@ -53,13 +54,13 @@ class StandardResourceResponseCreator implements ResponseCreator
 		// Check if the request result is applicable.
 		if (!($requestResult instanceof ResourceRequestResult))
 		{
-			throw InvalidArgumentException::newInvalidType('$requestResult', $requestResult, ResourceRequestResult::class);
+			throw new InvalidArgumentTypeException('$requestResult', $requestResult, ResourceRequestResult::class);
 		}
 
 		// RequestComponents must not be NULL for this ResponseCreator.
 		if (is_null($requestComponents))
 		{
-			throw InvalidArgumentException::newInvalidValue('$requestComponents', $requestComponents, 'Value cannot be NULL');
+			throw new InvalidArgumentValueException('$requestComponents', $requestComponents, 'Value cannot be NULL');
 		}
 
 		// Setup some default headers

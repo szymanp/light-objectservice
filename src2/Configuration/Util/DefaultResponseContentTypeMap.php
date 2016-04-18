@@ -3,7 +3,8 @@ namespace Szyman\ObjectService\Configuration\Util;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Type\Type;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\InvalidArgumentValueException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
 use Szyman\ObjectService\Response\DataSerializer;
 
@@ -24,11 +25,11 @@ class DefaultResponseContentTypeMap implements ResponseContentTypeMap
 	{
 		if (!is_string($contentType))
 		{
-			throw InvalidArgumentException::newInvalidType('$contentType', $contentType, 'string');
+			throw new InvalidArgumentTypeException('$contentType', $contentType, 'string');
 		}
 		if (strpos($contentType, '/') === false)
 		{
-			throw InvalidArgumentException::newInvalidValue('$contentType', $contentType, 'Invalid MIME type');
+			throw new InvalidArgumentValueException('$contentType', $contentType, 'Invalid MIME type');
 		}
 		$this->map[$this->getKey($type, $serializer)] = $contentType;
 		return $this;

@@ -4,7 +4,8 @@ namespace Szyman\ObjectService\Service;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\Addressing\RelativeAddress;
 use Light\ObjectService\Resource\Addressing\EndpointRelativeAddress;
-use Szyman\Exception\InvalidArgumentException;
+use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\InvalidArgumentValueException;
 
 /**
  * A container holding the decoded components of a request.
@@ -180,7 +181,7 @@ final class RequestComponents_Builder
 		}
 		else
 		{
-			throw InvalidArgumentException::newInvalidValue(
+			throw new InvalidArgumentValueException(
 				'$relativeAddress',
 				$relativeAddress,
 				'The source resource must match the subject resource');
