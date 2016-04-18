@@ -95,6 +95,7 @@ final class KeyValueComplexValueRepresentation implements ComplexValueRepresenta
 	public function replaceObject(ResolvedObject $target, ExecutionEnvironment $environment)
 	{
 		// TODO: Implement replaceObject() method.
+		throw new NotImplementedException;
 	}
 
 	/**

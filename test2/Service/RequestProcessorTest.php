@@ -70,4 +70,25 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(is_object($json));
 		$this->assertTrue(isset($json->_links));
 	}
+	
+	public function testCreatePostViaPOST()
+	{
+		$content = <<<'EOD'
+{
+"title": "Great quotes",
+"text": "To be or not to be",
+"author": { "_href": "http://example.org/resources/max" }
+}
+EOD;
+
+		$headers = ['HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'];
+		$request = Request::create('http://example.org/collections/post', 'POST', [], [], [], $headers, $content);
+		$response = $this->requestProcessor->handle($request);
+
+		$this->assertInstanceOf(Response::class, $response);
+		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+		$this->assertEquals('http://example.org/collections/post/5050', $response->headers->get('LOCATION'));
+		$this->assertEquals('application/vnd.post+json', $response->headers->get('CONTENT_TYPE'));
+		$this->assertJsonStringEqualsJsonFile(dirname(__FILE__) . '/RequestProcessorTest.CreatePostViaPOST.json', $response->getContent());
+	}
 }

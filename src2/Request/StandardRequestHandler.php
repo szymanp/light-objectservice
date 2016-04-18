@@ -5,9 +5,12 @@ use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\SimpleType;
 use Symfony\Component\HttpFoundation\Request;
 use Light\ObjectAccess\Resource\ResolvedObject;
+use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\CollectionType;
+use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
+use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\DeserializedBody;
 use Szyman\ObjectService\Service\RequestComponents;
 use Szyman\ObjectService\Service\RequestHandler;
@@ -128,7 +131,15 @@ class StandardRequestHandler implements RequestHandler
 		}
 		
 		// Apply the deserialized representation to the element.
-		if ($newElement instanceof ResolvedObject && $body instanceof ComplexValueRepresentation)
+		if ($newElement instanceof ResolvedObject && $body instanceof ComplexValueModification)
+		{
+			// ComplexValueModification is not really applicable to Create requests.
+			// However, if we happen to have a DeserializedBody of that type, we can simply use updateObject
+			// instead of ComplexValueRepresentation::replaceObject, as we know that the element was just created
+			// and there is no need to nullify all the field values.
+			$body->updateObject($newElement, $this->env);
+		}
+		elseif ($newElement instanceof ResolvedObject && $body instanceof ComplexValueRepresentation)
 		{
 			$body->replaceObject($newElement, $this->env);
 		}
@@ -149,15 +160,35 @@ class StandardRequestHandler implements RequestHandler
 			
 			$key = $reladdr->getPathElements()[0];
 			$subjectTypeHelper->setValue($subject, $key, $newElement->getValue(), $this->env->getTransaction());
+			$origin = Origin::elementInCollection($subject, $key);
 		}
 		else
 		{
 			// The new element should be appended at an arbitrary position.
-			$subjectTypeHelper->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
+			$key = $subjectTypeHelper->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
+			$origin = Origin::elementInCollection($subject, $key);
+		}
+		
+		// Replace the newElement with a one that contains proper origin and, possibly, address information.
+		if ($newElement instanceof ResolvedObject)
+		{
+			if ($newElement->getAddress() instanceof EmptyResourceAddress && $newElement->getType() instanceof CanonicalAddress)
+			{
+				$address = $type->getCanonicalAddress($newElement->getValue());
+			}
+			else
+			{
+				$address = $newElement->getAddress();
+			}
+	
+			$newElement = new ResolvedObject($newElement->getTypeHelper(), $newElement->getValue(), $address, $origin);
+		}
+		else
+		{
+			// TODO We also need to implement code for simple values and collections.
+			throw new NotImplementedException;
 		}
 	
-		// TODO The $newElement object does not carry the proper Origin information.
-		//      If it turns out this is needed, we should create a new ResourceValue object with the proper Origin.	
 		return new ResourceRequestResult($newElement);
 	}
 }

@@ -1,0 +1,104 @@
+{
+    "_links": {
+        "self": {
+            "href": "http:\/\/example.org\/collections\/post\/5050"
+        },
+        "type": {
+            "href": "php:Light\\ObjectService\\TestData\\Post"
+        }
+    },
+    "id": 5050,
+    "title": "Great quotes",
+    "text": "To be or not to be",
+    "_embedded": {
+        "author": {
+            "_links": {
+                "self": {
+                    "href": "http:\/\/example.org\/collections\/post\/5050\/author"
+                },
+                "type": {
+                    "href": "php:Light\\ObjectService\\TestData\\Author"
+                }
+            },
+            "id": 1010,
+            "name": "Max Ray",
+            "age": 35,
+            "_embedded": {
+                "posts": {
+                    "_links": {
+                        "self": {
+                            "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts"
+                        },
+                        "type": {
+                            "href": "php:Light\\ObjectService\\TestData\\Post[]"
+                        }
+                    },
+                    "_embedded": {
+                        "elements": [
+                            {
+                                "_links": {
+                                    "self": {
+                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/0"
+                                    },
+                                    "type": {
+                                        "href": "php:Light\\ObjectService\\TestData\\Post"
+                                    }
+                                },
+                                "id": 4040,
+                                "title": "First post",
+                                "text": "Lorem ipsum dolor",
+                                "_embedded": {
+                                    "author": {
+                                        "_links": {
+                                            "self": {
+                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/0\/author"
+                                            },
+                                            "type": {
+                                                "href": "php:Light\\ObjectService\\TestData\\Author"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "_links": {
+                                    "self": {
+                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/1"
+                                    },
+                                    "type": {
+                                        "href": "php:Light\\ObjectService\\TestData\\Post"
+                                    }
+                                },
+                                "id": 4041,
+                                "title": "Second post",
+                                "text": "Lorem lorem",
+                                "_embedded": {
+                                    "author": {
+                                        "_links": {
+                                            "self": {
+                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/1\/author"
+                                            },
+                                            "type": {
+                                                "href": "php:Light\\ObjectService\\TestData\\Author"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "_links": {
+                                    "self": {
+                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/2"
+                                    },
+                                    "type": {
+                                        "href": "php:Light\\ObjectService\\TestData\\Post"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

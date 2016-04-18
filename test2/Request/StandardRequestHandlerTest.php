@@ -63,6 +63,7 @@ class StandardRequestHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf(RequestResult::class, $result);
 		$this->assertInstanceOf(ResolvedObject::class, $result->getResource());
 		$this->assertInstanceOf(Post::class, $result->getResource()->getValue());
+		$this->assertEquals('http://example.org/collections/post/5050', $result->getResource()->getAddress()->getAsString());
 		
 		$post = $result->getResource()->getValue();
 		$this->assertEquals(5050, $post->getId());
@@ -92,6 +93,7 @@ class StandardRequestHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf(RequestResult::class, $result);
 		$this->assertInstanceOf(ResolvedObject::class, $result->getResource());
 		$this->assertInstanceOf(Post::class, $result->getResource()->getValue());
+		$this->assertEquals('http://example.org/collections/post/5123', $result->getResource()->getAddress()->getAsString());
 		
 		$post = $result->getResource()->getValue();
 		$this->assertEquals(5123, $post->getId());
