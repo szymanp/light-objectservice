@@ -159,36 +159,14 @@ class StandardRequestHandler implements RequestHandler
 			}
 			
 			$key = $reladdr->getPathElements()[0];
-			$subjectTypeHelper->setValue($subject, $key, $newElement->getValue(), $this->env->getTransaction());
-			$origin = Origin::elementInCollection($subject, $key);
+			$newElement = $subjectTypeHelper->setValue($subject, $key, $newElement->getValue(), $this->env->getTransaction());
 		}
 		else
 		{
 			// The new element should be appended at an arbitrary position.
-			$key = $subjectTypeHelper->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
-			$origin = Origin::elementInCollection($subject, $key);
+			$newElement = $subjectTypeHelper->appendValue($subject, $newElement->getValue(), $this->env->getTransaction());
 		}
-		
-		// Replace the newElement with a one that contains proper origin and, possibly, address information.
-		if ($newElement instanceof ResolvedObject)
-		{
-			if ($newElement->getAddress() instanceof EmptyResourceAddress && $newElement->getType() instanceof CanonicalAddress)
-			{
-				$address = $type->getCanonicalAddress($newElement->getValue());
-			}
-			else
-			{
-				$address = $newElement->getAddress();
-			}
-	
-			$newElement = new ResolvedObject($newElement->getTypeHelper(), $newElement->getValue(), $address, $origin);
-		}
-		else
-		{
-			// TODO We also need to implement code for simple values and collections.
-			throw new NotImplementedException;
-		}
-	
+
 		return new ResourceRequestResult($newElement);
 	}
 }
