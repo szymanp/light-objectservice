@@ -77,7 +77,22 @@ final class HalSerializer implements StructureSerializer
 		$link = new \stdClass;
 		$link->href = $href;
 
-		$document->_links->$rel = $link;
+		if (!isset($document->_links->$rel))
+		{
+			$document->_links->$rel = $link;
+		}
+		elseif (is_object($document->_links->$rel))
+		{
+			$document->_links->$rel = [$document->_links->$rel, $link];
+		}
+		elseif (is_array($document->_links->$rel))
+		{
+			array_push($document->_links->$rel, $link);
+		}
+		else
+		{
+			throw new \LogicException;
+		}
 	}
 
 	private function addEmbedded(\stdClass $document, $rel, DataEntity $dataEntity, $asList = false)
@@ -139,7 +154,28 @@ final class HalSerializer implements StructureSerializer
 		}
 		elseif ($data instanceof \stdClass)
 		{
-			throw new SerializationException('Serialization of dictionaries is not supported');
+			if ($dataCollection->getTypeHelper()->getBaseTypeHelper() instanceof SimpleTypeHelper)
+			{
+				throw new SerializationException('Serialization of scalar dictionaries is not supported');
+			}
+			else
+			{
+				// Collection contains resources
+				$elements = array();
+
+				foreach($data as $key => $value)
+				{
+					if ($value instanceof DataEntity)
+					{
+						$this->addEmbedded($document, 'elements', $value, true);
+						//$this->addLink($document, 'element-keys')
+					}
+					else
+					{
+						throw new SerializationException('Collection of resources contains scalar values');
+					}
+				}
+			}
 		}
 		else
 		{

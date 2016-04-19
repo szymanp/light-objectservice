@@ -66,8 +66,7 @@ class ProjectorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals("http://example.org/authors/max/posts", $postsResult->getResourceAddress()->getAsString());
 
 		$elements = $postsResult->getData();
-		$this->assertTrue(is_array($elements));
-		$this->assertEquals(2, count($elements));
+		$this->assertTrue(is_object($elements));
 
 		$expected = <<<EOT
 Light\ObjectService\TestData\Author @ http://example.org/authors/max {
@@ -75,17 +74,17 @@ Light\ObjectService\TestData\Author @ http://example.org/authors/max {
   name: Max Ray
   age: 35
   posts: Light\ObjectService\TestData\Post[] @ http://example.org/authors/max/posts [
-    0: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4040 {
+    4040: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4040 {
       id: 4040
       title: First post
       text: Lorem ipsum dolor
-      author: Light\ObjectService\TestData\Author @ http://example.org/authors/max/posts/0/author {}
+      author: Light\ObjectService\TestData\Author @ http://example.org/authors/max/posts/4040/author {}
     }
-    1: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4041 {
+    4041: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4041 {
       id: 4041
       title: Second post
       text: Lorem lorem
-      author: Light\ObjectService\TestData\Author @ http://example.org/authors/max/posts/1/author {}
+      author: Light\ObjectService\TestData\Author @ http://example.org/authors/max/posts/4041/author {}
     }
   ]
 }

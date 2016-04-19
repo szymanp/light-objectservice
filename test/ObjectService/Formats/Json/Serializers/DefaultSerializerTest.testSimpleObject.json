@@ -14,8 +14,8 @@
           "href": "http:\/\/example.org\/resources\/max\/posts"
         }
       },
-      "data": [
-        {
+      "data": {
+        "4040": {
           "links": {
             "self": {
               "href": "http:\/\/example.org\/collections\/post\/4040"
@@ -28,14 +28,14 @@
             "author": {
               "links": {
                 "self": {
-                  "href": "http:\/\/example.org\/resources\/max\/posts\/0\/author"
+                  "href": "http:\/\/example.org\/resources\/max\/posts\/4040\/author"
                 }
               },
               "data": {}
             }
           }
         },
-        {
+        "4041": {
           "links": {
             "self": {
               "href": "http:\/\/example.org\/collections\/post\/4041"
@@ -48,14 +48,14 @@
             "author": {
               "links": {
                 "self": {
-                  "href": "http:\/\/example.org\/resources\/max\/posts\/1\/author"
+                  "href": "http:\/\/example.org\/resources\/max\/posts\/4041\/author"
                 }
               },
               "data": {}
             }
           }
         }
-      ]
+      }
     }
   }
 }

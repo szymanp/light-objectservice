@@ -64,7 +64,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 		$response = $this->requestProcessor->handle($request);
 
 		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
 		$this->assertEquals('application/vnd.author+json', $response->headers->get('Content-type'));
 		$json = json_decode($response->getContent());
 		$this->assertTrue(is_object($json));

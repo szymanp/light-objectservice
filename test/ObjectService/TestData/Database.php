@@ -55,7 +55,7 @@ class Database
 		{
 			if ($post->getAuthor() === $author)
 			{
-				$posts[] = $post;
+				$posts[$post->getId()] = $post;
 			}
 		}
 		return $posts;

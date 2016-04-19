@@ -38,7 +38,7 @@
                             {
                                 "_links": {
                                     "self": {
-                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/0"
+                                        "href": "http:\/\/example.org\/collections\/post\/4040"
                                     },
                                     "type": {
                                         "href": "php:Light\\ObjectService\\TestData\\Post"
@@ -51,7 +51,7 @@
                                     "author": {
                                         "_links": {
                                             "self": {
-                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/0\/author"
+                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/4040\/author"
                                             },
                                             "type": {
                                                 "href": "php:Light\\ObjectService\\TestData\\Author"
@@ -63,7 +63,7 @@
                             {
                                 "_links": {
                                     "self": {
-                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/1"
+                                        "href": "http:\/\/example.org\/collections\/post\/4041"
                                     },
                                     "type": {
                                         "href": "php:Light\\ObjectService\\TestData\\Post"
@@ -76,7 +76,7 @@
                                     "author": {
                                         "_links": {
                                             "self": {
-                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/1\/author"
+                                                "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/4041\/author"
                                             },
                                             "type": {
                                                 "href": "php:Light\\ObjectService\\TestData\\Author"
@@ -88,7 +88,7 @@
                             {
                                 "_links": {
                                     "self": {
-                                        "href": "http:\/\/example.org\/collections\/post\/5050\/author\/posts\/2"
+                                        "href": "http:\/\/example.org\/collections\/post\/5050"
                                     },
                                     "type": {
                                         "href": "php:Light\\ObjectService\\TestData\\Post"
