@@ -36,7 +36,7 @@ class EndpointRelativeAddressTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \Szyman\Exception\InvalidArgumentTypeException
+	 * @expectedException \Szyman\Exception\InvalidArgumentValueException
 	 */
 	public function testAppendInvalidElement()
 	{
