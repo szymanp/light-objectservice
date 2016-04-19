@@ -91,6 +91,8 @@ class PostCollectionType extends DefaultCollectionType implements Iterate, Appen
 		}
 
 		$this->savePostToDatabase($collection, $value);
+		
+		return $value->getId();
 	}
 	
 	protected function savePostToDatabase(ResolvedCollection $collection, Post $value)

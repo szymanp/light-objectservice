@@ -9,6 +9,7 @@ use Light\ObjectAccess\Resource\ResolvedNull;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedScalar;
+use Light\ObjectAccess\Resource\Addressing\CanonicalResourceAddress;
 use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
@@ -97,9 +98,9 @@ class Projector
 		// If the object does not have an address that has a string form, but the type supports canonical addresses,
 		// then it is generally better to use the canonical address (that should have a string representation).
 		$address = $object->getAddress();
-		if (!$address->hasStringForm() && $object->getType() instanceof CanonicalAddress)
+		if (!($address instanceof CanonicalResourceAddress) && $object->getType() instanceof CanonicalAddress)
 		{
-			$address = $object->getType()->getCanonicalAddress($object->getValue());
+			$address = CanonicalResourceAddress::create($object->getType()->getCanonicalAddress($object->getValue()));
 		}
 
 		// Avoid traversing the same object twice.

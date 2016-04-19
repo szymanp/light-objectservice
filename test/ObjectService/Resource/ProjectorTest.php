@@ -75,13 +75,13 @@ Light\ObjectService\TestData\Author @ http://example.org/authors/max {
   name: Max Ray
   age: 35
   posts: Light\ObjectService\TestData\Post[] @ http://example.org/authors/max/posts [
-    0: Light\ObjectService\TestData\Post @ http://example.org/authors/max/posts/0 {
+    0: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4040 {
       id: 4040
       title: First post
       text: Lorem ipsum dolor
       author: Light\ObjectService\TestData\Author @ http://example.org/authors/max/posts/0/author {}
     }
-    1: Light\ObjectService\TestData\Post @ http://example.org/authors/max/posts/1 {
+    1: Light\ObjectService\TestData\Post @ http://example.org/collections/post/4041 {
       id: 4041
       title: Second post
       text: Lorem lorem

@@ -7,6 +7,7 @@ use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectAccess\Type\Complex\Create;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
+use Light\ObjectService\Resource\Addressing\CalculatedResourceAddress;
 use Szyman\Exception\Exception;
 use Szyman\Exception\InvalidArgumentTypeException;
 
@@ -62,7 +63,12 @@ class PostType extends DefaultComplexType implements Create, CanonicalAddress
 
 		if ($object instanceof Post)
 		{
-			return $this->canonicalBase->appendElement($object->getId());
+			$base = $this->canonicalBase;
+			
+			return CalculatedResourceAddress::dynamicAddress(function() use ($base, $object)
+			{
+				return $base->appendElement($object->getId());
+			});
 		}
 		else
 		{

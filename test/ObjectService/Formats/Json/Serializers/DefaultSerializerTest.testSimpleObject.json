@@ -18,7 +18,7 @@
         {
           "links": {
             "self": {
-              "href": "http:\/\/example.org\/resources\/max\/posts\/0"
+              "href": "http:\/\/example.org\/collections\/post\/4040"
             }
           },
           "data": {
@@ -38,7 +38,7 @@
         {
           "links": {
             "self": {
-              "href": "http:\/\/example.org\/resources\/max\/posts\/1"
+              "href": "http:\/\/example.org\/collections\/post\/4041"
             }
           },
           "data": {

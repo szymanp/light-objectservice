@@ -3,6 +3,7 @@ namespace Szyman\ObjectService\Response;
 
 use Light\ObjectAccess\Resource\ResolvedResource;
 use Light\ObjectAccess\Resource\ResolvedValue;
+use Light\ObjectAccess\Resource\Addressing\CanonicalResourceAddress;
 use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\SimpleType;
@@ -113,7 +114,11 @@ class StandardResourceResponseCreator implements ResponseCreator
 	private function appendLocationHeader(ResolvedResource $resource, array & $headers)
 	{
 		$type = $resource->getType();
-		if ($type instanceof CanonicalAddress && $resource instanceof ResolvedValue)
+		if ($resource->getAddress() instanceof CanonicalResourceAddress)
+		{
+			$address = $resource->getAddress();
+		}
+		elseif ($type instanceof CanonicalAddress && $resource instanceof ResolvedValue)
 		{
 			$address = $type->getCanonicalAddress($resource->getValue());
 		}

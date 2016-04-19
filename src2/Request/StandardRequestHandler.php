@@ -8,7 +8,6 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\CollectionType;
-use Light\ObjectAccess\Type\Complex\CanonicalAddress;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\DeserializedBody;
