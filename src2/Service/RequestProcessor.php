@@ -31,12 +31,25 @@ final class RequestProcessor
 			$requestReader = new RestRequestReader($this->conf);
 			$requestComponents = $requestReader->readRequest($request);
 
+			// Setup the transaction
+			$transaction = $this->conf->getTransactionFactory()->newTransaction();
+			if (!($transaction instanceof Transaction))
+			{
+				throw UnexpectedValueException::newInvalidReturnValue($this->conf->getTransactionFactory(), 'newTransaction', $transaction, 'Expecting Transaction');
+			}
+			$transaction->begin();
+
 			try
 			{
-				return $this->internalHandle($request, $requestComponents);
+				$result = $this->internalHandle($request, $requestComponents, $transaction);
+				$transaction->commit();
+				return $result;
 			}
 			catch (\Exception $e)
 			{
+				// Rollback the transaction.
+				$transaction->rollback();
+			
 				// The exception occurred while handling the request, but after decoding it.
 				// Try to send the exception using a suitable ResponseCreator.
 				return $this->createResponse($request, new ExceptionRequestResult($e), $requestComponents);
@@ -52,23 +65,17 @@ final class RequestProcessor
 	/**
 	 * @param Request           $request
 	 * @param RequestComponents $requestComponents
+	 * @param Transaction		$transaction
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	private function internalHandle(Request $request, RequestComponents $requestComponents)
+	private function internalHandle(Request $request, RequestComponents $requestComponents, Transaction $transaction)
 	{
-		// Setup the transaction
-		$transaction = $this->conf->getTransactionFactory()->newTransaction();
-		if (!($transaction instanceof Transaction))
-		{
-			throw UnexpectedValueException::newInvalidReturnValue($this->conf->getTransactionFactory(), 'newTransaction', $transaction, 'Expecting Transaction');
-		}
-
 		// Build the execution environment
 		$environment = new DefaultExecutionEnvironment();
 		$environment->setEndpointRegistry($this->conf->getEndpointRegistry());
 		$environment->setTransaction($transaction);
 		$environment->setEndpoint($requestComponents->getEndpointAddress()->getEndpoint());
-
+		
 		// Invoke request handler
 		$requestHandler = $this->conf->getRequestHandlerFactory()->newRequestHandler($requestComponents->getRequestType(), $environment);
 		if (!($requestHandler instanceof RequestHandler))
@@ -81,6 +88,9 @@ final class RequestProcessor
 		{
 			throw UnexpectedValueException::newInvalidReturnValue($requestHandler, 'handle', $requestResult, 'Expecting RequestResult');
 		}
+		
+		// Transfer the updates in the transaction.
+		$transaction->transfer();
 
 		// Invoke the response creator and return the response.
 		return $this->createResponse($request, $requestResult, $requestComponents);
