@@ -12,10 +12,14 @@ final class RequestProcessor
 {
 	/** @var Configuration */
 	private $conf;
+	
+	/** @var TransactionHandler */
+	private $transactionHandler;
 
-	public function __construct(Configuration $conf)
+	public function __construct(Configuration $conf, TransactionHandler $transactionHandler = null)
 	{
 		$this->conf = $conf;
+		$this->transactionHandler = is_null($transactionHandler) ? new TransactionHandler() : $transactionHandler;
 	}
 
 	/**
@@ -90,7 +94,7 @@ final class RequestProcessor
 		}
 		
 		// Transfer the updates in the transaction.
-		$transaction->transfer();
+		$this->transactionHandler->handle($this->conf, $request, $requestComponents, $transaction);
 
 		// Invoke the response creator and return the response.
 		return $this->createResponse($request, $requestResult, $requestComponents);

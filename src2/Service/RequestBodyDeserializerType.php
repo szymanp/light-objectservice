@@ -10,7 +10,7 @@ use MabeEnum\Enum;
 /**
  * Enumeration of possible deserializer types.
  */
-class RequestBodyDeserializerType extends Enum
+final class RequestBodyDeserializerType extends Enum
 {
 	const SIMPLE_VALUE_REPRESENTATION 		= 1;
 	const COMPLEX_VALUE_REPRESENTATION		= 2;
