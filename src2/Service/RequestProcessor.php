@@ -75,10 +75,7 @@ final class RequestProcessor
 	private function internalHandle(Request $request, RequestComponents $requestComponents, Transaction $transaction)
 	{
 		// Build the execution environment
-		$environment = new DefaultExecutionEnvironment();
-		$environment->setEndpointRegistry($this->conf->getEndpointRegistry());
-		$environment->setTransaction($transaction);
-		$environment->setEndpoint($requestComponents->getEndpointAddress()->getEndpoint());
+		$environment = new DetailedExecutionEnvironment($this->conf, $transaction, $request, $requestComponents);
 		
 		// Invoke request handler
 		$requestHandler = $this->conf->getRequestHandlerFactory()->newRequestHandler($requestComponents->getRequestType(), $environment);
@@ -94,7 +91,7 @@ final class RequestProcessor
 		}
 		
 		// Transfer the updates in the transaction.
-		$this->transactionHandler->handle($this->conf, $request, $requestComponents, $transaction);
+		$this->transactionHandler->handle($environment, $requestResult);
 
 		// Invoke the response creator and return the response.
 		return $this->createResponse($request, $requestResult, $requestComponents);

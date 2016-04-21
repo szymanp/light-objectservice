@@ -1,10 +1,6 @@
 <?php
 namespace Szyman\ObjectService\Service;
 
-use Light\ObjectAccess\Transaction\Transaction;
-use Symfony\Component\HttpFoundation\Request;
-use Szyman\ObjectService\Configuration\Configuration;
-
 /**
  * Helps <kbd>RequestProcessor</kbd> in handling transactions.
  *
@@ -19,14 +15,12 @@ class TransactionHandler
 {
 	/**
 	 * Handle an ongoing transaction.
-	 * @param Configuration		$conf
-	 * @param Request			$request
-	 * @param RequestComponents	$requestComponents
-	 * @param Transaction		$transaction
+	 * @param DetailedExecutionEnvironment  $environment
+	 * @param RequestResult                 $requestResult
 	 * @throws \Exception
 	 */
-	public function handle(Configuration $conf, Request $request, RequestComponents $requestComponents, Transaction $transaction)
+	public function handle(DetailedExecutionEnvironment $environment, RequestResult $requestResult)
 	{
-		$transaction->transfer();
+		$environment->getTransaction()->transfer();
 	}
 }
