@@ -46,6 +46,12 @@ final class DetailedExecutionEnvironment implements ExecutionEnvironment
 	{
 		return $this->rc->getEndpointAddress()->getEndpoint();
 	}
+    
+    /** @inheritdoc */
+    public function getLogger()
+    {
+        return $this->conf->getLogger();
+    }
 	
 	/**
 	 * Returns the Configuration of the <kbd>RequestProcessor</kbd>

@@ -5,6 +5,8 @@ use Light\ObjectAccess\Transaction\Transaction;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Szyman\ObjectService\Configuration\Endpoint;
 use Light\ObjectService\Service\EndpointRegistry;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class DefaultExecutionEnvironment implements ExecutionEnvironment
 {
@@ -14,6 +16,13 @@ class DefaultExecutionEnvironment implements ExecutionEnvironment
 	private $endpoint;
 	/** @var Transaction */
 	private $transaction;
+    /** @var LoggerInterface */
+    private $logger;
+    
+    public function __construct()
+    {
+        $this->logger = new NullLogger;
+    }
 
 	/**
 	 * @return Transaction
@@ -64,5 +73,20 @@ class DefaultExecutionEnvironment implements ExecutionEnvironment
 	{
 		$this->endpoint = $endpoint;
 	}
+    
+    /** @inheritdoc */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+    
+    /**
+     * Sets the logger for use with this request.
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
 }
