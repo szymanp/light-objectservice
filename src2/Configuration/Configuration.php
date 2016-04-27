@@ -5,6 +5,7 @@ use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
 use Szyman\ObjectService\Service\TransactionFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Configuration settings.
@@ -46,4 +47,10 @@ interface Configuration
 	 * @return TransactionFactory
 	 */
 	public function getTransactionFactory();
+    
+    /**
+     * Returns a logger to be used in the ObjectService context.
+     * @return LoggerInterface
+     */
+    public function getLogger();
 }

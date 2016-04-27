@@ -6,6 +6,7 @@ use Light\ObjectService\TestData\DummyTransactionFactory;
 use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
+use Psr\Log\NullLogger;
 
 class DefaultConfigurationTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,7 +33,8 @@ class DefaultConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$dc = $dcb->build();
 		$this->assertInstanceOf(DefaultConfiguration::class, $dc);
-		
+
+        $this->assertInstanceOf(NullLogger::class, $dc->getLogger());
 		$this->assertSame($endpointRegistry, $dc->getEndpointRegistry());
-	}	
+	}
 }

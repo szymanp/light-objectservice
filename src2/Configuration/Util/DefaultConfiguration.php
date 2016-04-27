@@ -8,6 +8,8 @@ use Szyman\ObjectService\Service\RequestBodyDeserializerFactory;
 use Szyman\ObjectService\Service\RequestHandlerFactory;
 use Szyman\ObjectService\Service\ResponseCreatorFactory;
 use Szyman\ObjectService\Service\TransactionFactory;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class DefaultConfiguration implements Configuration
 {
@@ -23,6 +25,8 @@ final class DefaultConfiguration implements Configuration
 	private $responseCreatorFactory;
 	/** @var TransactionFactory */
 	private $transactionFactory;
+    /** @var LoggerInterface */
+    private $logger;
 
 	private function __construct()
 	{
@@ -44,6 +48,7 @@ final class DefaultConfiguration implements Configuration
 			$dc->requestHandlerFactory			= $vals->requestHandlerFactory;
 			$dc->responseCreatorFactory			= $vals->responseCreatorFactory;
 			$dc->transactionFactory				= $vals->transactionFactory;
+            $dc->logger                         = is_null($vals->logger) ? new NullLogger : $vals->logger;
 			return $dc;
 		});
 	}
@@ -102,6 +107,15 @@ final class DefaultConfiguration implements Configuration
 	{
 		return $this->transactionFactory;
 	}
+
+    /**
+     * Returns a logger to be used in the ObjectService context.
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 }
 
 /**
@@ -172,6 +186,16 @@ final class DefaultConfiguration_Builder
 		$this->values->transactionFactory = $transactionFactory;
 		return $this;
 	}
+    
+    /**
+     * @param LoggerInterface $logger
+     * @return $this
+     */
+    public function logger(LoggerInterface $logger)
+    {
+        $this->values->logger = $logger;
+        return $this;
+    }
 
 	/**
 	 * Builds a new <kbd>DefaultConfiguration</kbd> object.
