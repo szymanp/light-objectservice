@@ -3,6 +3,7 @@ namespace Szyman\ObjectService\Service;
 
 use Light\ObjectAccess\Transaction\Transaction;
 use Light\ObjectService\Exception\UnsupportedMediaType;
+use Light\ObjectService\Exception\HttpExceptionInformation;
 use Light\ObjectService\Resource\Util\DefaultExecutionEnvironment;
 use Symfony\Component\HttpFoundation\Request;
 use Szyman\Exception\UnexpectedValueException;
@@ -53,7 +54,19 @@ final class RequestProcessor
 			{
 				// Rollback the transaction.
 				$transaction->rollback();
-			
+                
+                // Log the exception
+                if ($e instanceof HttpExceptionInformation)
+                {
+                    $this->conf->getLogger()->notice('Sending HTTP status {status} due to {exception}',
+                                            ['status' => $e->getHttpStatusCode(), 'exception' => $e]);
+                }
+                else
+                {
+                    $this->conf->getLogger()->error('Exception while processing the request: {exception}',
+                                            ['exception' => $e]);
+                }
+
 				// The exception occurred while handling the request, but after decoding it.
 				// Try to send the exception using a suitable ResponseCreator.
 				return $this->createResponse($request, new ExceptionRequestResult($e), $requestComponents);
@@ -61,6 +74,9 @@ final class RequestProcessor
 		}
 		catch (\Exception $e)
 		{
+            $this->conf->getLogger()->error('Exception while decoding request or sending response: {exception}',
+                                            ['exception' => $e]);
+        
 			// The exception occurred while decoding the request, or when creating the exception response.
 			return $this->createResponse($request, new ExceptionRequestResult($e));
 		}
