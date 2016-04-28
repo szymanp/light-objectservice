@@ -91,4 +91,23 @@ EOD;
 		$this->assertEquals('application/vnd.post+json', $response->headers->get('CONTENT_TYPE'));
 		$this->assertJsonStringEqualsJsonFile(dirname(__FILE__) . '/RequestProcessorTest.CreatePostViaPOST.json', $response->getContent());
 	}
+
+	public function testModifyPostViaPATCH()
+	{
+		$content = <<<'EOD'
+{
+"title": "Great quotes",
+"author": { "_href": "http://example.org/resources/max" }
+}
+EOD;
+
+		$headers = ['HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'];
+		$request = Request::create('http://example.org/collections/post/4042', 'PATCH', [], [], [], $headers, $content);
+		$response = $this->requestProcessor->handle($request);
+
+		$this->assertInstanceOf(Response::class, $response);
+		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+		$this->assertEquals('application/vnd.post+json', $response->headers->get('CONTENT_TYPE'));
+		$this->assertJsonStringEqualsJsonFile(dirname(__FILE__) . '/RequestProcessorTest.ModifyPostViaPATCH.json', $response->getContent());
+	}
 }

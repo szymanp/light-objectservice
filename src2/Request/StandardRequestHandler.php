@@ -1,13 +1,14 @@
 <?php
 namespace Szyman\ObjectService\Request;
 
+use Light\ObjectAccess\Resource\ResolvedCollection;
 use Light\ObjectAccess\Type\CollectionTypeHelper;
 use Light\ObjectAccess\Type\SimpleType;
 use Symfony\Component\HttpFoundation\Request;
 use Light\ObjectAccess\Resource\ResolvedObject;
-use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Type\ComplexType;
 use Light\ObjectAccess\Type\CollectionType;
+use Szyman\ObjectService\Service\CollectionValueModification;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
 use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\DeserializedBody;
@@ -47,7 +48,7 @@ class StandardRequestHandler implements RequestHandler
 				return $this->handleCreate($request, $requestComponents);
 				
 			case RequestType::MODIFY:
-				throw new NotImplementedException;	// TODO
+				return $this->handleModify($request, $requestComponents);
 			
 			case RequestType::REPLACE:
 				throw new NotImplementedException;	// TODO
@@ -167,5 +168,33 @@ class StandardRequestHandler implements RequestHandler
 		}
 
 		return new ResourceRequestResult($newElement);
+	}
+
+	/**
+	 * Handle a Modify request.
+	 * @param Request			$request			The HTTP request object.
+	 * @param RequestComponents	$requestComponents
+	 * @return RequestResult
+	 */
+	protected function handleModify(Request $request, RequestComponents $requestComponents)
+	{
+		$body = $this->deserialize($request, $requestComponents);
+		$subject = $requestComponents->getSubjectResource();
+
+		if ($subject instanceof ResolvedObject && $body instanceof ComplexValueModification)
+		{
+			$body->updateObject($subject, $this->env);
+		}
+		elseif ($subject instanceof ResolvedCollection && $body instanceof CollectionValueModification)
+		{
+			throw new NotImplementedException;
+		}
+		else
+		{
+			throw new \LogicException('Unsupported resource and deserialized body type for a Modify request');
+		}
+
+		// Return the same resource.
+		return new ResourceRequestResult($subject);
 	}
 }

@@ -8,6 +8,7 @@ use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\Util\DefaultRelativeAddress;
 use Light\ObjectService\TestData\Setup;
 use Light\ObjectService\TestData\Post;
+use Szyman\ObjectService\Service\ComplexValueModification;
 use Szyman\ObjectService\Service\ComplexValueRepresentation;
 use Szyman\ObjectService\Service\ExecutionEnvironment;
 use Szyman\ObjectService\Service\RequestComponents;
@@ -100,6 +101,26 @@ class StandardRequestHandlerTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull($post->getTitle());
 		$this->assertNull($post->getText());
 		$this->assertSame($post, $this->setup->getDatabase()->getPost(5123));
+	}
+
+	public function testModifyComplexViaPATCH()
+	{
+		$handler = new StandardRequestHandler($this->setup->getExecutionParameters());
+		$request = Request::create("http://example.org/");	// Dummy request, not used in handler
+		$subject = $this->setup->getEndpointRegistry()->getResource('http://example.org/collections/post/4041');
+		$rep = $this->getMockBuilder(ComplexValueModification::class)->getMock();
+
+		$rc = RequestComponents::newBuilder()
+			->subjectResource($subject)
+			->requestType(RequestType::get(RequestType::MODIFY))
+			->endpointAddress($subject->getAddress())	// not used in handler
+			->deserializer(new StandardRequestHandlerTest_Deserializer($rep))
+			->build();
+
+		$result = $handler->handle($request, $rc);
+
+		$this->assertInstanceOf(RequestResult::class, $result);
+		$this->assertSame($subject, $result->getResource());
 	}
 
 }
