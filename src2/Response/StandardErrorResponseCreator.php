@@ -1,6 +1,9 @@
 <?php
 namespace Szyman\ObjectService\Response;
 
+use Light\ObjectAccess\Exception\InvalidActionException;
+use Light\ObjectAccess\Exception\PropertyException;
+use Light\ObjectAccess\Exception\TypeCapabilityException;
 use Light\ObjectAccess\Resource\Origin;
 use Light\ObjectAccess\Resource\ResolvedObject;
 use Light\ObjectAccess\Resource\Util\EmptyResourceAddress;
@@ -108,6 +111,12 @@ class StandardErrorResponseCreator implements ResponseCreator
 		if ($e instanceof HttpExceptionInformation)
 		{
 			return $e->getHttpStatusCode();
+		}
+		elseif ($e instanceof PropertyException
+				|| $e instanceof InvalidActionException
+				|| $e instanceof TypeCapabilityException)
+		{
+			return Response::HTTP_BAD_REQUEST;
 		}
 		else
 		{
