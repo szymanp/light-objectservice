@@ -11,6 +11,7 @@ class RootSelection extends Selection
 {
 	const ALL = "*";
 	const REMOVE = "-";
+    const REMOVE_COLLECTIONS = "-*C";
 	
 	/** @var string[] */
 	private $fields = array();
@@ -142,6 +143,18 @@ class RootSelection extends Selection
 
 			$this->fields = array_unique(array_merge($this->fields, $names));
 		}
+        else if (strtoupper($fieldName) == self::REMOVE_COLLECTIONS)
+        {
+            // Remove all collections
+            foreach($this->fields as $k => $name)
+            {
+			    $propHelper = $this->typeHelper->getPropertyTypeHelper($name);
+                if ($propHelper instanceof CollectionTypeHelper)
+                {
+    				unset($this->fields[$k]);
+                }
+            }
+        }
 		else if ($fieldName[0] == self::REMOVE)
 		{
 			// Remove a field

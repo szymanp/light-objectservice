@@ -38,7 +38,7 @@ class SelectionTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @expectedException 			\Light\ObjectAccess\Exception\TypeException
-	 * @expectedExceptionMessage	Property invalid does not exist
+	 * @expectedExceptionMessage	Property Light\ObjectService\TestData\AuthorType::invalid does not exist
 	 */
 	public function testSelectInvalidField()
 	{

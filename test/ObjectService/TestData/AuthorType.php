@@ -6,8 +6,12 @@ use Light\ObjectAccess\Type\Complex\Create;
 use Light\ObjectAccess\Type\Util\CollectionResourceProperty;
 use Light\ObjectAccess\Type\Util\DefaultComplexType;
 use Light\ObjectAccess\Type\Util\DefaultProperty;
+use Light\ObjectAccess\Resource\ResolvedObject;
+use Light\ObjectAccess\Resource\Origin_Unavailable;
+use Light\ObjectService\Resource\Selection\Selection;
+use Szyman\ObjectService\Resource\Projection\FieldSelection;
 
-class AuthorType extends DefaultComplexType implements Create
+class AuthorType extends DefaultComplexType implements Create, FieldSelection
 {
 	/** @var Database */
 	private $database;
@@ -31,5 +35,17 @@ class AuthorType extends DefaultComplexType implements Create
 		return $this->database->createAuthor();
 	}
 
+    /** @inheritdoc */
+    public function getDefaultSelection(ResolvedObject $object)
+    {
+        if ($object->getOrigin() instanceof Origin_Unavailable)
+        {
+            return Selection::create($object->getTypeHelper())->fields("*");
+        }
+        else
+        {
+            return Selection::create($object->getTypeHelper())->fields("*, -*C");
+        }
+    }
 
 }

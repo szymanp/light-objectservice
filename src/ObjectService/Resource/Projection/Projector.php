@@ -15,6 +15,8 @@ use Light\ObjectService\Resource\Selection\NestedCollectionSelection;
 use Light\ObjectService\Resource\Selection\Selection;
 use Light\ObjectService\Resource\Util\DefaultSearchContext;
 use Szyman\Exception\InvalidArgumentTypeException;
+use Szyman\Exception\UnexpectedValueException;
+use Szyman\ObjectService\Resource\Projection\FieldSelection;
 
 /**
  * Projects a resource object or collection into a DataEntity object according to selection expressions.
@@ -111,9 +113,22 @@ class Projector
 
 		if (is_null($selection))
 		{
-			// TODO Get default selection from the type.
-			// For now, we select all fields.
-			$selection = Selection::create($object->getTypeHelper())->fields("*");
+            $type = $object->getTypeHelper()->getType();
+            if ($type instanceof FieldSelection)
+            {
+                // Get the selection from the type itself.
+                $selection = $type->getDefaultSelection($object);
+                
+                if (!($selection instanceof Selection))
+                {
+                    throw UnexpectedValueException::newInvalidReturnValue($type, 'getSelection', $selection, 'Expecting FieldSelection');
+                }
+            }
+            else
+            {
+                // Create a default selection - all fields, except for collection fields.
+    			$selection = Selection::create($object->getTypeHelper())->fields("*, -*C");
+            }
 		}
 
 		$result = new DataObject($object->getTypeHelper(), $address);

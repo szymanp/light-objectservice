@@ -17,6 +17,11 @@ abstract class Selection
 	{
 		return new RootSelection($typeHelper);
 	}
+    
+    public static function proxy()
+    {
+        
+    }
 
 	/**
 	 * Returns a list of field names to be selected.
