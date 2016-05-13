@@ -1,6 +1,7 @@
 <?php
 namespace Szyman\ObjectService\Response;
 
+use Light\ObjectAccess\Exception\InvalidActionException;
 use Light\ObjectService\Exception\MalformedRequest;
 use Light\ObjectService\Resource\Projection\DataObject;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,4 +36,15 @@ class StandardErrorResponseCreatorTest extends AbstractResponseCreatorTest
 		$this->assertEquals("dummy string", $response->getContent());
 		$this->assertEquals('application/vnd.exception+json', $response->headers->get('CONTENT_TYPE'));
 	}
+    
+    public function testBadRequestInner()
+    {
+        $e = new \Exception('Something went wrong?', 0, new InvalidActionException('Cannot do that'));
+    
+		$request = Request::create("http://www.example.org/some-url");
+		$requestResult = new ExceptionRequestResult($e);
+		$response = $this->creator->newResponse($request, $requestResult);
+
+		$this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
 }

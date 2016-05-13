@@ -124,6 +124,7 @@ final class RequestProcessor
 		$responseCreator = $this->conf->getResponseCreatorFactory()->newResponseCreator($request, $requestResult, $requestComponents);
 		if (is_null($responseCreator))
 		{
+            // TODO This should not be an UnsupportedMediaType but 406 Not Acceptable
 			throw new UnsupportedMediaType(join(", ", $request->getAcceptableContentTypes()), "Could not find a matching response creator");
 		}
 		if (!($responseCreator instanceof ResponseCreator))
