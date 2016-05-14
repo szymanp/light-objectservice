@@ -16,9 +16,24 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 	/** @var ResponseContentTypeMap */
 	private $contentTypeMap;
 
-	public function __construct(ResponseContentTypeMap $contentTypeMap)
+	/** @var \Closure[]  */
+	private $responseCreators = array();
+
+	/**
+	 * Constructs a new ResponseCreatorFactory.
+	 * @param ResponseContentTypeMap $contentTypeMap
+	 * @param \Closure[]             $responseCreators	A mapping between {@link RequestResult} child class names and
+	 *                                                 constructor functions taking three argments: a StructureSerializer,
+	 *                                                 a DataSerializer and a ResponseContentTypeMap.
+	 */
+	public function __construct(ResponseContentTypeMap $contentTypeMap, array $responseCreators = array())
 	{
 		$this->contentTypeMap = $contentTypeMap;
+		$this->responseCreators = [
+			ResourceRequestResult::class  => function($stru, $data, $ctMap) { return new StandardResourceResponseCreator($stru, $data, $ctMap); },
+			ExceptionRequestResult::class => function($stru, $data, $ctMap) { return new StandardErrorResponseCreator($stru, $data, $ctMap); }
+		];
+		$this->responseCreators = array_merge($this->responseCreators, $responseCreators);
 	}
 
 	/**
@@ -38,18 +53,15 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 			return null;
 		}
 
-		if ($requestResult instanceof ResourceRequestResult)
+		foreach($this->responseCreators as $resultClass => $fn)
 		{
-			return new StandardResourceResponseCreator($serializers->structure, $serializers->data, $this->contentTypeMap);
+			if ($requestResult instanceof $resultClass)
+			{
+				return $fn($serializers->structure, $serializers->data, $this->contentTypeMap);
+			}
 		}
-		elseif ($requestResult instanceof ExceptionRequestResult)
-		{
-			return new StandardErrorResponseCreator($serializers->structure, $serializers->data, $this->contentTypeMap);
-		}
-		else
-		{
-			return null;
-		}
+
+		return null;
 	}
 
 	private function findSerializersFromAccepts(Request $request)
