@@ -107,7 +107,10 @@ final class RequestProcessor
 		}
 		
 		// Transfer the updates in the transaction.
-		$this->transactionHandler->handle($environment, $requestResult);
+		$this->transactionHandler->handleTransaction($environment, $requestResult);
+
+		// Transform the result
+		$requestResult = $this->transactionHandler->transformResult($environment, $requestResult);
 
 		// Invoke the response creator and return the response.
 		return $this->createResponse($request, $requestResult, $requestComponents);
@@ -118,6 +121,8 @@ final class RequestProcessor
 	 * @param RequestResult     $requestResult
 	 * @param RequestComponents $requestComponents
 	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws UnsupportedMediaType
+	 * @throws UnexpectedValueException
 	 */
 	private function createResponse(Request $request, RequestResult $requestResult, RequestComponents $requestComponents = null)
 	{
@@ -137,5 +142,4 @@ final class RequestProcessor
 		}
 		return $responseCreator->newResponse($request, $requestResult, $requestComponents);
 	}
-
 }
