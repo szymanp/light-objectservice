@@ -4,6 +4,7 @@ namespace Szyman\ObjectService\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Szyman\Exception\UnexpectedValueException;
 use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
+use Szyman\ObjectService\Response\StandardResponseCreatorFactory\ResponseCreatorEntry;
 use Szyman\ObjectService\Service\ExceptionRequestResult;
 use Szyman\ObjectService\Service\RequestComponents;
 use Szyman\ObjectService\Service\RequestResult;
@@ -16,24 +17,22 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 	/** @var ResponseContentTypeMap */
 	private $contentTypeMap;
 
-	/** @var \Closure[]  */
+	/** @var ResponseCreatorEntry[]  */
 	private $responseCreators = array();
 
 	/**
 	 * Constructs a new ResponseCreatorFactory.
 	 * @param ResponseContentTypeMap $contentTypeMap
-	 * @param \Closure[]             $responseCreators	A mapping between {@link RequestResult} child class names and
-	 *                                                 constructor functions taking three argments: a StructureSerializer,
-	 *                                                 a DataSerializer and a ResponseContentTypeMap.
+	 * @param ResponseCreatorEntry[] $responseCreators
 	 */
 	public function __construct(ResponseContentTypeMap $contentTypeMap, array $responseCreators = array())
 	{
 		$this->contentTypeMap = $contentTypeMap;
 		$this->responseCreators = [
-			ResourceRequestResult::class  => function($stru, $data, $ctMap) { return new StandardResourceResponseCreator($stru, $data, $ctMap); },
-			ExceptionRequestResult::class => function($stru, $data, $ctMap) { return new StandardErrorResponseCreator($stru, $data, $ctMap); }
+			new ResponseCreatorEntry(ResourceRequestResult::class,  function($stru, $data, $ctMap) { return new StandardResourceResponseCreator($stru, $data, $ctMap); }),
+			new ResponseCreatorEntry(ExceptionRequestResult::class, function($stru, $data, $ctMap) { return new StandardErrorResponseCreator($stru, $data, $ctMap); })
 		];
-		$this->responseCreators = array_merge($this->responseCreators, $responseCreators);
+		$this->responseCreators = array_merge($responseCreators, $this->responseCreators);
 	}
 
 	/**
@@ -53,11 +52,11 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 			return null;
 		}
 
-		foreach($this->responseCreators as $resultClass => $fn)
+		foreach($this->responseCreators as $entry)
 		{
-			if ($requestResult instanceof $resultClass)
+			if ($entry->isValidFor($requestResult))
 			{
-				return $fn($serializers->structure, $serializers->data, $this->contentTypeMap);
+				return $entry->create($serializers->structure, $serializers->data, $this->contentTypeMap);
 			}
 		}
 
@@ -126,5 +125,44 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 		{
 			return new JsonDataSerializer();
 		}
+	}
+}
+
+// Namespace for inner classes
+namespace Szyman\ObjectService\Response\StandardResponseCreatorFactory;
+
+use Szyman\ObjectService\Configuration\ResponseContentTypeMap;
+use Szyman\ObjectService\Response\DataSerializer;
+use Szyman\ObjectService\Response\StructureSerializer;
+use Szyman\ObjectService\Service\RequestResult;
+
+/**
+ * Maps a RequestResult subclass to a ResponseCreator.
+ */
+final class ResponseCreatorEntry
+{
+	private $className, $fn;
+
+	/**
+	 * @param          $className	A class name for a {@link RequestResult} subclass.
+	 * @param callable $fn 			A constructor function returning a ResponseCreator.
+	 *                     			It takes three arguments: a StructureSerializer, a DataSerializer and a ResponseContentTypeMap.
+	 */
+	public function __construct($className, \Closure $fn)
+	{
+		$this->className = $className;
+		$this->fn = $fn;
+	}
+
+	public function isValidFor(RequestResult $requestResult)
+	{
+		$className = $this->className;
+		return $requestResult instanceof $className;
+	}
+
+	public function create(StructureSerializer $structureSerializer, DataSerializer $dataSerializer, ResponseContentTypeMap $responseContentTypeMap)
+	{
+		$fn = $this->fn;
+		return $fn($structureSerializer, $dataSerializer, $responseContentTypeMap);
 	}
 }
