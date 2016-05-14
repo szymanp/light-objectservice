@@ -30,7 +30,8 @@ class StandardResponseCreatorFactory implements ResponseCreatorFactory
 		$this->contentTypeMap = $contentTypeMap;
 		$this->responseCreators = [
 			new ResponseCreatorEntry(ResourceRequestResult::class,  function($stru, $data, $ctMap) { return new StandardResourceResponseCreator($stru, $data, $ctMap); }),
-			new ResponseCreatorEntry(ExceptionRequestResult::class, function($stru, $data, $ctMap) { return new StandardErrorResponseCreator($stru, $data, $ctMap); })
+			new ResponseCreatorEntry(ExceptionRequestResult::class, function($stru, $data, $ctMap) { return new StandardErrorResponseCreator($stru, $data, $ctMap); }),
+			new ResponseCreatorEntry(CustomRequestResult::class,    function($stru, $data, $ctMap) { return new CustomResponseCreator($stru, $data, $ctMap); })
 		];
 		$this->responseCreators = array_merge($responseCreators, $this->responseCreators);
 	}
