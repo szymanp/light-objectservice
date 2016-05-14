@@ -112,15 +112,10 @@ class StandardErrorResponseCreator implements ResponseCreator
 		{
 			return $e->getHttpStatusCode();
 		}
-		elseif ($e instanceof PropertyException
-				|| $e instanceof InvalidActionException
-				|| $e instanceof TypeCapabilityException)
-		{
-			return Response::HTTP_BAD_REQUEST;
-		}
 		else
 		{
-			return Response::HTTP_INTERNAL_SERVER_ERROR;
+            $mapper = ErrorStatusCodeMapper::newStandardMapper();
+            return $mapper->getStatusCode($e);
 		}
 	}
 
